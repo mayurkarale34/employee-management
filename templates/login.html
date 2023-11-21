@@ -5,6 +5,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Login</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">  
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
   </head>
 
@@ -48,7 +49,7 @@
           <div class="row">  
               <div class="col-md-5 mx-auto">  
                 <div class="card card-body">  
-                  <form id="submitForm" action="/login" method="post">  
+                  <form id="login_form">  
                         <div class="form-group required">  
                           <label for="username">Username</label>  
                           <input type="text" class="form-control" id="username" name="username" placeholder="Enter your contact or Email" required>  
@@ -65,7 +66,7 @@
                           </div>  
                         </div>  
                         <div class="form-group pt-1">  
-                          <button class="btn btn-primary btn-block" type="submit"> Log In </button>  
+                          <button class="btn btn-primary btn-block" type="button" id="login"> Log In </button>  
                         </div>  
                   </form>  
                   <p class="small-xl pt-3 text-center">  
@@ -77,4 +78,24 @@
           </div>  
       </div>  
   </body>
+
+  <script>
+
+    $('#login').click(function(e){
+      $.ajax({
+          type : "POST",
+          url : "/login",
+          dataType : 'json',
+          data : $('#login_form').serialize(),
+          success: function(response){
+              if(response.status){
+                window.location.href = '/manage_resources';
+              }
+              else{
+                alert(response.message);
+              }
+          }
+      })
+    })
+  </script>
 </html>
