@@ -1,0 +1,4 @@
+DATABASE_HOSTNAME = 'localhost'
+DATABASE_NAME = 'employee'
+DATABASE_USERNAME = 'root'
+DATABASE_PASSWORD = 'root'
