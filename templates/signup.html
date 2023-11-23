@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Login</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">  
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+  </head>
+
+  <style>  
+      body {  
+        background: #59cfcf !important;  
+        font-family: 'Muli', sans-serif;  
+      }  
+      h1 {  
+        color: #220216;  
+        padding-bottom: 2rem;  
+        font-weight: bold;  
+      }  
+      a {  
+        color: #333;  
+      }  
+      a:hover {  
+        color: #E8D426;  
+        text-decoration: none;  
+      }  
+      .form-control:focus {  
+          color: #000;  
+          background-color: #fff;  
+          border: 2px solid #E8D426;  
+          outline: 0;  
+      box-shadow: none;  
+  }  
+  .btnSubmit {  
+    background: #d7d1e7;  
+    border: #1f1d0b;  
+  }  
+  .btnSubmit:hover {  
+    background: #28a745;  
+    border: #1f1d0c;  
+  }  
+  </style>  
+
+  <body>
+        <h1 class = "text-center">Create an Account</h1>
+        <div class="container register-form">     
+            <div class="form">  
+                <div class="form-content">  
+                    <div class="row">
+                      <div class="card card-body">  
+                        <form id="signUp_form">  
+                        <div class="col-md-6">  
+                            <div class="form-group">
+                                <label for="firstname">FirstName</label>   
+                                <input type="text" class="form-control" placeholder="Enter Firstname">  
+                            </div>  
+                            <div class="form-group">  
+                                <label for="lastname">LastName</label>   
+                                <input type="text" class="form-control" placeholder="Enter Lastname">  
+                            </div>  
+                        </div>              
+                        <div class="col-md-6">  
+                            <div class="form-group">  
+                                <label for="emailaddress">Email Address</label>   
+                                <input type="text" class="form-control" placeholder="Enter Email Address">  
+                            </div>  
+                            <div class="form-group">  
+                                <label for="Contactnumber">Contact Number</label>   
+                                <input type="text" class="form-control" placeholder="Enter Contact Number">  
+                            </div>  
+                        </div>  
+                        <div class="col-md-6">  
+                            <div class="form-group">  
+                                <label for="password">Password</label>   
+                                <input type="text" class="form-control" placeholder="Enter Password">  
+                            </div>  
+                            <div class="form-group"> 
+                                <label for="confirmpassword">Confirm Password</label>    
+                                <input type="text" class="form-control" placeholder="Re-enter Password">  
+                            </div>  
+                        </div> 
+                        <div class="col-md-6">  
+                            <div class="form-group">
+                                <label for="Gender">Gender</label>
+                                    <select class="form-control select_field" name="Gender" id="Gender">
+                                        <option value="">Please Select Gender</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="form-group pt-1 d-flex justify-content-center">  
+                            <button class="btnSubmit" type="button" id="SignUpSubmit"> Submit </button>  
+                        </div>
+                        </form> 
+                      </div>
+                    </div>  
+                </div>  
+            </div>  
+        </div>  
+  </body>
+
+  <script>
+    $('#SignUpSubmit').click(function(e){
+      $.ajax({
+          type : "POST",
+          url : "/SignUpSubmit",
+          dataType : 'json',
+          data : $('#signUp_form').serialize(),
+          success: function(response){
+              if(response.status){
+                window.location.href = '/manage_resources';
+              }
+              else{
+                alert(response.message);
+              }
+          }
+      })
+    }) 
+  </script>
+</html>
