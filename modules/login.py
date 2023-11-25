@@ -1,6 +1,6 @@
 
 
-@app.route('/login_page', methods=['GET'])
+@app.route('/login_page', methods=['GET', 'POST'])
 def login_page():
     try:
         return render_template('login.html')
@@ -41,26 +41,22 @@ def manage_resources():
         print("exception while login : "+ str(e))
         return render_template('login.html')
     
-@app.route('/SignUpSubmit', methods=['GET','POST'])
+@app.route('/SignUpSubmit', methods=['POST'])
 def SignUpSubmit():
+    data = dict(request.form)
     msg = ''
-    if request.method == 'POST' and 'firstname' in request.form and 'lastname' in request.form and 'emailaddress' in request.form and 'Contactnumber' in request.form and 'password' in request.form and 'confirmpassword' in request.form and 'Gender' in request.form :
-        firstname = request.form['firstname']
-        lastname = request.form['lastname']
-        emailaddress = request.form['emailaddress']
-        Contactnumber = request.form['Contactnumber']
-        password = request.form['password']
-        confirmpassword = request.form['confirmpassword']
-        Gender = request.form['Gender']
-        cursor = mysql.connection.cursor(MySQLdb.cursors.DictCursor)
-        cursor.execute('SELECT * FROM tluser WHERE firstname = % s', (firstname, ))
-        account = cursor.fetchone()
-        if account:
-            msg = 'Account already exists !'
-        else:
-            cursor.execute('INSERT INTO tluser VALUES (NULL, % s, % s, % s, %s, %s, %s, %s)', (firstname, lastname, emailaddress, Contactnumber, password, confirmpassword, Gender))
-            mysql.connection.commit()
-            msg = 'You have successfully registered !'
-    elif request.method == 'POST':
-        msg = 'Please fill out the form !'
-    return render_template('signup.html', msg = msg)
+    connection =  app._engine.connect() 
+    transaction = connection.begin() 
+    result = connection.execute(text(f"SELECT * FROM tluser WHERE email_id = '{data['email_id']}' or contact_no = '{data['contact_no']}'"))
+
+    if result.rowcount:
+        msg = 'Account already exists !'
+        transaction.rollback()
+        connection.close()
+    else:
+        connection.execute(text(f"INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) VALUES ('{data['first_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact_no']}', '{data['confirm_password']}');"))
+        msg = 'You have successfully registered !'
+        transaction.commit()
+        connection.close()
+
+    return jsonify(msg)

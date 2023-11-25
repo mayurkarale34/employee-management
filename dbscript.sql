@@ -12,3 +12,6 @@ CREATE TABLE `tluser` (
   UNIQUE INDEX `contact_no_UNIQUE` (`contact_no` ASC) VISIBLE)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8;
+
+ALTER TABLE `tluser` 
+CHANGE COLUMN `contact_no` `contact_no` VARCHAR(50) NULL DEFAULT NULL ;
