@@ -49,29 +49,53 @@
           <div class="row">  
               <div class="col-md-5 mx-auto">  
                 <div class="card card-body">  
-                  <form id="login_form">  
-                        <div class="form-group required">  
-                          <label for="username">Username</label>  
-                          <input type="text" class="form-control" id="username" name="username" placeholder="Enter your contact or Email" required>  
-                        </div>                      
-                        <div class="form-group required">  
-                          <label class="d-flex flex-row align-items-center" for="password"> Password</label>  
-                          <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Password" required>  
+                  <div class="login_form">
+                    <form id="login_form">  
+                      <div class="form-group required">  
+                        <label for="username">Username</label>  
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your contact or Email" required>  
+                      </div>                      
+                      <div class="form-group required">  
+                        <label class="d-flex flex-row align-items-center" for="password"> Password</label>  
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Password" required>  
+                      </div>  
+                      <div class="form-group mt-4 mb-4">  
+                        <div class="custom-control custom-checkbox">  
+                            <input type="checkbox" class="custom-control-input" id="remember-me" name="remember-me">  
+                            <label class="custom-control-label" for="remember-me"> Remember me? </label> 
+                            <a class="ml-auto border-link small-xl" href="#" id = "forgotpassword">&nbsp;&nbsp; Forget Password? </a>
                         </div>  
-                        <div class="form-group mt-4 mb-4">  
-                          <div class="custom-control custom-checkbox">  
-                              <input type="checkbox" class="custom-control-input" id="remember-me" name="remember-me">  
-                              <label class="custom-control-label" for="remember-me"> Remember me? </label> 
-                              <a class="ml-auto border-link small-xl" href="#" id = "forgotpassword">&nbsp;&nbsp; Forget Password? </a>
-                          </div>  
-                        </div>  
-                        <div class="form-group pt-1">  
-                          <button class="btn btn-primary btn-block" type="button" id="login"> Log In </button>  
-                        </div>  
-                  </form>  
-                  <p class="small-xl pt-3 text-center">  
+                      </div>  
+                      <div class="form-group pt-1">  
+                        <button class="btn btn-primary btn-block" type="button" id="login"> Log In </button>  
+                      </div>  
+                    </form>
+                  </div>
+                  
+                  <div class="sign_up_form">
+                    <form id="sign_up_form">  
+                      <div class="form-group required">  
+                        <label for="first_name">First Name</label>  
+                        <input type="text" class="form-control" id="first_name" name="first_name" placeholder="Enter your First Name" required>  
+                      </div>                      
+                      <div class="form-group required">  
+                        <label class="d-flex flex-row align-items-center" for="last_name"> Last Name</label>  
+                        <input type="text" class="form-control" id="last_name" name="last_name" placeholder="Enter your Last Name" required>  
+                      </div>  
+                       
+                      <div class="form-group pt-1">  
+                        <button class="btn btn-primary btn-block" type="button" id="sign_up"> Sign Up </button>  
+                      </div>  
+                    </form>
+                  </div>
+                  <p class="small-xl pt-3 text-center login_form">  
                     <span class="text-muted"> &nbsp;&nbsp;Don't have an account? </span>  
-                    <a href="#" id ="signup"> Create New Account </a>  
+                    <a href="#" id ="create_account"> Create New Account </a>  
+                  </p>
+
+                  <p class="small-xl pt-3 text-center sign_up_form">  
+                    <span class="text-muted"> &nbsp;&nbsp;Do you have an account? </span>  
+                    <a href="#" id ="login_action"> Login </a>  
                   </p>
 
           </div>  
@@ -79,6 +103,7 @@
   </body>
 
   <script>
+    $('.sign_up_form').hide();
 
     $('#login').click(function(e){
       $.ajax({
@@ -97,9 +122,43 @@
       })
     })
 
-    $('#signup').click(function(){
-        window.location.href = 'signup_page';
-        })
+    $('#create_account').click(function(){
+        $('.login_form').slideUp(1000);
+        $('.sign_up_form').slideDown(1000);
+        // window.location.href = 'signup_page';
+    })
+
+    $('#login_action').click(function(){
+        $('.login_form').slideDown(500);
+        $('.sign_up_form').slideUp(500);
+        // window.location.href = 'signup_page';
+    })
+
+    $('#sign_up').click(function(e){
+      // Check for password
+      
+      $.ajax({
+          type : "POST",
+          url : "/SignUpSubmit",
+          data : $('#signUp_form').serialize(),
+          success: function(response){
+                alert(response);
+                window.location.href = '/login_page';
+
+                if(response.status){
+                  alert('Registration Successfull');
+                  $('.login_form').show();
+                  $('.sign_up_form').hide();
+                }
+                else{
+                  alert(response.message);
+                }
+
+
+          }
+      })
+    }) 
+
         
     $('#forgotpassword').click(function(){
         window.location.href = 'forgotpassword_page';
