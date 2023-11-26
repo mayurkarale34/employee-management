@@ -54,7 +54,7 @@ def sign_up():
         transaction.rollback()
         connection.close()
     else:
-        connection.execute(text(f"INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) VALUES ('{data['first_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact_no']}', '{data['confirm_password']}');"))
+        connection.execute(text(f"INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) VALUES ('{data['first_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact_no']}', '{data['confirmpassword']}');"))
         msg = 'You have successfully registered !'
         transaction.commit()
         connection.close()
