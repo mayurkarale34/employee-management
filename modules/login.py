@@ -41,8 +41,8 @@ def manage_resources():
         print("exception while login : "+ str(e))
         return render_template('login.html')
     
-@app.route('/SignUpSubmit', methods=['POST'])
-def SignUpSubmit():
+@app.route('/sign_up', methods=['POST'])
+def sign_up():
     data = dict(request.form)
     msg = ''
     connection =  app._engine.connect() 
@@ -60,3 +60,11 @@ def SignUpSubmit():
         connection.close()
 
     return jsonify(msg)
+
+@app.route('/forgotpassword_page', methods=['GET'])
+def forgotpassword_page():
+    try:
+        return render_template('forgotpassword.html')
+    except Exception as e:
+        print("exception while rendering forgot password page : "+ str(e))
+        return redirect('/')
