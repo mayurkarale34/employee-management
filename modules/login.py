@@ -13,6 +13,7 @@ def login():
     response = {"status" : False, "message" : ""}
     try:
         request_data = dict(request.form)
+        
         if request_data['password'] == 'test':
 
             response['message'] = 'Login Successfully.'
@@ -43,23 +44,33 @@ def manage_resources():
     
 @app.route('/sign_up', methods=['POST'])
 def sign_up():
-    data = dict(request.form)
-    msg = ''
+    response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
     transaction = connection.begin() 
-    result = connection.execute(text(f"SELECT * FROM tluser WHERE email_id = '{data['email_id']}' or contact_no = '{data['contact_no']}'"))
+    try:
+        data = dict(request.form)
+    
+        result = connection.execute(text(f"SELECT * FROM tluser WHERE email_id = '{data['email_id']}' or contact_no = '{data['contact_no']}'"))
 
-    if result.rowcount:
-        msg = 'Account already exists !'
+        if result.rowcount:
+            transaction.rollback()
+            connection.close()
+            response['status'] = True
+            response['message'] = "Account already exists !"
+            return jsonify(response)
+        else:
+            connection.execute(text(f"INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) VALUES ('{data['first_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact_no']}', '{data['confirmpassword']}');"))
+            transaction.commit()
+            connection.close()
+
+        response['status'] = True
+        response['message'] = "You have successfully registered !"
+        return jsonify(response)
+    except Exception as e:
         transaction.rollback()
         connection.close()
-    else:
-        connection.execute(text(f"INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) VALUES ('{data['first_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact_no']}', '{data['confirmpassword']}');"))
-        msg = 'You have successfully registered !'
-        transaction.commit()
-        connection.close()
-
-    return jsonify(msg)
+        response['message'] = "Error while registration, Please contact administrator."
+        return jsonify(response)
 
 @app.route('/forgotpassword_page', methods=['GET'])
 def forgotpassword_page():
