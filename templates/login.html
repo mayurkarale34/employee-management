@@ -48,7 +48,10 @@
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
-}
+  }
+  .confirmPasswordSection{
+    display: none;
+  }
   </style>  
 
   <body>
@@ -92,20 +95,21 @@
                       </div> 
                       <div class="form-group required">  
                         <label class="d-flex flex-row align-items-center" for="contact_no">Contact Number</label>  
-                        <input type="text" class="form-control required" id="contact_no" name="contact_no" placeholder="Enter your Contact Number">  
-                      </div> 
+                        <input type="text" class="form-control required" id="contact_no" name="contact_no" placeholder="Enter your Contact Number" minlength="13" maxlength="13" value="+91">  
+                      </div>
                       <div class="form-group required">  
                         <label class="d-flex flex-row align-items-center" for="email_id">Email Address</label>  
                         <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" >  
                       </div> 
                       <div class="form-group required">  
                         <label class="d-flex flex-row align-items-center" for="new_password">Password</label>  
-                        <input type="text" class="form-control required" id="new_password" name="new_password" placeholder="Enter your Password">  
-                      </div> 
-                      <div class="form-group required">  
-                        <label class="d-flex flex-row align-items-center" for="confirmpassword">Confirm Password</label>  
-                        <input type="text" class="form-control required" id="confirmpassword" name="confirmpassword" placeholder="Enter your Confirm Password">  
-                      </div> 
+                        <input type="password" class="form-control required" id="new_password" name="new_password" placeholder="Enter your Password" minlength="4" maxlength="4" onblur="showConfirmPasswordField()">  
+                      </div>
+                      
+                      <div class="form-group required" id="confirmPasswordSection" style="display: none;">  
+                        <label class="d-flex flex-row align-items-center" for="confirmpassword" id="confirmPasswordLabel">Confirm Password</label>  
+                        <input type="password" class="form-control required" id="confirmpassword" name="confirmpassword" placeholder="Enter your Confirm Password" minlength="4" maxlength="4">  
+                      </div>
                       <div class="form-group required">  
                         <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
                         <select class="form-control select_field" name="gender" id="gender" required>
@@ -164,6 +168,18 @@
         $('.sign_up_form').slideUp(500);
         // window.location.href = 'signup_page';
     })
+    $('#login').click(function(e){
+      let username = $("#username").val();
+      let password = $("#password").val();
+
+      if(username==''){
+        alert("Please provide UserName");
+        return false;
+      }
+      if(password==''){
+        alert("Please provide Password");
+        return false}
+    })
 
     $('#sign_up').click(function(e){
       let f_name = $("#first_name").val();
@@ -208,7 +224,6 @@
           success: function(response){
                 //alert(response);
                 //window.location.href = '/login_page';
-
                 if(response.status){
                   alert(response.message);
                   $('.login_form').show();
@@ -217,13 +232,23 @@
                 else{
                   alert(response.message);
                 }
-
-
           }
       })
-    }) 
+    })
 
-        
+    function showConfirmPasswordField() {
+    const newPasswordField = document.getElementById('new_password');
+    const confirmPasswordSection = document.getElementById('confirmPasswordSection');
+    const confirmPasswordLabel = document.getElementById('confirmPasswordLabel');
+
+    if (newPasswordField.value.length >= 4) {
+      confirmPasswordSection.style.display = 'block';
+      confirmPasswordLabel.style.display = 'block';
+    } else {
+      confirmPasswordSection.style.display = 'none';
+      confirmPasswordLabel.style.display = 'none';
+    }
+    }          
     $('#forgotpassword').click(function(){
         window.location.href = 'forgotpassword_page';
         })
