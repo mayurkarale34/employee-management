@@ -11,16 +11,26 @@ def login_page():
 @app.route('/login', methods=['POST'])
 def login():
     response = {"status" : False, "message" : ""}
+    connection =  app._engine.connect() 
+    transaction = connection.begin() 
     try:
-        request_data = dict(request.form)
-        
-        if request_data['password'] == 'test':
-
-            response['message'] = 'Login Successfully.'
-            response['status'] = True
+        """import pdb
+        pdb.set_trace()"""
+        data = dict(request.form)
+        result = connection.execute(text(f"SELECT password FROM tluser WHERE email_id = '{data['username']}' or contact_no = '{data['username']}'"))
+        if result.rowcount:
+            result_data = result.fetchone()
+            password = result_data[0]
+            print(password, data['password'])
+            if data['password'] == password:
+                transaction.commit()
+                connection.close()
+                response['message'] = 'Login Successfully.'
+                response['status'] = True
+            else:
+                response['message'] = 'Incorrect Password'
         else:
-            response['message'] = 'Incorrect Password'
-            
+            response['message'] = 'Record not found, Please register first'
         return jsonify(response)
     except Exception as e:
         response['message'] = "exception while loading resources: "+ str(e)
