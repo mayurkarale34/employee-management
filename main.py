@@ -15,6 +15,10 @@ def integrate():
         web_file = fin.read()
         fin.close()
 
+        fin = open("modules/common.py", "r")
+        common_file = fin.read()
+        fin.close()
+
         fin = open("modules/login.py", "r")
         web_login = fin.read()
         fin.close()
@@ -25,7 +29,7 @@ def integrate():
 
         # Create combine file of content of all the python files
         # Note: app_run should be at last
-        combine_file = app_init + web_file + web_login + app_run
+        combine_file = app_init + web_file + web_login +  common_file + app_run
 
         # Created new app file to run the app
         fout = open("employee.py", 'w')
