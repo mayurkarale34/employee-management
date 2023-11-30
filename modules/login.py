@@ -21,8 +21,8 @@ def login():
         if result.rowcount:
             result_data = result.fetchone()
             password = result_data[0]
-            print(password, data['password'])
-            if data['password'] == password:
+            dec = decrypt_password(ENCRYPTION_KEY, password)
+            if data['password'] == dec:
                 transaction.commit()
                 connection.close()
                 response['message'] = 'Login Successfully.'
@@ -69,7 +69,19 @@ def sign_up():
             response['message'] = "Account already exists !"
             return jsonify(response)
         else:
-            connection.execute(text(f"INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) VALUES ('{data['first_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact_no']}', '{data['confirmpassword']}');"))
+            enc = encrypt_password(ENCRYPTION_KEY, data['confirmpassword'])
+            
+            query = connection.execute(
+                text("INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) "
+                     "VALUES (:first_name, :last_name, :email_id, :contact_no, :password)"),
+                {
+                    "first_name": data['first_name'],
+                    "last_name": data['last_name'],
+                    "email_id": data['email_id'],
+                    "contact_no": data['contact_no'],
+                    "password": enc,
+                }
+            )
             transaction.commit()
             connection.close()
 
