@@ -6,6 +6,7 @@
       <title>Login</title>
       <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">  
       <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
 
   </head>
 
@@ -15,9 +16,15 @@
         font-family: 'Muli', sans-serif;  
       }  
       h1 {  
-        color: #060657;  
+        color: #000004;  
         padding-bottom: 2rem;  
         font-weight: bold;  
+      }  
+      h4 {  
+        color: #000004;  
+        padding-bottom: 1rem;  
+        font-weight: bold;  
+        text-align: left;
       }  
       a {  
         color: #333;  
@@ -31,8 +38,8 @@
           background-color: #fff;  
           border: 2px solid #E8D426;  
           outline: 0;  
-      box-shadow: none;  
-  }  
+          box-shadow: none;  
+      }  
   .btn {  
     background: #e79c06;  
     border: #E8D426;  
@@ -42,39 +49,62 @@
     border: #E8D426;  
   }  
   .container{
-    width:100% ;
+    width:500% ;
     min-height: 100vh;
     background-image: url('/static/images/landing_bg.jpg');
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
   }
+  .blur {
+	  text-align: center;
+    width: 100%;
+	  backdrop-filter: blur(2.5px); /* blur effect to the backdrop */
+	  background-color: rgba(255, 255, 255, 0.2);
+	  height: 100vh;
+	  width: 100%;
+	}
   .confirmPasswordSection{
     display: none;
+  }
+  label[for="username"] {
+      text-align: left;
+      display: block;
+  }
+  label[for="first_name"] {
+      text-align: left;
+      display: block;
+  }
+  .card {
+    border: 1px solid #045279; /* You can customize the color by changing #ccc */
+    border-radius: 5px; /* Optional: Adds rounded corners */
+    padding: 15px; /* Optional: Adds some padding to the card content */
   }
   </style>  
 
   <body>
-      <h1 class = "text-center">Welcome to Login</h1>
-      <div class="container">  
+      <div class="container"> 
+        <div class="blur">
+        <h1 class = "text-center">Welcome to Employee Management</h1>
           <div class="row">  
               <div class="col-md-5 mx-auto">  
                 <div class="card card-body">  
                   <div class="login_form">
+                    <h4 class > Log In </h4>
                     <form id="login_form">  
                       <div class="form-group required">  
                         <label for="username">Username</label>  
-                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your contact or Email" required>  
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Enter your Contact or Email" required>  
                       </div>                      
                       <div class="form-group required">  
                         <label class="d-flex flex-row align-items-center" for="password"> Password</label>  
                         <input type="password" class="form-control" id="password" name="password" placeholder="Enter your Password" required>  
                       </div>  
                       <div class="form-group mt-4 mb-4">  
-                        <div class="custom-control custom-checkbox">  
+                        <div class="custom-control custom-checkbox" style="display: flex; justify-content: flex-start; align-items: center;">  
                             <input type="checkbox" class="custom-control-input" id="remember-me" name="remember-me">  
                             <label class="custom-control-label" for="remember-me"> Remember me? </label> 
-                            <a class="ml-auto border-link small-xl" href="#" id = "forgotpassword">&nbsp;&nbsp; Forget Password? </a>
+                            <a style="margin-left: 10px;" class="ml-auto border-link small-xl" href="#" id = "forgotpassword">&nbsp;&nbsp; Forgot Password? </a>
                         </div>  
                       </div>  
                       <div class="form-group pt-1">  
@@ -83,7 +113,8 @@
                     </form>
                   </div>
                   
-                  <div class="sign_up_form">
+                  <div class="sign_up_form" style=" height: 337px; padding-right: 20px; overflow-y: scroll;">
+                    <h4 class > Sign Up </h4>
                     <form id="sign_up_form">  
                       <div class="form-group required">  
                         <label for="first_name">First Name</label>  
@@ -248,9 +279,37 @@
       confirmPasswordSection.style.display = 'none';
       confirmPasswordLabel.style.display = 'none';
     }
-    }          
-    $('#forgotpassword').click(function(){
-        window.location.href = 'forgotpassword_page';
-        })
+    }     
+
+  $('#forgotpassword').click(function(){
+      window.location.href = 'forgotpassword_page';
+  })
+
+  $(document).ready(function () {
+    // Function to clear all input fields
+    function clearFields() {
+      $(':input', '#sign_up_form').not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+      $(':input', '#login_form').not(':button, :submit, :reset, :hidden').val('').removeAttr('checked').removeAttr('selected');
+    }
+
+    // Event listener for the "Create New Account" link
+    $('#create_account').on('click', function () {
+      // Show sign-up form and hide login form
+      $('.sign_up_form').show();
+      $('.login_form').hide();
+      // Clear all fields
+      clearFields();
+    });
+
+    // Event listener for the "Login" link
+    $('#login_action').on('click', function () {
+      // Show login form and hide sign-up form
+      $('.login_form').show();
+      $('.sign_up_form').hide();
+      // Clear all fields
+      clearFields();
+    });
+  });
+    
   </script>
 </html>
