@@ -47,7 +47,8 @@ def signup_page():
 @app.route('/manage_resources', methods=['GET'])
 def manage_resources():
     try:
-        return render_template('manage_resources.html')
+        user_name = "Mayur"
+        return render_template('manage_resources.html', name = user_name)
     except Exception as e:
         print("exception while login : "+ str(e))
         return render_template('login.html')
