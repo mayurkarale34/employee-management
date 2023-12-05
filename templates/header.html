@@ -1,3 +1,160 @@
-<div>
-<h1>Welcome to Manage page</h1>
-</div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bootstrap Resistration Pop-up Modal</title> <!-- Include Bootstrap 3 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Include Select2 CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css">
+    <!-- Include jQuery (required for Select2) -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Include Bootstrap 3 JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- Include Select2 JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+   
+    <title>Document</title>
+    <style>
+        body {
+            background-image: url('/static/images/management_bg.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+            color: white;
+            backdrop-filter: blur(2px);  
+        }
+
+        .navbar {
+            background-color: transparent; 
+            height: 50px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            color: white;
+            margin-right: 550px;
+            font-size: 40px;
+            font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+           
+        }
+        .navbar-nav, .navbar-nav2 {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            align-items: center;
+
+        }
+
+        .navbar-nav li, .navbar-nav2 li {
+            margin: 0 10px;
+        }
+
+        .navbar-nav .welcome {
+            margin-right: 100px;
+            margin-top: 12%;
+            font-family:Georgia, 'Times New Roman', Times, serif;
+            
+        }
+        hr {
+            border: 0px;
+            width: 99%;
+            height: 2px;
+            background-color: black;
+            margin-left: 7px;}
+        .custom-hr {
+            margin-bottom: 0px; /* Adjust the margin-top as needed */
+        }
+        .navbar-nav2{
+            width: 100%;
+            margin-top: 1%;
+            background-color: rgba(0, 0, 0, 0.708);
+            border: 2px solid white;
+            border-radius: 20px;
+            padding: 8px;
+            display: flex;
+            align-items: center;
+        }
+        .navbar-nav2 li {
+            margin-top: auto;
+            margin-bottom: auto;
+            margin-right: 50px;
+            text-align: center;
+        }
+        .navbar-nav2 h2 {
+            margin: 0;
+        }
+        .navbar-nav2 li.logo {
+            margin-right: 200px; 
+            color:rgb(160, 208, 14);
+        }
+        .navbar-nav2 li a{
+            display: block;
+            color: white;
+            padding: 4px 10px;
+            text-decoration: none;
+        }
+       
+        .navbar-nav2 li a:hover {
+            background-color: white;
+            color: black;
+            border: 2px solid rgb(160, 208, 14);
+            
+        }
+        .navbar-nav .butt{
+            margin-top: 8%;
+        }   
+        
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-sm">
+        <div class="container-fluid">
+            <h1>Employee Management System</h1>
+            <ul class="navbar-nav">
+                <li class="navbar-item welcome"><h4>Welcome : {{first_name}}</h4></li><br><br>
+                <li class="navbar-item butt"><button class="btn btn-lg btn-primary glyphicon glyphicon-off" id="log_out"></button></li>
+            </ul>
+            
+        </div>
+       
+    </nav>
+    <hr  class="custom-hr">
+    <nav class="navbar navbar-expand-sm">
+        <div class="container-fluid">
+            <ul class="navbar-nav2">
+                <li class="logo"><h2>Logo</h2></li>
+                <li class="dropdown">
+                <a class="dropdown-toggle"  data-toggle="dropdown" href="#"> Operations </a>
+                <ul class="dropdown-menu">
+                    <li>A</li>
+                    <li>B</li>
+                    <li>C</li>
+                </ul>
+                </li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">Master</a>
+                    <ul class="dropdown-menu">
+                        <li>1</li>
+                        <li>2</li>
+                        <li>3</li>
+                    </ul>
+                </li>
+                <li><a href="/analitics">Analitics</a></li>
+                <li><a href="/helpd">Helpdesk</a></li>
+            </ul>
+        </div>
+    </nav>

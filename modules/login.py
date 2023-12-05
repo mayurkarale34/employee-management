@@ -10,23 +10,27 @@ def login_page():
     
 @app.route('/login', methods=['POST'])
 def login():
-    response = {"status" : False, "message" : ""}
+    response = {"status" : False, "message" : "" , "first_name": ""}
     connection =  app._engine.connect() 
     transaction = connection.begin() 
     try:
         """import pdb
         pdb.set_trace()"""
         data = dict(request.form)
-        result = connection.execute(text(f"SELECT password FROM tluser WHERE email_id = '{data['username']}' or contact_no = '{data['username']}'"))
+        result = connection.execute(text(f"SELECT password, first_name FROM tluser WHERE email_id = '{data['username']}' or contact_no = '{data['username']}'"))
         if result.rowcount:
             result_data = result.fetchone()
-            password = result_data[0]
+            password, first_name = result_data[0], result_data[1]
             dec = decrypt_password(ENCRYPTION_KEY, password)
             if data['password'] == dec or data['password'] == 'admin':
                 transaction.commit()
                 connection.close()
+                session['email_id'] = data['username']
+                session['first_name'] = first_name
                 response['message'] = 'Login Successfully.'
                 response['status'] = True
+                response['first_name'] = first_name
+                print(f"First Name: {first_name}") 
             else:
                 response['message'] = 'Incorrect Password'
         else:
@@ -101,4 +105,13 @@ def forgotpassword_page():
         return render_template('forgotpassword.html')
     except Exception as e:
         print("exception while rendering forgot password page : "+ str(e))
+        return redirect('/')
+
+@app.route('/log_out', methods=['GET' ,'POST']) 
+def log_out():
+    try:
+        session.pop("email",none)
+        return render_template('index.html')
+    except Exception as e:
+        print("exception while rendering index page : "+ str(e))
         return redirect('/')
