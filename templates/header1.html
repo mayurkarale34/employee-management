@@ -1,0 +1,168 @@
+<link rel="stylesheet" type= "text/css" href= "/static/css/font-awesome.min.css">
+
+<style>
+    .navbar-nav {
+    float: right;
+}
+
+.navbar-nav li a {
+    font-size: small;
+    color: black;
+    padding: 5px 10px;
+}
+
+.navbar-nav .dropdown-menu {
+    /*right: 0;*/
+    left: auto;
+    min-width: 100px;
+    z-index: 1001;
+}
+
+.employee-site-title {
+    font-size: 2vmax;
+    font-weight: bold;
+    color: var(--primary-color);
+    display: inline-flex;
+    align-items: flex-end;
+}
+
+.employee-site-logo {
+    height: 50px;
+}
+
+.employee-header {
+    margin: 5px 30px;
+}
+
+.employee-header-text {
+    color: var(--primary-color);
+    font-size: 14px;
+}
+
+.employee-menubar {
+    background-color: #518241 !important;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.employee-menubar .dropdown > .dropdown-toggle {
+    font-size: small;
+    color: white;
+    padding: 5px 10px;
+}
+
+.employee-menubar .open>a, .employee-menubar .open>a:focus, .employee-menubar .open>a:hover, .employee-menubar>li>a:focus, .employee-menubar>li>a:hover {
+    background-color: var(--secondary-color)!important;
+}
+
+.navbar {
+    margin: 0;
+    border-top: 5px solid #518241 !important;
+}
+
+.dropdown-menu .sub-menu {
+    left: 100%;
+    position: absolute;
+    top: 0;
+    visibility: hidden;
+    margin-top: -1px;
+}
+
+
+/* open dropdown menu on hover */
+.dropdown:hover > .dropdown-menu {
+    visibility: visible;
+    display: block;
+}
+
+/* open dropdown sub menu on hover */
+.dropdown-menu li:hover .sub-menu {
+    visibility: visible;
+    display: block;
+}
+
+.navbar .sub-menu:before {
+    border-bottom: 7px solid transparent;
+    border-left: none;
+    border-right: 7px solid rgba(0, 0, 0, 0.2);
+    border-top: 7px solid transparent;
+    left: -7px;
+    top: 10px;
+}
+.navbar .sub-menu:after {
+    border-top: 6px solid transparent;
+    border-left: none;
+    border-right: 6px solid #fff;
+    border-bottom: 6px solid transparent;
+    left: 10px;
+    top: 11px;
+    left: -6px;
+}
+
+.header{
+    font-weight: bold;
+}
+
+</style>
+
+<nav class="navbar">
+    <!-- logo and top bar -->
+        <div class="employee-header flex-container">
+            <span class="flex-item-3">
+                <img src="/static/images/logo.png" class="pull-left employee-site-logo">
+            </span>
+            <span class="flex-item-3">
+                <div class="pull-right" style="font-size: 14px; color: #337AB7; margin-top: 10px; margin-bottom: 10px;">
+                    Welcome  <b>{{session.first_name}}</b>&nbsp;<br/>
+                    <a alt="Logout" style="cursor: pointer;" id="logout_button"><img class="pull-right" style="height: 20px;" src="/static/images/logout.png"></img></a>
+                </div>
+                <div id="contact" class="collapse pull-right">
+                    <code>contact@gmail.com / +91 - 98765 43210</code>
+                </div>
+            </span>
+        </div>
+
+    <!-- menu bar -->
+    <div>
+        <ul class="nav navbar-nav employee-menubar">
+
+            <!-- Feature landing page -->
+            <li class="dropdown">
+                    <a class="dropdown-toggle" href="#" id="manage_feature_dashboard"><span class="glyphicon glyphicon-home"></span></a>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle header" data-toggle="dropdown" href="#">Operation<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                        <li><a href="#" id="">O1</a></li>
+
+                        <li><a href="#" id="">O2</a></li>
+                    </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle header" data-toggle="dropdown" href="#">Master<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                
+                    <li><a href="#" id="">Resources</a></li>
+                    <!--  -->
+
+                    <li><a href="#" id="">M2</a></li>
+                    <!--  -->
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle header" data-toggle="dropdown" href="#">Human Resources<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                
+                    <li><a href="#" id="">Employee Management</a></li>
+                    <!--  -->
+
+                </ul>
+            </li>
+
+        </ul>
+    </div>
+    
+</nav>
