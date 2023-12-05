@@ -113,7 +113,7 @@
             </span>
             <span class="flex-item-3">
                 <div class="pull-right" style="font-size: 14px; color: #337AB7; margin-top: 10px; margin-bottom: 10px;">
-                    Welcome  <b>User Name</b>&nbsp;<br/>
+                    Welcome  <b>{{session.first_name}}</b>&nbsp;<br/>
                     <a alt="Logout" style="cursor: pointer;" id="logout_button"><img class="pull-right" style="height: 20px;" src="/static/images/logout.png"></img></a>
                 </div>
                 <div id="contact" class="collapse pull-right">
@@ -131,7 +131,6 @@
                     <a class="dropdown-toggle" href="#" id="manage_feature_dashboard"><span class="glyphicon glyphicon-home"></span></a>
             </li>
 
-            <!-- Inventory Section start -->
             <li class="dropdown">
                 <a class="dropdown-toggle header" data-toggle="dropdown" href="#">Operation<span class="caret"></span></a>
                 <ul class="dropdown-menu">
@@ -140,18 +139,26 @@
                         <li><a href="#" id="">O2</a></li>
                     </ul>
             </li>
-            <!-- Inventory Section end  -->
 
             <li class="dropdown">
                 <a class="dropdown-toggle header" data-toggle="dropdown" href="#">Master<span class="caret"></span></a>
                 <ul class="dropdown-menu">
                 
-                    <li><a href="#" id="">M1</a></li>
+                    <li><a href="#" id="">Resources</a></li>
                     <!--  -->
 
-                    <!-- Daily Duty Allocation -->
                     <li><a href="#" id="">M2</a></li>
                     <!--  -->
+                </ul>
+            </li>
+
+            <li class="dropdown">
+                <a class="dropdown-toggle header" data-toggle="dropdown" href="#">Human Resources<span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                
+                    <li><a href="#" id="">Employee Management</a></li>
+                    <!--  -->
+
                 </ul>
             </li>
 
