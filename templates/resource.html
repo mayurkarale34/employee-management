@@ -56,7 +56,9 @@
                     <thead>
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
+                            {%  if session['logged_user_role'] =='Admin' %}
                             <th data-formatter="editFormater" data-events="actionEvent" class="text-center" >Edit</th>
+                            {% endif %}
                             <th data-field="first_name" class="text-center">First Name</th>
                             <th data-field="last_name" class="text-center">Last Name</th>
                             <th data-field="contact_no" class="text-center">Contact_No</th>

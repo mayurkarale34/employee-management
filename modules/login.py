@@ -17,24 +17,28 @@ def login():
         """import pdb
         pdb.set_trace()"""
         data = dict(request.form)
-        result = connection.execute(text(f"SELECT password, first_name FROM tluser WHERE email_id = '{data['username']}' or contact_no = '{data['username']}'"))
+        result = connection.execute(text(f"SELECT password, first_name , last_name, role FROM tluser WHERE email_id = '{data['username']}' or contact_no = '{data['username']}'"))
         if result.rowcount or data['username'] == 'admin':
             dec = ''
             password = ''
             first_name = 'admin'
+            last_name = ''
+            role = 'Admin'
             if data['username'] != 'admin':
                 result_data = result.fetchone()
-                password, first_name = result_data[0], result_data[1]
+                password, first_name, last_name, role = result_data[0], result_data[1],result_data[2], result_data[3]
                 dec = decrypt_password(ENCRYPTION_KEY, password)
             if data['password'] == dec or data['password'] == 'admin':
-                transaction.commit()
-                connection.close()
-                session['email_id'] = data['username']
-                session['first_name'] = first_name
-                response['message'] = 'Login Successfully.'
-                response['status'] = True
-                response['first_name'] = first_name
-                print(f"First Name: {first_name}") 
+                if role:
+                    transaction.commit()
+                    connection.close()
+                    session['logged_user_role'] = role if data['username']=='admin' else role
+                    session['logged_user_name'] = first_name +" "+ last_name
+                    response['message'] = 'Login Successfully.'
+                    response['status'] = True
+                    response['logged_user_name'] = session['logged_user_name']
+                else:
+                    response['message'] = 'Invalid Role. Please contact the administrator.'    
             else:
                 response['message'] = 'Incorrect Password'
         else:
@@ -77,17 +81,22 @@ def sign_up():
             response['message'] = "Account already exists !"
             return jsonify(response)
         else:
+            """import pdb
+            pdb.set_trace()"""
+            login_id = generate_login_id()
             enc = encrypt_password(ENCRYPTION_KEY, data['confirmpassword'])
+            print(login_id)
             
             query = connection.execute(
-                text("INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`) "
-                     "VALUES (:first_name, :last_name, :email_id, :contact_no, :password)"),
+                text("INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`, `login_id`) "
+                     "VALUES (:first_name, :last_name, :email_id, :contact_no, :password, :login_id)"),
                 {
                     "first_name": data['first_name'],
                     "last_name": data['last_name'],
                     "email_id": data['email_id'],
                     "contact_no": data['contact_no'],
                     "password": enc,
+                    "login_id": login_id,
                 }
             )
             transaction.commit()

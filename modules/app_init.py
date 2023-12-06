@@ -3,6 +3,8 @@ from flask import Flask, render_template, redirect, request, jsonify,session
 from sqlalchemy import create_engine, text
 from config import DATABASE_USERNAME, DATABASE_PASSWORD, DATABASE_HOSTNAME, DATABASE_NAME
 import datetime
+import random
+import string
 
 from cryptography.fernet import Fernet
 
