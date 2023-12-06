@@ -15,3 +15,9 @@ DEFAULT CHARACTER SET = utf8;
 
 ALTER TABLE `tluser` 
 CHANGE COLUMN `contact_no` `contact_no` VARCHAR(50) NULL DEFAULT NULL ;
+
+ALTER TABLE `employee`.`tluser` 
+ADD COLUMN `role` VARCHAR(45) NULL AFTER `password`;
+
+ALTER TABLE `employee`.`tluser` 
+ADD COLUMN `status` VARCHAR(10) NULL AFTER `role`;
