@@ -21,3 +21,23 @@ ADD COLUMN `role` VARCHAR(45) NULL AFTER `password`;
 
 ALTER TABLE `employee`.`tluser` 
 ADD COLUMN `status` VARCHAR(10) NULL AFTER `role`;
+
+CREATE TABLE `tb_manage_employee` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `first_name` VARCHAR(50) NULL,
+  `middle_name` VARCHAR(50) NULL,
+  `last_name` VARCHAR(50) NULL,
+  `contact` VARCHAR(20) NULL,
+  `email_id` VARCHAR(50) NULL,
+  `gender` VARCHAR(50) NULL,
+  `city` VARCHAR(20) NULL,
+  `Country` VARCHAR(20) NULL,
+  ` Aadhar_number` INT(12) NULL,
+  PRIMARY KEY (`id`))
+
+ALTER TABLE `employee`.`tb_manage_employee` 
+CHANGE COLUMN ` Aadhar_number` ` Aadhar_number` VARCHAR(20) NULL DEFAULT NULL ;
+
+ALTER TABLE `employee`.`tb_manage_employee` 
+CHANGE COLUMN ` Aadhar_number` `aadhar_number` VARCHAR(20) NULL DEFAULT NULL ;
+
