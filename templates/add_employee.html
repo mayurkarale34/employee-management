@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Add Employee</title>
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">  
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/static/css/global.css">
+      <link rel="stylesheet" href="/static/css/bootstrap-table.css">
+      <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+  
+      <script src="/static/js/jquery-2.1.3.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+      <script src="/static/js/tableExport.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
+      <script src="/static/js/common.js"></script>
+
+  </head>
+
+  <style>  
+  .btn-add {
+        background-color: #e79c06;
+        border: #030201;
+    }
+
+    .btn-add:hover {
+        background-color: #28a745;
+        border: #E8D426;
+    }
+
+    .btn-cancel {
+        background-color: #dc3545;
+        border: #1c0709;
+    }
+
+    .btn-cancel:hover {
+        background-color: #28a745;
+        border: #dc3545;
+    }
+
+    .btn {
+        color: #fff;
+    }
+
+    .tab-pan {
+      margin-top: 40px ;
+    }
+  /* Add some space above the form elements */
+  .form-group {
+        margin-top: 20px;
+    }
+
+    /* Add some space above the "Add Employee" tab */
+    .nav-tabs {
+        margin-top: 20px;
+    }
+  </style>  
+
+  <body>
+    <div class="container-5">
+      <ul class="nav nav-tabs">
+          <li class="active"><a data-toggle="tab" href="#add_employee_tab"><b>Add Employee</b></a></li>
+      </ul>
+      
+      
+      <div class="tab-content">
+          <div class="tab-pan fade in active" id="add_employee_tab">
+
+            <form id="add_employee_form">
+              <div class="form-row">
+                <div class="form-group col-md-4">
+                    <label for="first_name">First Name</label>
+                    <input type="text" class="form-control required" id="first_name" name="first_name"
+                        placeholder="Enter your First Name">
+                </div>
+
+                <div class="form-group col-md-4">
+                    <label for="middle_name">Middle Name</label>
+                    <input type="text" class="form-control" id="middle_name" name="middle_name"
+                        placeholder="Enter your Middle Name">
+                </div>
+                <div class="form-group col-md-4">
+                  <label for="last_name">Last Name</label>
+                  <input type="text" class="form-control required" id="last_name" name="last_name"
+                      placeholder="Enter your Last Name">
+              </div>
+            </div>
+
+
+            <div class="form-row">
+              <div class="form-group col-md-4">
+                  <label class="d-flex flex-row align-items-center" for="contact">Contact_No</label>  
+              <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" minlength="10" maxlength="10">  
+            </div>
+        
+            <div class="form-group col-md-4"> 
+                           <label class="d-flex flex-row align-items-center" for="email_id">Email Id</label>  
+              <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" >  
+            </div>
+
+            <div class="form-group col-md-4">  
+              <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
+              <select class="form-control select_field" name="gender" id="gender" required>
+                <option value="">Please Select Gender</option>
+                <option value="Male">Male</option>
+                <option value="Female">Female</option>
+              </select>  
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-md-4">  
+              <label for="city">City</label>  
+              <input type="text" class="form-control" id="city" name="city" placeholder="Enter your city">  
+            </div>  
+
+            <div class="form-group col-md-4">  
+              <label for="Country">Country</label>  
+              <input type="text" class="form-control" id="Country" name="Country" placeholder="Enter your Country">  
+            </div>  
+
+            <div class="form-group col-md-4">  
+              <label for="aadhar_number">Aadhar Number</label>  
+              <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number">  
+            </div>
+          </div>
+
+          <div class="form-row pull-right">
+          <div class="form-group pt-1 add_employee_form">  
+            <button class="btn btn-cancel btn-danger btn-lg btn-block" type="button" id="cancel_user">Cancel</button>  
+          </div> 
+
+            <div class="form-group pt-1 add_employee_form">  
+              <button class="btn btn-add btn-primary btn-lg btn-block" type="button" id="add_user">Submit</button>  
+            </div> 
+          </div> 
+
+            </form>     
+          </div>
+      </div>
+  </div>
+</body>
+
+  <script>
+    $(document).ready(function () {
+            // Event listener for the Cancel button
+            $('#cancel_user').click(function () {
+                // Clear all input fields in the form
+                $('#add_employee_form')[0].reset();
+            });
+
+            // Event listener for the Add Employee button
+            $('#add_user').click(function (e) {
+                $.ajax({
+                    type: "POST",
+                    url: "/add_user",
+                    dataType: 'json',
+                    data: $('#add_employee_form').serialize(),
+                    success: function (response) {
+                        if (response.status) {
+                            window.location.href = '/employee_management';
+                        } else {
+                            alert(response.message);
+                        }
+                    }
+                });
+            });
+        });
+  </script>
+</html>
+
