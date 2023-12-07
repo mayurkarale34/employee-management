@@ -15,6 +15,25 @@
     <script src="/static/js/common.js"></script>
 
     <title>Manage Resources</title>
+    <script>
+    
+        function editFormater(value, row, index){
+            return '<a class= "update" >Edit</a>'
+        }
+    
+        window.actionEvent = {
+            'click .update': function(e, value, row, index){
+                $('#edit_first_name').val(row.first_name);
+                $('#edit_last_name').val(row.last_name);
+                $('#edit_contact_no').val(row.contact_no);
+                $('#edit_email_id').val(row.email_id);
+                $('#edit_role').val(row.role);
+                $('#edit_status').val(row.status);
+                $('#id').val(row.id);
+                $('#edit_modal').modal('show');
+            }
+        }
+    </script>
 
     <style>
         /* CSS section */
@@ -37,17 +56,74 @@
                     <thead>
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
+                            {%  if session['logged_user_role'] =='Admin' %}
+                            <th data-formatter="editFormater" data-events="actionEvent" class="text-center" >Edit</th>
+                            {% endif %}
                             <th data-field="first_name" class="text-center">First Name</th>
                             <th data-field="last_name" class="text-center">Last Name</th>
                             <th data-field="contact_no" class="text-center">Contact_No</th>
                             <th data-field="email_id" class="text-center">Email Id</th>
-                            <th data-field="password" class="text-center">Password</th>
+                            <th data-field="role" class="text-center">Role</th>
+                            <th data-field="status" class="text-center">Status</th>
+                            
+                            
                         </tr>      
                     </thead>
                 </table>
             </div>
         </div>
     </div>
+    <div class="modal" id="edit_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Edit User</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="edit_user_form" action="/update_user" method="POST" >
+                        <div class="form-group">
+                            <label for="edit_first_name">First Name</label>
+                            <input type="text" class="form-control" id="edit_first_name" name="edit_first_name" placeholder="Enter First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_last_name">Last Name</label>
+                            <input type="text" class="form-control" id="edit_last_name" name="edit_last_name" placeholder="Enter Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="contact_no">Mobile No</label>
+                            <input type="text" class="form-control" id="edit_contact_no" name="edit_contact_no" placeholder="Enter contact_no">
+                        </div>
+                        <div class="form-group">
+                            <label for="email_id">Email Id</label>
+                            <input type="text" class="form-control" id="edit_email_id" name="edit_email_id" placeholder="Enter your email_id">
+                        </div>
+                        <div class="form-group">
+                            <label for="role">Role</label>
+                            <input type="text" class="form-control" id="edit_role" name="edit_role" placeholder="Enter your role">
+                        </div> 
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control select_field" name="edit_status" id="edit_status">
+                                <option value="">Please Select status</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive" selected >Inactive</option>
+                            </select>
+                        </div>   
+                        <input type="text" name="id" id="id" hidden>                               
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button type="submit" id="update_button" class="btn btn-success">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
     {%include 'footer1.html' %}
+    <script>
+        $('#update_button').click(function (e) {
+        $('#edit_user_form').submit();
+    });
+        </script> 
 </body>
 </html>
