@@ -23,13 +23,21 @@ def helpd():
     except Exception as e:
         print("exception while rendering index page : "+ str(e))
 
+@app.route('/manage_page')
+def manage_page():
+    try:
+        var1 = "Welcome to the Python Flask"
+        return render_template('manage_page.html', var = var1)
+    except Exception as e:
+        print("exception while rendering index page : "+ str(e))           
+
 @app.route('/resource')
 def resource():
     try:
         var1 = "Welcome to the Python Flask"
         return render_template('resource.html', var = var1)
     except Exception as e:
-        print("exception while rendering index page : "+ str(e))    
+        print("exception while rendering index page : "+ str(e))           
 
 @app.route('/retrive_user_master', methods=["GET"])
 def retrive_user_master():
