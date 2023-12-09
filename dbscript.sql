@@ -16,10 +16,10 @@ DEFAULT CHARACTER SET = utf8;
 ALTER TABLE `tluser` 
 CHANGE COLUMN `contact_no` `contact_no` VARCHAR(50) NULL DEFAULT NULL ;
 
-ALTER TABLE `employee`.`tluser` 
+ALTER TABLE `tluser` 
 ADD COLUMN `role` VARCHAR(45) NULL AFTER `password`;
 
-ALTER TABLE `employee`.`tluser` 
+ALTER TABLE `tluser` 
 ADD COLUMN `status` VARCHAR(10) NULL AFTER `role`;
 
 CREATE TABLE `tb_manage_employee` (
@@ -35,9 +35,15 @@ CREATE TABLE `tb_manage_employee` (
   ` Aadhar_number` INT(12) NULL,
   PRIMARY KEY (`id`))
 
-ALTER TABLE `employee`.`tb_manage_employee` 
+ALTER TABLE `tb_manage_employee` 
 CHANGE COLUMN ` Aadhar_number` ` Aadhar_number` VARCHAR(20) NULL DEFAULT NULL ;
 
-ALTER TABLE `employee`.`tb_manage_employee` 
+ALTER TABLE `tb_manage_employee` 
 CHANGE COLUMN ` Aadhar_number` `aadhar_number` VARCHAR(20) NULL DEFAULT NULL ;
 
+
+CREATE TABLE `tb_metadata` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `element` VARCHAR(45) NULL,
+  `type` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`));

@@ -23,11 +23,11 @@ def helpd():
     except Exception as e:
         print("exception while rendering index page : "+ str(e))
 
-@app.route('/manage_page')
-def manage_page():
+@app.route('/manage_metadata')
+def manage_metadata():
     try:
         var1 = "Welcome to the Python Flask"
-        return render_template('manage_page.html', var = var1)
+        return render_template('metadata.html', var = var1)
     except Exception as e:
         print("exception while rendering index page : "+ str(e))           
 
@@ -154,3 +154,68 @@ def update_user():
         print("Error while updating user : "+ str(e))
         return redirect('/resource')                                
 
+@app.route('/add_metadata', methods=["POST"])
+def add_metadata():
+    connection =  app._engine.connect()
+    transaction = connection.begin()
+    response = {
+        "status" : False,
+        "message" : ""
+    }
+    try:
+        data = request.get_json()
+        connection.execute(text(f"INSERT INTO tb_metadata(`element`, `type`) VALUES ('{data['element']}', '{data['type']}');"))
+
+        transaction.commit()
+        connection.close()
+        response['status'] = True
+        response['message'] = "Metadata added successfully"
+        return jsonify(response)
+    except Exception as e:
+        transaction.rollback()
+        connection.close()
+        print("Error while adding metadata : "+ str(e))
+        return jsonify(response)
+    
+
+@app.route('/retrive_metadata', methods=["GET"])
+def retrive_metadata():
+    connection =  app._engine.connect()
+    transaction = connection.begin()
+    response = {
+        "rows" : [],
+        "total" : 0,
+        "message" : ""
+    }
+    try:
+        search = request.args.get('search')
+        limit = request.args.get('limit')
+        offset = request.args.get('offset')
+        if search=='':
+            count_duery = text(f"SELECT count(1) as total FROM tb_metadata;")
+            result_count = connection.execute(count_duery)
+            total = result_count.fetchone()[0]
+
+            data_duery = text(f"SELECT id,element,type FROM tb_metadata limit {offset}, {limit};")
+            result = connection.execute(data_duery)
+        else:
+            count_duery = text(f"SELECT count(1) as total FROM tb_metadata where concat(COALESCE(element, ''), ' ', COALESCE(type, '')) like '%{search}%';")
+            result_count = connection.execute(count_duery)
+            total = result_count.fetchone()[0]
+
+            data_duery = text(f"SELECT id,element,type FROM tb_metadata where concat(COALESCE(element, ''), ' ', COALESCE(type, '')) like '%{search}%' limit {offset}, {limit};")
+            result = connection.execute(data_duery)
+
+        if result.rowcount:
+            for row in result:
+                response['rows'].append({
+                    "id" : row[0],
+                    "element" : row[1],
+                    "type" : row[2]
+                })
+
+        response['total'] = total
+        return jsonify(response)
+    except Exception as e:
+        print("Error while getting metadata : "+ str(e))
+        return jsonify(response)
