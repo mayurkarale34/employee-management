@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+
+    <script src="/static/js/jquery-2.1.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/tableExport.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
+    <script src="/static/js/common.js"></script>
+
+    <title>Manage Page</title>
+    
+    <style>
+        /* CSS section */
+    </style>  
+    <script>
+        function runingFormater(value, row, index){
+            alert(index)
+            return index+1;
+        }
+        function queryParams(params){
+            if(params.search == undefined || params.search == ''){
+                params.search = '';
+            }
+            return params;
+        }
+    </script>
+</head>
+<body>
+    {%include 'header1.html' %}
+    <div class="container-5">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#manage_metadata"><b>Metadata</b></a></li> 
+            <li class="pull-right"><button class="btn btn-primary" type="button" id="add_metadata_button">Add Metadata</button>  </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pan fade in active" id="manage_page">
+                <table id="table_metadata" class="table custom-bordered-table "data-pagination="true" data-page-list="[5, 10, 20]"
+                    data-toggle="table"
+                    data-url="/retrive_metadata"
+                    data-side-pagination="server"
+                    data-query-params="queryParams"
+                    data-search="true"
+                    data-show-export="true"
+                    data-show-columns="true"
+                    data-page-size="10"
+                    data-page-list="[10,20,30]"
+                    >
+                    <thead>
+                        <tr>
+                            <th data-field="id" class="text-center">#</th>
+                            <th data-field="element" class="text-center">Element</th>
+                            <th data-field="type" class="text-center">Type</th>
+                        </tr>      
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal" id="add_metadata_modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Add Metadata</h5>
+            </div>
+            <div class="modal-body">
+                <div class="row form-group col-md-offset-1">
+                    <div class="col-md-2">
+                        <label for="type">Type</label>
+                    </div>
+                    <div class="col-md-8">
+                        <select name="type" id="type" class="form-control">
+                            <option value="">Please Select Type</option>
+                            <option value="City">City</option>
+                            <option value="Role">Role</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row form-group  col-md-offset-1">
+                    <div class="col-md-2">
+                        <label for="element">Element</label>
+                    </div>
+                    <div class="col-md-8">
+                        <input type="text" id="element" name="element"  class="form-control">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="add_metadata">Submit</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+    </div>
+
+    {%include 'footer1.html' %}
+    <script>
+        $('#add_metadata_button').click(function (e){
+            $('#add_metadata_modal').modal('show');
+        });
+
+        $('#add_metadata').click(function (e) {
+            let type = $('#type').val();
+            let element = $('#element').val();
+            $.ajax({
+            type: "POST",
+            url: "/add_metadata",
+            contentType: 'application/json; charset=utf-8', // Fix the typo here
+            dataType: 'json',
+            data: JSON.stringify({"type": type, "element": element}),
+            success: function (response) {
+                if (response.status) {
+                    alert(response.message);
+                    $('#table_metadata').bootstrapTable('refresh');
+                    $('#add_metadata_modal').modal('hide');
+                } else {
+                    alert(response.status);
+                }
+            }
+        });
+
+        });
+
+        $('#update_button').click(function (e) {
+            $('#edit_user_form').submit();
+        });
+        </script> 
+</body>
+</html>
