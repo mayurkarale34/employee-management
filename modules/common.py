@@ -22,3 +22,17 @@ def generate_login_id():
     login_id = alphabets + numbers
 
     return login_id
+
+# Get metadata by Type
+def retrive_metadata_by_type(type):
+    data = []
+    connection =  app._engine.connect()
+    try: 
+        select_query = text(f"select element from tb_metadata where type = '{type}'")
+        result = connection.execute(select_query)
+        for row in result:
+            data.append(row[0])
+        return data
+    except Exception as e:
+        print(e)
+        return data
