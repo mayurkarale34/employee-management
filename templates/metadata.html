@@ -102,8 +102,17 @@
 
     {%include 'footer1.html' %}
     <script>
-        $('#add_metadata_button').click(function (e){
+        function resetAddMetadataModal() {
+            $('#type').val('');
+            $('#element').val('');
+        }
+
+        $('#add_metadata_button').click(function (e) {
+            // Show the modal
             $('#add_metadata_modal').modal('show');
+
+            // Reset the input fields in the modal
+            resetAddMetadataModal();
         });
 
         $('#add_metadata').click(function (e) {
