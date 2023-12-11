@@ -73,7 +73,8 @@ def retrive_user_master():
 @app.route('/add_employee_page', methods=['GET', 'POST'])
 def add_employee_page():
     try:
-        return render_template('add_employee.html')
+        cities = retrive_metadata_by_type("City")
+        return render_template('add_employee.html', cities = cities)
     except Exception as e:
         print("exception while rendering add_employee page : "+ str(e))
         return redirect('/')
@@ -219,3 +220,16 @@ def retrive_metadata():
     except Exception as e:
         print("Error while getting metadata : "+ str(e))
         return jsonify(response)
+    
+def retrive_metadata_by_type(type):
+    data = []
+    connection =  app._engine.connect()
+    try: 
+        select_query = text(f"select element from tb_metadata where type = '{type}'")
+        result = connection.execute(select_query)
+        for row in result:
+            data.append(row[0])
+        return data
+    except Exception as e:
+        print(e)
+        return data
