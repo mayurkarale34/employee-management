@@ -31,14 +31,24 @@ def manage_metadata():
     except Exception as e:
         print("exception while rendering index page : "+ str(e))           
 
-@app.route('/resource')
+@app.route('/resource', methods=['GET', 'POST'])
 def resource():
-    try:
-        var1 = "Welcome to the Python Flask"
-        return render_template('resource.html', var = var1)
-    except Exception as e:
-        print("exception while rendering index page : "+ str(e))           
+   try:
+        
+        with app._engine.connect() as connection:
+            role_options_query = text(f"SELECT element FROM tb_metadata WHERE type = 'Role';")
+            result = connection.execute(role_options_query)
 
+            role_options = [row[0] for row in result.fetchall()]
+
+        return render_template('resource.html', role_options=role_options)
+
+   except Exception as e:
+        print("Error while fetching role options: " + str(e))
+        # Handle the error gracefully, perhaps redirect to an error page or return an appropriate response
+        return render_template('error.html', error_message="An error occurred.")
+
+    
 @app.route('/retrive_user_master', methods=["GET"])
 def retrive_user_master():
     connection =  app._engine.connect()
@@ -73,8 +83,7 @@ def retrive_user_master():
 @app.route('/add_employee_page', methods=['GET', 'POST'])
 def add_employee_page():
     try:
-        cities = retrive_metadata_by_type("City")
-        return render_template('add_employee.html', cities = cities)
+        return render_template('add_employee.html')
     except Exception as e:
         print("exception while rendering add_employee page : "+ str(e))
         return redirect('/')
@@ -220,16 +229,3 @@ def retrive_metadata():
     except Exception as e:
         print("Error while getting metadata : "+ str(e))
         return jsonify(response)
-    
-def retrive_metadata_by_type(type):
-    data = []
-    connection =  app._engine.connect()
-    try: 
-        select_query = text(f"select element from tb_metadata where type = '{type}'")
-        result = connection.execute(select_query)
-        for row in result:
-            data.append(row[0])
-        return data
-    except Exception as e:
-        print(e)
-        return data

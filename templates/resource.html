@@ -99,7 +99,12 @@
                         </div>
                         <div class="form-group">
                             <label for="role">Role</label>
-                            <input type="text" class="form-control" id="edit_role" name="edit_role" placeholder="Enter your role">
+                            <select class="form-control select_field" name="edit_role" id="edit_role">
+                                {% for option in role_options %}
+                                    <option value="{{ option}}">{{ option }}</option>
+                                {% endfor %}
+                            </select>
+                            
                         </div> 
                         <div class="form-group">
                             <label for="status">Status</label>
