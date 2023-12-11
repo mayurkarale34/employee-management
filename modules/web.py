@@ -83,7 +83,8 @@ def retrive_user_master():
 @app.route('/add_employee_page', methods=['GET', 'POST'])
 def add_employee_page():
     try:
-        return render_template('add_employee.html')
+        cities = retrive_metadata_by_type("City")
+        return render_template('add_employee.html', cities = cities)
     except Exception as e:
         print("exception while rendering add_employee page : "+ str(e))
         return redirect('/')
