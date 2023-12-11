@@ -53,100 +53,103 @@
         margin-top: 20px;
     }
 
+    
     /* Add some space above the "Add Employee" tab */
-    .nav-tabs {
+  /* .nav-tabs {
         margin-top: 20px;
-    }
+  }  */
   </style>  
 
   <body>
-    <div class="container-5">
-      <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#add_employee_tab"><b>Add Employee</b></a></li>
-      </ul>
-      
-      
-      <div class="tab-content">
-          <div class="tab-pan fade in active" id="add_employee_tab">
+    {%include 'header1.html' %}
+      <div class="container-5">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#add_employee_tab"><b>Add Employee</b></a></li>
+        </ul>
+        
+        
+        <div class="tab-content">
+            <div class="tab-pan fade in active" id="add_employee_tab">
 
-            <form id="add_employee_form">
+              <form id="add_employee_form">
+                <div class="form-row">
+                  <div class="form-group col-md-4 required">
+                      <label for="first_name">First Name *</label>
+                      <input type="text" class="form-control required" id="first_name" name="first_name"
+                          placeholder="Enter your First Name" required>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                      <label for="middle_name">Middle Name</label>
+                      <input type="text" class="form-control" id="middle_name" name="middle_name"
+                          placeholder="Enter your Middle Name">
+                  </div>
+                  <div class="form-group col-md-4 required">
+                    <label for="last_name">Last Name *</label>
+                    <input type="text" class="form-control required" id="last_name" name="last_name"
+                        placeholder="Enter your Last Name" required>
+                </div>
+              </div>
+
+
               <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="first_name">First Name</label>
-                    <input type="text" class="form-control required" id="first_name" name="first_name"
-                        placeholder="Enter your First Name">
-                </div>
+                <div class="form-group col-md-4 required">
+                    <label class="d-flex flex-row align-items-center" for="contact">Contact_No *</label>  
+                <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" pattern="[0-9]{10}" minlength="10" maxlength="10" title="Only numbers are allowed, and the length should be 10 digits" required>  
+              </div>
+          
+              <div class="form-group col-md-4 required"> 
+                            <label class="d-flex flex-row align-items-center" for="email_id">Email Id *</label>  
+                <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" pattern="[a-zA-Z0-9._%+-] + @[a-zA-Z0-9.-] + \.[a-zA-Z]{2,}" title="Enter a valid email address" required>  
+              </div>
 
-                <div class="form-group col-md-4">
-                    <label for="middle_name">Middle Name</label>
-                    <input type="text" class="form-control" id="middle_name" name="middle_name"
-                        placeholder="Enter your Middle Name">
-                </div>
-                <div class="form-group col-md-4">
-                  <label for="last_name">Last Name</label>
-                  <input type="text" class="form-control required" id="last_name" name="last_name"
-                      placeholder="Enter your Last Name">
+              <div class="form-group col-md-4 required">  
+                <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
+                <select class="form-control select_field" name="gender" id="gender" required>
+                  <option value="">Please Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>  
               </div>
             </div>
 
-
             <div class="form-row">
-              <div class="form-group col-md-4">
-                  <label class="d-flex flex-row align-items-center" for="contact">Contact_No</label>  
-              <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" minlength="10" maxlength="10">  
+              <div class="form-group col-md-4">  
+                <label for="city">City</label>  
+                <select class="form-control select_field" name="city" id="city">
+                  <option value="">Please Select City</option>
+                  {% for city in cities %}
+                  <option value={{city}}>{{city}}</option>
+                  {% endfor %}
+                </select>  
+              </div>  
+
+              <div class="form-group col-md-4">  
+                <label for="Country">Country</label>  
+                <input type="text" class="form-control" id="Country" name="Country" placeholder="Enter your Country">  
+              </div>  
+
+              <div class="form-group col-md-4 required">  
+                <label for="aadhar_number">Aadhar Number *</label>  
+                <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" required>  
+              </div>
             </div>
-        
-            <div class="form-group col-md-4"> 
-                           <label class="d-flex flex-row align-items-center" for="email_id">Email Id</label>  
-              <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" >  
-            </div>
 
-            <div class="form-group col-md-4">  
-              <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
-              <select class="form-control select_field" name="gender" id="gender" required>
-                <option value="">Please Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>  
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-md-4">  
-              <label for="city">City</label>  
-              <select class="form-control select_field" name="city" id="city" required>
-                <option value="">Please Select City</option>
-                {% for city in cities %}
-                <option value={{city}}>{{city}}</option>
-                {% endfor %}
-              </select>  
-            </div>  
-
-            <div class="form-group col-md-4">  
-              <label for="Country">Country</label>  
-              <input type="text" class="form-control" id="Country" name="Country" placeholder="Enter your Country">  
-            </div>  
-
-            <div class="form-group col-md-4">  
-              <label for="aadhar_number">Aadhar Number</label>  
-              <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number">  
-            </div>
-          </div>
-
-          <div class="form-row pull-right">
-          <div class="form-group pt-1 add_employee_form">  
-            <button class="btn btn-cancel btn-danger btn-lg btn-block" type="button" id="cancel_user">Cancel</button>  
-          </div> 
-
+            <div class="form-row pull-right">
             <div class="form-group pt-1 add_employee_form">  
-              <button class="btn btn-add btn-primary btn-lg btn-block" type="button" id="add_user">Submit</button>  
+              <button class="btn btn-cancel btn-danger btn-lg btn-block" type="button" id="cancel_user">Cancel</button>  
             </div> 
-          </div> 
 
-            </form>     
-          </div>
-      </div>
-  </div>
+              <div class="form-group pt-1 add_employee_form">  
+                <button class="btn btn-add btn-primary btn-lg btn-block" type="button" id="add_user">Submit</button>  
+              </div> 
+            </div> 
+
+              </form>     
+            </div>
+        </div>
+    </div>
+  {%include 'footer1.html' %}
 </body>
 
   <script>
@@ -158,22 +161,28 @@
             });
 
             // Event listener for the Add Employee button
-            $('#add_user').click(function (e) {
-                $.ajax({
-                    type: "POST",
-                    url: "/add_user",
-                    dataType: 'json',
-                    data: $('#add_employee_form').serialize(),
-                    success: function (response) {
-                        if (response.status) {
-                            window.location.href = '/employee_management';
-                        } else {
-                            alert(response.message);
-                        }
+    $('#add_user').click(function (e) {
+        // Validate the form
+        if ($('#add_employee_form')[0].checkValidity()) {
+            $.ajax({
+                type: "POST",
+                url: "/add_user",
+                dataType: 'json',
+                data: $('#add_employee_form').serialize(),
+                success: function (response) {
+                    if (response.status) {
+                        window.location.href = '/employee_management';
+                    } else {
+                        alert(response.message);
                     }
-                });
+                }
             });
-        });
+        } else {
+            // If the form is not valid, trigger the form validation
+            $('#add_employee_form')[0].reportValidity();
+        }
+    });
+  });
   </script>
 </html>
 
