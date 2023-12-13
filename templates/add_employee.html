@@ -17,6 +17,9 @@
       <script src="/static/js/tableExport.js"></script>
       <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
       <script src="/static/js/common.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
   </head>
 
@@ -50,103 +53,206 @@
     }
   /* Add some space above the form elements */
   .form-group {
-        margin-top: 20px;
+        margin-top: 17px;
     }
 
+    
     /* Add some space above the "Add Employee" tab */
-    .nav-tabs {
+  /* .nav-tabs {
         margin-top: 20px;
-    }
+  }  */
   </style>  
 
   <body>
-    <div class="container-5">
-      <ul class="nav nav-tabs">
-          <li class="active"><a data-toggle="tab" href="#add_employee_tab"><b>Add Employee</b></a></li>
-      </ul>
-      
-      
-      <div class="tab-content">
-          <div class="tab-pan fade in active" id="add_employee_tab">
+    {%include 'header1.html' %}
+      <div class="container-5">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#add_employee_tab"><b>Add Employee</b></a></li>
+        </ul>
+        
+        
+        <div class="tab-content">
+            <div class="tab-pan fade in active" id="add_employee_tab">
 
-            <form id="add_employee_form">
+              <form id="add_employee_form">
+                <div class="form-row">
+                  <div class="form-group col-md-4 required">
+                      <label for="first_name">First Name *</label>
+                      <input type="text" class="form-control required" id="first_name" name="first_name"
+                          placeholder="Enter your First Name" required>
+                  </div>
+
+                  <div class="form-group col-md-4">
+                      <label for="middle_name">Middle Name</label>
+                      <input type="text" class="form-control" id="middle_name" name="middle_name"
+                          placeholder="Enter your Middle Name">
+                  </div>
+                  <div class="form-group col-md-4 required">
+                    <label for="last_name">Last Name *</label>
+                    <input type="text" class="form-control required" id="last_name" name="last_name"
+                        placeholder="Enter your Last Name" required>
+                </div>
+              </div>
+
+
               <div class="form-row">
-                <div class="form-group col-md-4">
-                    <label for="first_name">First Name</label>
-                    <input type="text" class="form-control required" id="first_name" name="first_name"
-                        placeholder="Enter your First Name">
-                </div>
+                <div class="form-group col-md-4 required">
+                    <label class="d-flex flex-row align-items-center" for="contact">Contact_No *</label>  
+                <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" pattern="[0-9]{10}" minlength="10" maxlength="10" title="Only numbers are allowed, and the length should be 10 digits" required>  
+              </div>
+          
+              <div class="form-group col-md-4 required"> 
+                            <label class="d-flex flex-row align-items-center" for="email_id">Email Id *</label>  
+                <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" pattern="[a-zA-Z0-9._%+-] + @[a-zA-Z0-9.-] + \.[a-zA-Z]{2,}" title="Enter a valid email address" required>  
+              </div>
 
-                <div class="form-group col-md-4">
-                    <label for="middle_name">Middle Name</label>
-                    <input type="text" class="form-control" id="middle_name" name="middle_name"
-                        placeholder="Enter your Middle Name">
-                </div>
-                <div class="form-group col-md-4">
-                  <label for="last_name">Last Name</label>
-                  <input type="text" class="form-control required" id="last_name" name="last_name"
-                      placeholder="Enter your Last Name">
+              <div class="form-group col-md-4 required">  
+                <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
+                <select class="form-control select_field" name="gender" id="gender" required>
+                  <option value="">Please Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>  
               </div>
             </div>
 
-
             <div class="form-row">
-              <div class="form-group col-md-4">
-                  <label class="d-flex flex-row align-items-center" for="contact">Contact_No</label>  
-              <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" minlength="10" maxlength="10">  
-            </div>
+              <div class="form-group col-md-4 required">
+                  <label class="d-flex flex-row align-items-center" for="birth_date">Birth Date *</label>  
+                <input type="text" class="form-control required datepicker" id="birth_date" name="birth_date" placeholder="Enter your Birth Date" required>  
+              </div>
         
-            <div class="form-group col-md-4"> 
-                           <label class="d-flex flex-row align-items-center" for="email_id">Email Id</label>  
-              <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" >  
-            </div>
-
-            <div class="form-group col-md-4">  
-              <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
-              <select class="form-control select_field" name="gender" id="gender" required>
-                <option value="">Please Select Gender</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-              </select>  
-            </div>
-          </div>
-
-          <div class="form-row">
-            <div class="form-group col-md-4">  
-              <label for="city">City</label>  
-              <select class="form-control select_field" name="city" id="city" required>
-                <option value="">Please Select City</option>
+              <div class="form-group col-md-4">  
+              <label for="blood_group">Blood Group</label>  
+              <select class="form-control select_field" name="blood_group" id="blood_group">
+                <option value="">Please Select Blood Group</option>
                 {% for city in cities %}
                 <option value={{city}}>{{city}}</option>
                 {% endfor %}
               </select>  
             </div>  
-
-            <div class="form-group col-md-4">  
-              <label for="Country">Country</label>  
-              <input type="text" class="form-control" id="Country" name="Country" placeholder="Enter your Country">  
-            </div>  
-
-            <div class="form-group col-md-4">  
-              <label for="aadhar_number">Aadhar Number</label>  
-              <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number">  
+            
+            <div class="form-group col-md-4">
+              <label for="pan_number">PAN Number *</label>
+              <input type="text" class="form-control" id="pan_number" name="pan_number"
+                  placeholder="Enter your PAN Number" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" minlength="10" maxlength="10" title="PAN Number should be 10 characters, starting with 5 letters, followed by 4 digits, and ending with 1 letter."
+                  required>
             </div>
           </div>
 
-          <div class="form-row pull-right">
-          <div class="form-group pt-1 add_employee_form">  
-            <button class="btn btn-cancel btn-danger btn-lg btn-block" type="button" id="cancel_user">Cancel</button>  
-          </div> 
+            <div class="form-row">
+              <div class="form-group col-md-4 required">  
+                <label for="aadhar_number">Aadhar Number *</label>  
+                <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" required>  
+              </div>
 
-            <div class="form-group pt-1 add_employee_form">  
-              <button class="btn btn-add btn-primary btn-lg btn-block" type="button" id="add_user">Submit</button>  
-            </div> 
-          </div> 
+              <div class="form-group col-md-4 required">  
+                <label class="d-flex flex-row align-items-center" for="total_experience">Total Experience</label>  
+                <select class="form-control select_field" name="total_experience" id="total_experience" required>
+                  <option value="">Please Select Total Experience</option>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                </select>  
+              </div>
 
-            </form>     
+              <div class="form-group col-md-4">  
+                <label for="designation">Designation</label>  
+                <select class="form-control select_field" name="designation" id="designation">
+                  <option value="">Please Select Designation</option>
+                  {% for city in cities %}
+                  <option value={{city}}>{{city}}</option>
+                  {% endfor %}
+                </select>  
+              </div>  
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">  
+                <label class="d-flex flex-row align-items-center" for="employee_type">Employee Type</label>  
+                <select class="form-control select_field" name="employee_type" id="employee_type">
+                  <option value="">Please Select Employee Type</option>
+                  <option value="full_time">Full Time</option>
+                  <option value="part_time">Part Time</option>
+                  <option value="seasonal">Seasonal</option>
+                  <option value="temporary">Temporary</option>
+                  <option value="leased">Leased</option>
+                </select>  
+              </div>  
+
+              <div class="form-group col-md-4">
+                  <label class="d-flex flex-row align-items-center" for="joining_date">Joining Date</label>  
+                  <input type="text" class="form-control datepicker" id="joining_date" name="joining_date" placeholder="Enter your Joining Date">  
+              </div>
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">  
+                <label for="city">City</label>  
+                <select class="form-control select_field" name="city" id="city">
+                  <option value="">Please Select City</option>
+                  {% for city in cities %}
+                  <option value={{city}}>{{city}}</option>
+                  {% endfor %}
+                </select>  
+              </div>  
+
+              <div class="form-group col-md-4">  
+                <label for="Country">Country</label>  
+                <select class="form-control select_field" name="Country" id="Country">
+                  <option value="">Please Select Country</option>
+                  {% for Country in Countries %}
+                  <option value={{Country}}>{{Country}}</option>
+                  {% endfor %}
+                </select>                </div>  
+            </div>
           </div>
-      </div>
-  </div>
+
+            <div class="form-group">  
+              <label for="current_address">Current Address</label>  
+              <input type="text" class="form-control" id="current_address" name="current_address" required>  
+            </div>
+
+            <div class="form-group">
+              <input type="checkbox" id="same_address" name="same_address" onchange="copyAddress()">
+              <label for="same_address">Permanent Address is same as Current Address</label>
+            </div>
+
+            <div class="form-group">  
+              <label for="permanent_address">Permanent Address</label>  
+              <input type="text" class="form-control" id="permanent_address" name="permanent_address">  
+            </div>
+
+            <div class="form-row pull-right">
+            <div class="form-group pt-1 add_employee_form">  
+              <button class="btn btn-cancel btn-danger btn-lg btn-block" type="button" id="cancel_user">Cancel</button>  
+            </div> 
+
+              <div class="form-group pt-1 add_employee_form">  
+                <button class="btn btn-add btn-primary btn-lg btn-block" type="button" id="add_user">Submit</button>  
+              </div> 
+            </div> 
+
+              </form>     
+            </div>
+        </div>
+    </div>
+  {%include 'footer1.html' %}
 </body>
 
   <script>
@@ -158,22 +264,43 @@
             });
 
             // Event listener for the Add Employee button
-            $('#add_user').click(function (e) {
-                $.ajax({
-                    type: "POST",
-                    url: "/add_user",
-                    dataType: 'json',
-                    data: $('#add_employee_form').serialize(),
-                    success: function (response) {
-                        if (response.status) {
-                            window.location.href = '/employee_management';
-                        } else {
-                            alert(response.message);
-                        }
+    $('#add_user').click(function (e) {
+        // Validate the form
+        if ($('#add_employee_form')[0].checkValidity()) {
+            $.ajax({
+                type: "POST",
+                url: "/add_user",
+                dataType: 'json',
+                data: $('#add_employee_form').serialize(),
+                success: function (response) {
+                    if (response.status) {
+                        window.location.href = '/employee_management';
+                    } else {
+                        alert(response.message);
                     }
-                });
+                }
             });
-        });
+        } else {
+            // If the form is not valid, trigger the form validation
+            $('#add_employee_form')[0].reportValidity();
+        }
+    });
+  });
+
+  $(function() {
+    // Initialize datepicker
+    $(".datepicker").datepicker();
+  });
+
+  function copyAddress() {
+    if (document.getElementById('same_address').checked) {
+      // Copy current address to permanent address
+      document.getElementById('permanent_address').value = document.getElementById('current_address').value;
+    } else {
+      // Clear the permanent address if the checkbox is unchecked
+      document.getElementById('permanent_address').value = '';
+    }
+  }
   </script>
 </html>
 

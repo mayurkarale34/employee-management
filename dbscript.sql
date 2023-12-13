@@ -47,3 +47,16 @@ CREATE TABLE `tb_metadata` (
   `element` VARCHAR(45) NULL,
   `type` VARCHAR(45) NULL,
   PRIMARY KEY (`id`));
+
+
+ALTER TABLE `employee`.`tb_manage_employee` 
+ADD COLUMN `birth_date` VARCHAR(45) NULL AFTER `aadhar_number`,
+ADD COLUMN `blood_group` VARCHAR(45) NULL AFTER `birth_date`,
+ADD COLUMN `pan_number` VARCHAR(20) NULL AFTER `blood_group`,
+ADD COLUMN `total_experience` VARCHAR(45) NULL AFTER `pan_number`,
+ADD COLUMN `designation` VARCHAR(45) NULL AFTER `total_experience`,
+ADD COLUMN `employee_type` VARCHAR(45) NULL AFTER `designation`,
+ADD COLUMN `joining_date` VARCHAR(45) NULL AFTER `employee_type`,
+ADD COLUMN `current_address` VARCHAR(1000) NULL AFTER `joining_date`,
+ADD COLUMN `permanent_address` VARCHAR(1000) NULL AFTER `current_address`;
+

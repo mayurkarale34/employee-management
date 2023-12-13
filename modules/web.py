@@ -96,7 +96,7 @@ def add_user():
     transaction = connection.begin() 
     try:
         data = dict(request.form)
-        connection.execute(text(f"INSERT INTO tb_manage_employee(`first_name`, `middle_name`, `last_name`, `email_id`, `contact`, `gender`, `city`, `Country`, `aadhar_number`) VALUES ('{data['first_name']}', '{data['middle_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact']}', '{data['gender']}', '{data['city']}', '{data['Country']}', '{data['aadhar_number']}');"))
+        connection.execute(text(f"INSERT INTO tb_manage_employee(`first_name`, `middle_name`, `last_name`, `email_id`, `contact`, `gender`, `city`, `Country`, `aadhar_number`, `birth_date`, `blood_group`, `pan_number`, `total_experience`, `designation`, `employee_type`, `joining_date`, `current_address`, `permanent_address`) VALUES ('{data['first_name']}', '{data['middle_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact']}', '{data['gender']}', '{data['city']}', '{data['Country']}', '{data['aadhar_number']}', '{data['birth_date']}', '{data['blood_group']}', '{data['pan_number']}','{data['total_experience']}','{data['designation']}', '{data['employee_type']}', '{data['joining_date']}', '{data['current_address']}', '{data['permanent_address']}');"))
         transaction.commit()
         connection.close()
 
@@ -140,8 +140,17 @@ def retrive_tb_manage_employee():
                     "gender" : row[6],
                     "city" : row[7],
                     "Country" : row[8],
-                    "Aadhar_number" : row[9]
-                })
+                    "Aadhar_number" : row[9],
+                    "birth_date" : row[10],
+                    "blood_group" : row[11],
+                    "pan_number" : row[12],
+                    "total_experience" : row[13],
+                    "designation" : row[14],
+                    "employee_type" : row[15],
+                    "joining_date" : row[16],
+                    "current_address" : row[17],
+                    "permanent_address" : row[18] 
+                    })
         response['total'] = len(response['rows'])
         return jsonify(response)
     except Exception as e:
