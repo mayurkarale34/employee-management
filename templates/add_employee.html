@@ -17,6 +17,9 @@
       <script src="/static/js/tableExport.js"></script>
       <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
       <script src="/static/js/common.js"></script>
+      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+      <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
   </head>
 
@@ -50,7 +53,7 @@
     }
   /* Add some space above the form elements */
   .form-group {
-        margin-top: 20px;
+        margin-top: 17px;
     }
 
     
@@ -114,6 +117,91 @@
             </div>
 
             <div class="form-row">
+              <div class="form-group col-md-4 required">
+                  <label class="d-flex flex-row align-items-center" for="birth_date">Birth Date *</label>  
+                <input type="text" class="form-control required datepicker" id="birth_date" name="birth_date" placeholder="Enter your Birth Date" required>  
+              </div>
+        
+              <div class="form-group col-md-4">  
+              <label for="blood_group">Blood Group</label>  
+              <select class="form-control select_field" name="blood_group" id="blood_group">
+                <option value="">Please Select Blood Group</option>
+                {% for city in cities %}
+                <option value={{city}}>{{city}}</option>
+                {% endfor %}
+              </select>  
+            </div>  
+            
+            <div class="form-group col-md-4">
+              <label for="pan_number">PAN Number *</label>
+              <input type="text" class="form-control" id="pan_number" name="pan_number"
+                  placeholder="Enter your PAN Number" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" minlength="10" maxlength="10" title="PAN Number should be 10 characters, starting with 5 letters, followed by 4 digits, and ending with 1 letter."
+                  required>
+            </div>
+          </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4 required">  
+                <label for="aadhar_number">Aadhar Number *</label>  
+                <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" required>  
+              </div>
+
+              <div class="form-group col-md-4 required">  
+                <label class="d-flex flex-row align-items-center" for="total_experience">Total Experience</label>  
+                <select class="form-control select_field" name="total_experience" id="total_experience" required>
+                  <option value="">Please Select Total Experience</option>
+                  <option value="0">0</option>
+                  <option value="1">1</option>
+                  <option value="2">2</option>
+                  <option value="3">3</option>
+                  <option value="4">4</option>
+                  <option value="5">5</option>
+                  <option value="6">6</option>
+                  <option value="7">7</option>
+                  <option value="8">8</option>
+                  <option value="9">9</option>
+                  <option value="10">10</option>
+                  <option value="11">11</option>
+                  <option value="12">12</option>
+                  <option value="13">13</option>
+                  <option value="14">14</option>
+                  <option value="15">15</option>
+                  <option value="16">16</option>
+                  <option value="17">17</option>
+                </select>  
+              </div>
+
+              <div class="form-group col-md-4">  
+                <label for="designation">Designation</label>  
+                <select class="form-control select_field" name="designation" id="designation">
+                  <option value="">Please Select Designation</option>
+                  {% for city in cities %}
+                  <option value={{city}}>{{city}}</option>
+                  {% endfor %}
+                </select>  
+              </div>  
+            </div>
+
+            <div class="form-row">
+              <div class="form-group col-md-4">  
+                <label class="d-flex flex-row align-items-center" for="employee_type">Employee Type</label>  
+                <select class="form-control select_field" name="employee_type" id="employee_type">
+                  <option value="">Please Select Employee Type</option>
+                  <option value="full_time">Full Time</option>
+                  <option value="part_time">Part Time</option>
+                  <option value="seasonal">Seasonal</option>
+                  <option value="temporary">Temporary</option>
+                  <option value="leased">Leased</option>
+                </select>  
+              </div>  
+
+              <div class="form-group col-md-4">
+                  <label class="d-flex flex-row align-items-center" for="joining_date">Joining Date</label>  
+                  <input type="text" class="form-control datepicker" id="joining_date" name="joining_date" placeholder="Enter your Joining Date">  
+              </div>
+            </div>
+
+            <div class="form-row">
               <div class="form-group col-md-4">  
                 <label for="city">City</label>  
                 <select class="form-control select_field" name="city" id="city">
@@ -126,13 +214,28 @@
 
               <div class="form-group col-md-4">  
                 <label for="Country">Country</label>  
-                <input type="text" class="form-control" id="Country" name="Country" placeholder="Enter your Country">  
-              </div>  
+                <select class="form-control select_field" name="Country" id="Country">
+                  <option value="">Please Select Country</option>
+                  {% for Country in Countries %}
+                  <option value={{Country}}>{{Country}}</option>
+                  {% endfor %}
+                </select>                </div>  
+            </div>
+          </div>
 
-              <div class="form-group col-md-4 required">  
-                <label for="aadhar_number">Aadhar Number *</label>  
-                <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" required>  
-              </div>
+            <div class="form-group">  
+              <label for="current_address">Current Address</label>  
+              <input type="text" class="form-control" id="current_address" name="current_address" required>  
+            </div>
+
+            <div class="form-group">
+              <input type="checkbox" id="same_address" name="same_address" onchange="copyAddress()">
+              <label for="same_address">Permanent Address is same as Current Address</label>
+            </div>
+
+            <div class="form-group">  
+              <label for="permanent_address">Permanent Address</label>  
+              <input type="text" class="form-control" id="permanent_address" name="permanent_address">  
             </div>
 
             <div class="form-row pull-right">
@@ -183,6 +286,21 @@
         }
     });
   });
+
+  $(function() {
+    // Initialize datepicker
+    $(".datepicker").datepicker();
+  });
+
+  function copyAddress() {
+    if (document.getElementById('same_address').checked) {
+      // Copy current address to permanent address
+      document.getElementById('permanent_address').value = document.getElementById('current_address').value;
+    } else {
+      // Clear the permanent address if the checkbox is unchecked
+      document.getElementById('permanent_address').value = '';
+    }
+  }
   </script>
 </html>
 
