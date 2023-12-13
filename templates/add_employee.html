@@ -4,23 +4,36 @@
       <meta charset="UTF-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Add Employee</title>
-      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">  
-      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-      <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">   -->
+      
+      <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
       <link rel="stylesheet" href="/static/css/global.css">
       <link rel="stylesheet" href="/static/css/bootstrap-table.css">
       <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
   
       <script src="/static/js/jquery-2.1.3.min.js"></script>
+      <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
       <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
       <script src="/static/js/tableExport.js"></script>
       <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
       <script src="/static/js/common.js"></script>
+
       <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+      
       <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
       <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
+      <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+      <link rel="stylesheet" href="/static/css/global.css">
+      <link rel="stylesheet" href="/static/css/bootstrap-table.css">
+      <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+
+      <script src="/static/js/jquery-2.1.3.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+      <script src="/static/js/tableExport.js"></script>
+      <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
+      <script src="/static/js/common.js"></script> -->
   </head>
 
   <style>  
@@ -87,60 +100,54 @@
                       <input type="text" class="form-control" id="middle_name" name="middle_name"
                           placeholder="Enter your Middle Name">
                   </div>
+
                   <div class="form-group col-md-4 required">
                     <label for="last_name">Last Name *</label>
                     <input type="text" class="form-control required" id="last_name" name="last_name"
                         placeholder="Enter your Last Name" required>
-                </div>
-              </div>
+                  </div>
 
-
-              <div class="form-row">
-                <div class="form-group col-md-4 required">
+                  <div class="form-group col-md-4 required">
                     <label class="d-flex flex-row align-items-center" for="contact">Contact_No *</label>  
-                <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" pattern="[0-9]{10}" minlength="10" maxlength="10" title="Only numbers are allowed, and the length should be 10 digits" required>  
-              </div>
+                    <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" pattern="[0-9]{10}" minlength="10" maxlength="10" title="Only numbers are allowed, and the length should be 10 digits" required>  
+                </div>
           
-              <div class="form-group col-md-4 required"> 
-                            <label class="d-flex flex-row align-items-center" for="email_id">Email Id *</label>  
-                <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" pattern="[a-zA-Z0-9._%+-] + @[a-zA-Z0-9.-] + \.[a-zA-Z]{2,}" title="Enter a valid email address" required>  
-              </div>
+                <div class="form-group col-md-4 required"> 
+                    <label class="d-flex flex-row align-items-center" for="email_id">Email Id *</label>  
+                    <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" pattern="[a-zA-Z0-9._%+-] + @[a-zA-Z0-9.-] + \.[a-zA-Z]{2,}" title="Enter a valid email address" required>  
+                </div>
 
-              <div class="form-group col-md-4 required">  
-                <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
-                <select class="form-control select_field" name="gender" id="gender" required>
-                  <option value="">Please Select Gender</option>
-                  <option value="Male">Male</option>
-                  <option value="Female">Female</option>
-                </select>  
-              </div>
-            </div>
+                <div class="form-group col-md-4 required">  
+                  <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
+                  <select class="form-control select_field" name="gender" id="gender" required>
+                    <option value="">Please Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>  
+                </div>
 
-            <div class="form-row">
-              <div class="form-group col-md-4 required">
+                <div class="form-group col-md-4 required">
                   <label class="d-flex flex-row align-items-center" for="birth_date">Birth Date *</label>  
-                <input type="text" class="form-control required datepicker" id="birth_date" name="birth_date" placeholder="Enter your Birth Date" required>  
+                  <input type="text" class="form-control required datepicker" id="birth_date" name="birth_date" placeholder="Enter your Birth Date" required>  
               </div>
         
               <div class="form-group col-md-4">  
-              <label for="blood_group">Blood Group</label>  
-              <select class="form-control select_field" name="blood_group" id="blood_group">
-                <option value="">Please Select Blood Group</option>
-                {% for city in cities %}
-                <option value={{city}}>{{city}}</option>
-                {% endfor %}
-              </select>  
-            </div>  
+                <label for="blood_group">Blood Group</label>  
+                <select class="form-control select_field" name="blood_group" id="blood_group">
+                  <option value="">Please Select Blood Group</option>
+                  {% for city in cities %}
+                  <option value={{city}}>{{city}}</option>
+                  {% endfor %}
+                </select>  
+              </div>  
             
-            <div class="form-group col-md-4">
-              <label for="pan_number">PAN Number *</label>
-              <input type="text" class="form-control" id="pan_number" name="pan_number"
-                  placeholder="Enter your PAN Number" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" minlength="10" maxlength="10" title="PAN Number should be 10 characters, starting with 5 letters, followed by 4 digits, and ending with 1 letter."
-                  required>
-            </div>
-          </div>
+              <div class="form-group col-md-4">
+                <label for="pan_number">PAN Number *</label>
+                <input type="text" class="form-control" id="pan_number" name="pan_number"
+                    placeholder="Enter your PAN Number" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" minlength="10" maxlength="10" title="PAN Number should be 10 characters, starting with 5 letters, followed by 4 digits, and ending with 1 letter."
+                    required>
+              </div>
 
-            <div class="form-row">
               <div class="form-group col-md-4 required">  
                 <label for="aadhar_number">Aadhar Number *</label>  
                 <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" required>  
@@ -180,9 +187,7 @@
                   {% endfor %}
                 </select>  
               </div>  
-            </div>
 
-            <div class="form-row">
               <div class="form-group col-md-4">  
                 <label class="d-flex flex-row align-items-center" for="employee_type">Employee Type</label>  
                 <select class="form-control select_field" name="employee_type" id="employee_type">
@@ -199,9 +204,7 @@
                   <label class="d-flex flex-row align-items-center" for="joining_date">Joining Date</label>  
                   <input type="text" class="form-control datepicker" id="joining_date" name="joining_date" placeholder="Enter your Joining Date">  
               </div>
-            </div>
 
-            <div class="form-row">
               <div class="form-group col-md-4">  
                 <label for="city">City</label>  
                 <select class="form-control select_field" name="city" id="city">
@@ -219,39 +222,41 @@
                   {% for Country in Countries %}
                   <option value={{Country}}>{{Country}}</option>
                   {% endfor %}
-                </select>                </div>  
-            </div>
+                </select>                
+              </div>  
+
+              <div class="form-group  col-md-12">  
+                <label for="current_address">Current Address</label>  
+                <input type="text" class="form-control" id="current_address" name="current_address" required>  
+              </div>
+
+              <div class="form-group col-md-12">
+                <input type="checkbox" id="same_address" name="same_address" onchange="copyAddress()">
+                <label for="same_address">Permanent Address is same as Current Address</label>
+              </div>
+
+              <div class="form-group col-md-12">  
+                <label for="permanent_address">Permanent Address</label>  
+                <input type="text" class="form-control" id="permanent_address" name="permanent_address">  
+              </div>
+
           </div>
 
-            <div class="form-group">  
-              <label for="current_address">Current Address</label>  
-              <input type="text" class="form-control" id="current_address" name="current_address" required>  
-            </div>
-
-            <div class="form-group">
-              <input type="checkbox" id="same_address" name="same_address" onchange="copyAddress()">
-              <label for="same_address">Permanent Address is same as Current Address</label>
-            </div>
-
-            <div class="form-group">  
-              <label for="permanent_address">Permanent Address</label>  
-              <input type="text" class="form-control" id="permanent_address" name="permanent_address">  
-            </div>
-
-            <div class="form-row pull-right">
-            <div class="form-group pt-1 add_employee_form">  
-              <button class="btn btn-cancel btn-danger btn-lg btn-block" type="button" id="cancel_user">Cancel</button>  
-            </div> 
-
-              <div class="form-group pt-1 add_employee_form">  
-                <button class="btn btn-add btn-primary btn-lg btn-block" type="button" id="add_user">Submit</button>  
-              </div> 
-            </div> 
-
-              </form>     
+          <div class="form-row col-md-12">
+            <div class="form-group pull-right">
+                <button class="btn btn-warning" type="button" id="cancel_user">Cancel</button>
+                <button class="btn btn-success" type="button" id="add_user">Submit</button>
             </div>
         </div>
+              </form>
+             
+            </div>
+        </div>
+        
     </div>
+    <br>     
+    <br>     
+    <br>     
   {%include 'footer1.html' %}
 </body>
 
