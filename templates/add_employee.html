@@ -83,7 +83,6 @@
             <li class="active"><a data-toggle="tab" href="#add_employee_tab"><b>Add Employee</b></a></li>
         </ul>
         
-        
         <div class="tab-content">
             <div class="tab-pan fade in active" id="add_employee_tab">
 
@@ -110,36 +109,36 @@
                   <div class="form-group col-md-4 required">
                     <label class="d-flex flex-row align-items-center" for="contact">Contact_No *</label>  
                     <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" pattern="[0-9]{10}" minlength="10" maxlength="10" title="Only numbers are allowed, and the length should be 10 digits" required>  
-                </div>
+                  </div>
           
-                <div class="form-group col-md-4 required"> 
-                    <label class="d-flex flex-row align-items-center" for="email_id">Email Id *</label>  
-                    <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" pattern="[a-zA-Z0-9._%+-] + @[a-zA-Z0-9.-] + \.[a-zA-Z]{2,}" title="Enter a valid email address" required>  
-                </div>
+                  <div class="form-group col-md-4 required"> 
+                      <label class="d-flex flex-row align-items-center" for="email_id">Email Id *</label>  
+                      <input type="text" class="form-control required" id="email_id" name="email_id" placeholder="Enter your Email Address" pattern="[a-zA-Z0-9._%+-] + @[a-zA-Z0-9.-] + \.[a-zA-Z]{2,}" title="Enter a valid email address" required>  
+                  </div>
 
-                <div class="form-group col-md-4 required">  
-                  <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
-                  <select class="form-control select_field" name="gender" id="gender" required>
-                    <option value="">Please Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>  
-                </div>
+                  <div class="form-group col-md-4 required">  
+                      <label class="d-flex flex-row align-items-center" for="gender">Gender</label>  
+                      <select class="form-control select_field" name="gender" id="gender" required>
+                        <option value="">Please Select Gender</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                      </select>  
+                  </div>
 
-                <div class="form-group col-md-4 required">
-                  <label class="d-flex flex-row align-items-center" for="birth_date">Birth Date *</label>  
-                  <input type="text" class="form-control required datepicker" id="birth_date" name="birth_date" placeholder="Enter your Birth Date" required>  
-              </div>
+                  <div class="form-group col-md-4 required">
+                    <label class="d-flex flex-row align-items-center" for="birth_date">Birth Date *</label>  
+                    <input type="text" class="form-control required datepicker" id="birth_date" name="birth_date" placeholder="Enter your Birth Date" required>  
+                  </div>
         
-              <div class="form-group col-md-4">  
-                <label for="blood_group">Blood Group</label>  
-                <select class="form-control select_field" name="blood_group" id="blood_group">
-                  <option value="">Please Select Blood Group</option>
-                  {% for city in cities %}
-                  <option value={{city}}>{{city}}</option>
-                  {% endfor %}
-                </select>  
-              </div>  
+                  <div class="form-group col-md-4">  
+                      <label for="blood_group">Blood Group</label>  
+                      <select class="form-control select_field" name="blood_group" id="blood_group">
+                        <option value="">Please Select Blood Group</option>
+                        {% for city in cities %}
+                        <option value={{city}}>{{city}}</option>
+                        {% endfor %}
+                      </select>  
+                  </div>  
             
               <div class="form-group col-md-4">
                 <label for="pan_number">PAN Number *</label>
@@ -182,8 +181,8 @@
                 <label for="designation">Designation</label>  
                 <select class="form-control select_field" name="designation" id="designation">
                   <option value="">Please Select Designation</option>
-                  {% for city in cities %}
-                  <option value={{city}}>{{city}}</option>
+                  {% for role in roles %}
+                  <option value={{role}}>{{role}}</option>
                   {% endfor %}
                 </select>  
               </div>  
@@ -214,16 +213,17 @@
                   {% endfor %}
                 </select>  
               </div>  
-
+            
               <div class="form-group col-md-4">  
                 <label for="Country">Country</label>  
                 <select class="form-control select_field" name="Country" id="Country">
                   <option value="">Please Select Country</option>
-                  {% for Country in Countries %}
-                  <option value={{Country}}>{{Country}}</option>
+                  {% for country in countries %}
+                    <option value="{{ country }}">{{ country }}</option>
                   {% endfor %}
                 </select>                
               </div>  
+                
 
               <div class="form-group  col-md-12">  
                 <label for="current_address">Current Address</label>  
@@ -239,7 +239,7 @@
                 <label for="permanent_address">Permanent Address</label>  
                 <input type="text" class="form-control" id="permanent_address" name="permanent_address">  
               </div>
-
+             
           </div>
 
           <div class="form-row col-md-12">
@@ -262,7 +262,7 @@
 
   <script>
     $(document).ready(function () {
-            // Event listener for the Cancel button
+             // Event listener for the Cancel button
             $('#cancel_user').click(function () {
                 // Clear all input fields in the form
                 $('#add_employee_form')[0].reset();
@@ -306,6 +306,7 @@
       document.getElementById('permanent_address').value = '';
     }
   }
+    
   </script>
 </html>
 

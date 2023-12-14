@@ -84,7 +84,8 @@ def retrive_user_master():
 def add_employee_page():
     try:
         cities = retrive_metadata_by_type("City")
-        return render_template('add_employee.html', cities = cities)
+        countries = retrive_metadata_by_type("Country")
+        return render_template('add_employee.html', cities = cities, countries = countries)
     except Exception as e:
         print("exception while rendering add_employee page : "+ str(e))
         return redirect('/')
