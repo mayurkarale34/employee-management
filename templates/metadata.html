@@ -125,14 +125,17 @@
             dataType: 'json',
             data: JSON.stringify({"type": type, "element": element}),
             success: function (response) {
+                alert(response.message);
                 if (response.status) {
-                    alert(response.message);
+                    
                     $('#table_metadata').bootstrapTable('refresh');
                     $('#add_metadata_modal').modal('hide');
-                } else {
-                    alert(response.status);
                 }
-            }
+            },
+            error: function (error) {
+            console.log("Error:", error);
+            alert("An error occurred. Please try again.");  // Display a generic error message
+        }
         });
 
         });

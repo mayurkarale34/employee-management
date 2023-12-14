@@ -176,26 +176,44 @@ def update_user():
 
 @app.route('/add_metadata', methods=["POST"])
 def add_metadata():
-    connection =  app._engine.connect()
+    connection = app._engine.connect()
     transaction = connection.begin()
     response = {
-        "status" : False,
-        "message" : ""
+        "status": False,
+        "message": ""
     }
+
     try:
         data = request.get_json()
-        connection.execute(text(f"INSERT INTO tb_metadata(`element`, `type`) VALUES ('{data['element']}', '{data['type']}');"))
+        # Check for existing data
+        existing_data = connection.execute(
+    text("SELECT element, type FROM tb_metadata WHERE element = :element AND type = :type"),
+    {"element": data['element'], "type": data['type']}
+).fetchone()
 
-        transaction.commit()
-        connection.close()
-        response['status'] = True
-        response['message'] = "Metadata added successfully"
-        return jsonify(response)
+
+
+        if existing_data:
+            transaction.rollback()
+            response['message'] = "Metadata already exists!"
+        else:
+            # Insert new metadata
+            connection.execute(
+    text("INSERT INTO tb_metadata (`element`, `type`) VALUES (:element, :type)"),
+    {"element": data['element'], "type": data['type']}
+)
+
+            transaction.commit()
+            response['status'] = True
+            response['message'] = "Metadata added successfully"
+
     except Exception as e:
         transaction.rollback()
+        response['message'] = f"Error while adding metadata: {str(e)}"
+    finally:
         connection.close()
-        print("Error while adding metadata : "+ str(e))
-        return jsonify(response)
+
+    return jsonify(response)
     
 
 @app.route('/retrive_metadata', methods=["GET"])
@@ -239,3 +257,11 @@ def retrive_metadata():
     except Exception as e:
         print("Error while getting metadata : "+ str(e))
         return jsonify(response)
+    
+@app.route('/manage_page')
+def manage_page():
+    try:
+        var1 = "Welcome to the Python Flask"
+        return render_template('manage_page.html', var = var1)
+    except Exception as e:
+        print("exception while rendering index page : "+ str(e))    
