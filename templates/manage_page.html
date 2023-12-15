@@ -19,7 +19,7 @@
     <script>
         $(document).ready(function() {
             $('#attendanceForm').submit(function(e) {
-                var selectedDate = $('#datepicker').val();
+                var selectedDate = $('#date').val();
                 if (new Date(selectedDate) < new Date()) {
                     alert('Cannot mark attendance for previous days.');
                     e.preventDefault();
@@ -30,26 +30,84 @@
 </head>
 <body>
     {% include 'header1.html' %}
-
-    <div class="container">
-        <h2>Manage Attendance</h2>
-        <form id="attendanceForm" method="POST">
-            <label for="datepicker">Select Date:</label>
-            <input type="date" id="datepicker" name="datepicker" required>
-            <br>
-            <label for="employee">Select Employee:</label>
-            <select id="employee" name="employee" required>
-                {% for emp in employees %}
-                    <option value="{{ emp }}">{{ emp }}</option>
-                {% endfor %}
-            </select>
-            <br>
-            <button type="submit">Submit Attendance</button>
-        </form>
-        {% if message %}
-            <p>{{ message }}</p>
-        {% endif %}
+    <div class="container-5">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#attendance_tab"><b> Attendance Master</b></a></li>
+            <li class="pull-right"><button class="btn btn-primary" type="button" id="add_attendance_button">Add Attendance</button>  </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pan fade in active" id="attendance_tab">
+                <table id="table_user_master" class="table custom-bordered-table "data-pagination="true" data-page-list="[5, 10, 20]"
+                    data-toggle="table"
+                    data-url="/retrive_tb_attendance"
+                    data-search="true"
+                    data-show-export="true"
+                    data-show-columns="true">
+                    <thead>
+                        <tr>
+                            <th data-field="id" class="text-center">ID</th>
+                            <th data-field="employee_name" class="text-center">Employee Name</th>
+                            <th data-field="date" class="text-center">Date</th>
+                            <th data-field="time" class="text-center">Time</th>
+                            <th data-field="status" class="text-center">Status</th> 
+                        </tr>      
+                    </thead>
+                </table>
+            </div>
+        </div>
     </div>
+    <div class="modal" id="edit_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Attendance</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="attendanceForm" action="/update_attendance" method="POST" >
+                        <div class="form-group">
+                            <label for="employee_name">Employee Name</label>
+                            <select id="employee_name" name="employee_name" required>
+                                {% for emp in employees %}
+                                    <option value="{{ emp }}">{{ emp }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="date">Select Date</label>
+                            <input type="date" id="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="time">Time</label>
+                            <input type="time" class="form-control" id="time" name="time" placeholder="Enter contact_no">
+                        </div>
+                        <div class="form-group">
+                            <label for="status">Status</label>
+                            <select class="form-control select_field" name="status" id="status">
+                                <option value="">Please Select status</option>
+                                <option value="Present">Present</option>
+                                <option value="Absent">Absent</option>
+                                <option value="Leave" >Leave</option>
+                            </select>
+                        </div>                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button type="submit" id="update_button" class="btn btn-success">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {%include 'footer1.html' %}
+    <script>
+        $('#update_button').click(function (e) {
+        $('#attendanceForm').submit();
+    });
+    
+    $('#add_attendance_button').click(function (e) {
+        $('#edit_modal').modal('show');
+    });
+    </script> 
 
     {% include 'footer1.html' %}
 </body>
