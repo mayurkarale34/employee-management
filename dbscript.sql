@@ -60,3 +60,10 @@ ADD COLUMN `joining_date` VARCHAR(45) NULL AFTER `employee_type`,
 ADD COLUMN `current_address` VARCHAR(1000) NULL AFTER `joining_date`,
 ADD COLUMN `permanent_address` VARCHAR(1000) NULL AFTER `current_address`;
 
+CREATE TABLE `tb_attendance` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `employee_name` VARCHAR(45) NULL,
+  `date` VARCHAR(45) NULL,
+  `time` VARCHAR(45) NULL,
+  `status` VARCHAR(45) NULL,
+  PRIMARY KEY (`id`))

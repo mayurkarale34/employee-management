@@ -36,3 +36,18 @@ def retrive_metadata_by_type(type):
     except Exception as e:
         print(e)
         return data
+
+def retrive_employee ():
+    data = []
+    connection =  app._engine.connect()
+    try: 
+        select_query = text(f"select * from tb_manage_employee")
+        result = connection.execute(select_query)
+        for row in result:
+            full_name = f"{row[0]} {row[1]}"
+            data.append(full_name)
+            
+        return data
+    except Exception as e:
+        print(e)
+        return data

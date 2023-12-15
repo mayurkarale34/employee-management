@@ -34,13 +34,7 @@ def manage_metadata():
 @app.route('/resource', methods=['GET', 'POST'])
 def resource():
    try:
-        
-        with app._engine.connect() as connection:
-            role_options_query = text(f"SELECT element FROM tb_metadata WHERE type = 'Role';")
-            result = connection.execute(role_options_query)
-
-            role_options = [row[0] for row in result.fetchall()]
-
+        role_options = retrive_metadata_by_type("role")
         return render_template('resource.html', role_options=role_options)
 
    except Exception as e:
@@ -141,7 +135,7 @@ def retrive_tb_manage_employee():
                     "gender" : row[6],
                     "city" : row[7],
                     "Country" : row[8],
-                    "Aadhar_number" : row[9],
+                    "aadhar_number" : row[9],
                     "birth_date" : row[10],
                     "blood_group" : row[11],
                     "pan_number" : row[12],
@@ -262,7 +256,63 @@ def retrive_metadata():
 @app.route('/manage_page')
 def manage_page():
     try:
-        var1 = "Welcome to the Python Flask"
-        return render_template('manage_page.html', var = var1)
+        employees = retrive_employee ()
+        return render_template('manage_page.html', employees=employees)
     except Exception as e:
         print("exception while rendering index page : "+ str(e))    
+
+@app.route('/retrive_tb_attendance', methods=["GET"])
+def retrive_tb_attendance():
+    connection =  app._engine.connect()
+    transaction = connection.begin()
+    response = {
+        "rows" : [],
+        "total" : 0,
+        "message" : ""
+    }
+    try:
+       
+        duery = text(f"select * from tb_attendance;")
+        result = connection.execute(duery)
+        if result.rowcount:
+            for row in result:
+                response['rows'].append({
+                    "id" : row[0],
+                    "employee_name" : row[1],
+                    "date" : row[2],
+                    "time" : row[3],
+                    "status" : row[4],
+                    })
+        response['total'] = len(response['rows'])
+        return jsonify(response)
+    except Exception as e:
+        print("Error while adding user : "+ str(e))
+        return jsonify(response)
+    
+@app.route('/update_attendance', methods=["GET", "POST"])
+def update_attendance():
+    response = {"status" : False, "message" : ""}
+    connection =  app._engine.connect() 
+    transaction = connection.begin() 
+    try:
+        data = dict(request.form)
+        existing_data = connection.execute(
+            text(f"SELECT * FROM tb_attendance WHERE employee_name = '{data['employee_name']}' AND date = '{data['date']}'")).fetchone()
+
+        if existing_data:
+            # Duplicate entry found
+            transaction.rollback()
+            connection.close()
+            response['message'] = "Attendance entry already exists for this employee on the given date."
+            
+
+        connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`, `time`, `status`) VALUES ('{data['employee_name']}', '{data['date']}', '{data['time']}', '{data['status']}');"))
+        transaction.commit()
+        connection.close()
+
+        response['status'] = True
+        response['message'] = "You have successfully added user!"
+        return redirect('/manage_page')
+    except Exception as e:
+        print("Error while adding user, Please contact administrator. : "+ str(e))
+        return jsonify(response)                       
