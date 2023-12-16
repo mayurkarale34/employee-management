@@ -17,15 +17,17 @@
     <!-- Include necessary stylesheets and scripts, e.g., Bootstrap and datepicker libraries -->
     <!-- Add your JavaScript for date validation -->
     <script>
-        $(document).ready(function() {
-            $('#attendanceForm').submit(function(e) {
-                var selectedDate = $('#date').val();
-                if (new Date(selectedDate) < new Date()) {
-                    alert('Cannot mark attendance for previous days.');
-                    e.preventDefault();
-                }
-            });
-        });
+       $(document).ready(function() {
+       $('#attendanceForm').submit(function(e) {
+        var selectedDate = $('#date').val();
+        var today = new Date().toISOString().split('T')[0];
+
+        if (selectedDate > today || selectedDate < today) {
+                alert('Cannot mark attendance for previous or future days.');
+                e.preventDefault();
+        }
+    });
+});
     </script>
 </head>
 <body>
@@ -74,11 +76,11 @@
                         </div>
                         <div class="form-group">
                             <label for="date">Select Date</label>
-                            <input type="date" id="date" name="date" required>
+                            <input type="date" id="date" name="date"  required max="{{ current_date }}"  max="{{ current_date }}">
                         </div>
                         <div class="form-group">
                             <label for="time">Time</label>
-                            <input type="time" class="form-control" id="time" name="time" placeholder="Enter contact_no">
+                            <input type="time" class="form-control" id="time" name="time" >
                         </div>
                         <div class="form-group">
                             <label for="status">Status</label>
@@ -105,8 +107,17 @@
     });
     
     $('#add_attendance_button').click(function (e) {
-        $('#edit_modal').modal('show');
-    });
+    // Set current date
+    var currentDate = new Date().toISOString().split('T')[0];
+    $('#date').val(currentDate);
+
+    // Set current time
+    var currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    $('#time').val(currentTime);
+
+    // Show the modal
+    $('#edit_modal').modal('show');
+});
     </script> 
 
     {% include 'footer1.html' %}
