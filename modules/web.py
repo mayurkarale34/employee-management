@@ -294,6 +294,7 @@ def update_attendance():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
     transaction = connection.begin() 
+    current_date = datetime.now().date().strftime("%Y-%m-%d")
     try:
         data = dict(request.form)
         existing_data = connection.execute(
@@ -312,7 +313,7 @@ def update_attendance():
 
         response['status'] = True
         response['message'] = "You have successfully added user!"
-        return redirect('/manage_page')
+        return redirect('/manage_page', current_date=current_date )
     except Exception as e:
         print("Error while adding user, Please contact administrator. : "+ str(e))
         return jsonify(response)                       
