@@ -271,7 +271,7 @@ def retrive_tb_attendance():
         "message" : ""
     }
     try:
-       
+        # attendance_date = datetime.strptime(data['date_filter'], '%d-%B-%Y').strftime('%Y-%m-%d')
         duery = text(f"select * from tb_attendance;")
         result = connection.execute(duery)
         if result.rowcount:
@@ -298,6 +298,7 @@ def update_attendance():
     current_time = datetime.now().time().strftime("%H:%M")
     try:
         data = dict(request.form)
+        # attendance_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
         existing_data = connection.execute(
             text(f"SELECT * FROM tb_attendance WHERE employee_name = '{data['employee_name']}' AND date = '{data['date']}'")).fetchone()
 
