@@ -295,6 +295,7 @@ def update_attendance():
     connection =  app._engine.connect() 
     transaction = connection.begin() 
     current_date = datetime.now().date().strftime("%Y-%m-%d")
+    current_time = datetime.now().time().strftime("%H:%M")
     try:
         data = dict(request.form)
         existing_data = connection.execute(
@@ -305,6 +306,8 @@ def update_attendance():
             transaction.rollback()
             connection.close()
             response['message'] = "Attendance entry already exists for this employee on the given date."
+            flash("Attendance entry already exists for this employee on the given date.", "error")
+            return render_template('manage_page.html')
             
 
         connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`, `time`, `status`) VALUES ('{data['employee_name']}', '{data['date']}', '{data['time']}', '{data['status']}');"))
@@ -313,7 +316,9 @@ def update_attendance():
 
         response['status'] = True
         response['message'] = "You have successfully added user!"
-        return redirect('/manage_page', current_date=current_date )
+        flash(response['message'], 'success')
+        return render_template('manage_page.html', current_date=current_date, current_time=current_time )
     except Exception as e:
         print("Error while adding user, Please contact administrator. : "+ str(e))
+        flash("Error while adding user. Please contact the administrator.", 'error')
         return jsonify(response)                       

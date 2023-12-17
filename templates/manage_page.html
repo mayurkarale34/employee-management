@@ -13,21 +13,12 @@
     <script src="/static/js/tableExport.js"></script>
     <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
     <script src="/static/js/common.js"></script>
+    
     <title>Manage Attendance</title>
     <!-- Include necessary stylesheets and scripts, e.g., Bootstrap and datepicker libraries -->
     <!-- Add your JavaScript for date validation -->
     <script>
-       $(document).ready(function() {
-       $('#attendanceForm').submit(function(e) {
-        var selectedDate = $('#date').val();
-        var today = new Date().toISOString().split('T')[0];
-
-        if (selectedDate > today || selectedDate < today) {
-                alert('Cannot mark attendance for previous or future days.');
-                e.preventDefault();
-        }
-    });
-});
+       
     </script>
 </head>
 <body>
@@ -76,11 +67,11 @@
                         </div>
                         <div class="form-group">
                             <label for="date">Select Date</label>
-                            <input type="date" id="date" name="date"  required max="{{ current_date }}"  max="{{ current_date }}">
+                            <input type="date" id="date" name="date"  required max="{{ current_date }}"  value="{{ current_date }}">
                         </div>
                         <div class="form-group">
                             <label for="time">Time</label>
-                            <input type="time" class="form-control" id="time" name="time" >
+                            <input type="text" class="form-control" id="time" name="time" value="{{ current_time }}">
                         </div>
                         <div class="form-group">
                             <label for="status">Status</label>
@@ -101,23 +92,48 @@
         </div>
     </div>
     {%include 'footer1.html' %}
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            $(document).ready(function() {
+                {% for message in messages %}
+                    // Use a library or custom code to show a notification for each message
+                    // For simplicity, I'm using an alert here
+                    alert('{{ message }}');
+                {% endfor %}
+        });
+        </script>
+    {% endif %}
+    {% endwith %}
     <script>
         $('#update_button').click(function (e) {
         $('#attendanceForm').submit();
     });
     
     $('#add_attendance_button').click(function (e) {
-    // Set current date
-    var currentDate = new Date().toISOString().split('T')[0];
-    $('#date').val(currentDate);
+        // Set current date
+        var currentDate = new Date().toISOString().split('T')[0];
+        $('#date').val(currentDate);
 
-    // Set current time
-    var currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    $('#time').val(currentTime);
+        // Set current time
+        var currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        $('#time').val(currentTime);
 
-    // Show the modal
-    $('#edit_modal').modal('show');
+        // Show the modal
+        $('#edit_modal').modal('show');
+
+        // Add an event listener to the date input field in the modal
+        $('#date').on('input', function () {
+            var selectedDate = $(this).val();
+
+            // Check if the selected date is not today, then reset to today's date
+            if (selectedDate !== currentDate) {
+                alert('Please select only today\'s date.');
+                $(this).val(currentDate);
+            }
+        });
 });
+
     </script> 
 
     {% include 'footer1.html' %}
