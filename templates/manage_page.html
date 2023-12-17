@@ -7,18 +7,25 @@
     <link rel="stylesheet" href="/static/css/global.css">
     <link rel="stylesheet" href="/static/css/bootstrap-table.css">
     <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
 
     <script src="/static/js/jquery-2.1.3.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="/static/js/tableExport.js"></script>
     <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
     <script src="/static/js/common.js"></script>
+    <script src="/static/js/daterangepicker.min.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
     
     <title>Manage Attendance</title>
-    <!-- Include necessary stylesheets and scripts, e.g., Bootstrap and datepicker libraries -->
-    <!-- Add your JavaScript for date validation -->
     <script>
-       
+     function queryParams(params){
+            if(params.search == undefined || params.search == ''){
+                params.search = '';
+            }
+            params.filter_date = $('#filter_date').val();
+            return params;
+        }  
     </script>
 </head>
 <body>
@@ -30,12 +37,18 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pan fade in active" id="attendance_tab">
+                <div id="toolbar">
+                    <input type="text" id="date_filter" name="date_filter" class="form-control" readonly style="background-color:#ffffff"/>
+                </div>
                 <table id="table_user_master" class="table custom-bordered-table "data-pagination="true" data-page-list="[5, 10, 20]"
                     data-toggle="table"
                     data-url="/retrive_tb_attendance"
                     data-search="true"
+                    data-toolbar="#toolbar"
                     data-show-export="true"
-                    data-show-columns="true">
+                    data-show-columns="true"
+                    data-query-params="queryParams"
+                    >
                     <thead>
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
@@ -53,7 +66,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4>Attendance</h4>
+                    <h1>Add Attendance</h1>
                 </div>
                 <div class="modal-body">
                     <form id="attendanceForm" action="/update_attendance" method="POST" >
@@ -67,7 +80,7 @@
                         </div>
                         <div class="form-group">
                             <label for="date">Select Date</label>
-                            <input type="date" id="date" name="date"  required max="{{ current_date }}"  value="{{ current_date }}">
+                            <input type="text" id="date" name="date" class="form-control" readonly style="background-color:#ffffff"/>
                         </div>
                         <div class="form-group">
                             <label for="time">Time</label>
@@ -110,29 +123,29 @@
         $('#attendanceForm').submit();
     });
     
+    $('#date_filter').datetimepicker({
+        minView: 0,
+        format: 'dd-MM-yyyy',
+        autoclose: true
+    });
+    $('#date_filter').datetimepicker('setDate', new Date());
+
+    // Initilize date time picker
+    $('#date').datetimepicker({
+        minView: 0,
+        format: 'dd-mm-yyyy hh:ii:ss',
+        autoclose: true
+    });
+
+    
     $('#add_attendance_button').click(function (e) {
-        // Set current date
-        var currentDate = new Date().toISOString().split('T')[0];
-        $('#date').val(currentDate);
-
-        // Set current time
-        var currentTime = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        $('#time').val(currentTime);
-
+        var attendance_date = new Date();
+        // make future date disabled
+        $('#date').datetimepicker('setDate', attendance_date);
         // Show the modal
         $('#edit_modal').modal('show');
 
-        // Add an event listener to the date input field in the modal
-        $('#date').on('input', function () {
-            var selectedDate = $(this).val();
-
-            // Check if the selected date is not today, then reset to today's date
-            if (selectedDate !== currentDate) {
-                alert('Please select only today\'s date.');
-                $(this).val(currentDate);
-            }
-        });
-});
+    });
 
     </script> 
 
