@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
+
+    <script src="/static/js/jquery-2.1.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/tableExport.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/daterangepicker.min.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    
+    <title>Manage Attendance</title>
+    
+</head>
+<body>
+    {% include 'header1.html' %}
+    <div class="container-5">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#attendance_tab"><b> Attendance Master</b></a></li>
+            <li class="pull-right"><button class="btn btn-primary" type="button" id="add_attendance_button">Add Attendance</button>  </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pan fade in active" id="attendance_tab">
+                <div id="toolbar">
+                    <input type="text" id="date_filter" name="date_filter" class="form-control" readonly style="background-color:#ffffff"/>
+                </div>
+                <table id="table_user_master" class="table custom-bordered-table" data-page-list="[5, 10, 20]"
+                   
+                data-toggle="table"
+                data-url="/retrive_tb_attendance"
+                data-search="true"
+                data-toolbar="#toolbar"
+                data-show-export="true"
+                data-show-columns="true"
+                data-query-params="queryParams"
+                data-pagination="true"
+                data-side-pagination="server"
+                data-page-size="10"
+                data-page-number="1"
+                    >
+                    <thead>
+                        <tr>
+                            <th data-field="id" class="text-center">ID</th>
+                            <th data-field="employee_name" class="text-center">Employee Name</th>
+                            <th data-field="date" class="text-center">Date</th>
+                        </tr>      
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="edit_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Add Attendance</h1>
+                </div>
+                <div class="modal-body">
+                    <form id="attendanceForm" action="/add_attendance" method="POST" >
+                        <div class="form-group">
+                            <label for="employee_name">Employee Name</label>
+                            <input type="text" id="employee_name" name="employee_name" list="employee_names" required>
+                            <datalist id="employee_names">
+                                {% for emp in employees %}
+                                    <option value="{{ emp }}">{{ emp }}</option>
+                                {% endfor %}
+                            </datalist>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="date">Select Date</label>
+                            <input type="text" id="date" name="date" class="form-control" readonly style="background-color:#ffffff"/>
+                        </div>
+                            
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button type="submit" id="addattendance_button" class="btn btn-success">add attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            $(document).ready(function() {
+                {% for message in messages %}
+                    // Use a library or custom code to show a notification for each message
+                    // For simplicity, I'm using an alert here
+                    alert('{{ message }}');
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+{% endwith %}
+Make sure this block is placed insi
+<script>
+    $('#addattendance_button').click(function (e) {
+        $('#attendanceForm').submit();
+    });
+
+    $('#date_filter').datetimepicker({
+    minView: 0,
+    format: 'dd-mm-yyyy',
+    autoclose: true
+});
+$('#date_filter').datetimepicker('setDate', new Date());
+
+// Initialize datetimepicker
+$('#date').datetimepicker({
+    minView: 0,
+    format: 'dd-mm-yyyy hh:ii:ss',
+    autoclose: true
+});
+
+$('#add_attendance_button').click(function (e) {
+    var attendance_date = new Date();
+    // make future date disabled
+    $('#date').datetimepicker('setDate', attendance_date);
+    // Show the modal
+    $('#edit_modal').modal('show');
+});
+
+function queryParams(params) {
+    if (params.search == undefined || params.search == '') {
+        params.search = '';
+    }
+    params.filter_date = $('#date_filter').val();
+    // Add pagination parameters
+    params.limit = params.limit || 10;
+    params.offset = params.offset || 0;
+    return params;
+}
+</script>
+
+    {% include 'footer1.html' %}
+</body>
+</html>
