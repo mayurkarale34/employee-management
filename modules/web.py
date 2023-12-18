@@ -253,44 +253,68 @@ def retrive_metadata():
         print("Error while getting metadata : "+ str(e))
         return jsonify(response)
     
-@app.route('/manage_page')
+@app.route('/manage_attendance')
 def manage_page():
     try:
         employees = retrive_employee ()
-        return render_template('manage_page.html', employees=employees)
+        return render_template('manage_attendance.html', employees=employees)
     except Exception as e:
-        print("exception while rendering index page : "+ str(e))    
+        print("exception while rendering index page : "+ str(e))  
+
+
+
+
 
 @app.route('/retrive_tb_attendance', methods=["GET"])
 def retrive_tb_attendance():
-    connection =  app._engine.connect()
+    connection = app._engine.connect()
     transaction = connection.begin()
     response = {
-        "rows" : [],
-        "total" : 0,
-        "message" : ""
+        "rows": [],
+        "total": 0,
+        "message": ""
     }
     try:
-        # attendance_date = datetime.strptime(data['date_filter'], '%d-%B-%Y').strftime('%Y-%m-%d')
-        duery = text(f"select * from tb_attendance;")
-        result = connection.execute(duery)
+        date_filter = request.args.get('date_filter')
+        limit = request.args.get('limit', type=int)
+        offset = request.args.get('offset', type=int)
+
+        if date_filter:
+            # Assuming the date format is day-month-year hour:minute:second (e.g., 17-12-2023 22:58:00)
+            attendance_date = datetime.strptime(date_filter, '%Y-%m-%d').strftime('%Y-%m-%d %H:%M:%S')
+
+
+
+            duery = text(f"SELECT * FROM tb_attendance WHERE date = :date LIMIT :limit OFFSET :offset;")
+            result = connection.execute(duery, {'date': attendance_date, 'limit': limit, 'offset': offset})
+        else:
+            duery = text(f"SELECT * FROM tb_attendance LIMIT :limit OFFSET :offset;")
+            result = connection.execute(duery, {'limit': limit, 'offset': offset})
+
         if result.rowcount:
             for row in result:
                 response['rows'].append({
-                    "id" : row[0],
-                    "employee_name" : row[1],
-                    "date" : row[2],
-                    "time" : row[3],
-                    "status" : row[4],
-                    })
-        response['total'] = len(response['rows'])
+                    "id": row[0],
+                    "employee_name": row[1],
+                    "date": row[2]
+                })
+
+        # Get the total count for pagination
+        total_count_query = text("SELECT COUNT(*) FROM tb_attendance;")
+        total_count_result = connection.execute(total_count_query)
+        response['total'] = total_count_result.scalar()
+
         return jsonify(response)
     except Exception as e:
-        print("Error while adding user : "+ str(e))
+        print("Error while retrieving attendance data: " + str(e))
         return jsonify(response)
+
+ 
+
+
     
-@app.route('/update_attendance', methods=["GET", "POST"])
-def update_attendance():
+@app.route('/add_attendance', methods=["GET", "POST"])
+def add_attendance():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
     transaction = connection.begin() 
@@ -308,17 +332,17 @@ def update_attendance():
             connection.close()
             response['message'] = "Attendance entry already exists for this employee on the given date."
             flash("Attendance entry already exists for this employee on the given date.", "error")
-            return render_template('manage_page.html')
+            return render_template('manage_attendance.html')
             
 
-        connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`, `time`, `status`) VALUES ('{data['employee_name']}', '{data['date']}', '{data['time']}', '{data['status']}');"))
+        connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`) VALUES ('{data['employee_name']}', '{data['date']}');"))
         transaction.commit()
         connection.close()
 
         response['status'] = True
         response['message'] = "You have successfully added user!"
         flash(response['message'], 'success')
-        return render_template('manage_page.html', current_date=current_date, current_time=current_time )
+        return render_template('manage_attendance.html', current_date=current_date, current_time=current_time )
     except Exception as e:
         print("Error while adding user, Please contact administrator. : "+ str(e))
         flash("Error while adding user. Please contact the administrator.", 'error')

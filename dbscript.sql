@@ -67,3 +67,7 @@ CREATE TABLE `tb_attendance` (
   `time` VARCHAR(45) NULL,
   `status` VARCHAR(45) NULL,
   PRIMARY KEY (`id`))
+
+ALTER TABLE `employee`.`tb_attendance` 
+DROP COLUMN `status`,
+DROP COLUMN `time`;
