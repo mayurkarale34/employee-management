@@ -32,7 +32,7 @@
                 <div id="toolbar">
                     <input type="text" id="date_filter" name="date_filter" class="form-control" readonly style="background-color:#ffffff"/>
                 </div>
-                <table id="table_user_master" class="table custom-bordered-table" data-page-list="[5, 10, 20]"
+                <table id="table_user_master" class="table custom-bordered-table"
                    
                 data-toggle="table"
                 data-url="/retrive_tb_attendance"
@@ -44,7 +44,7 @@
                 data-pagination="true"
                 data-side-pagination="server"
                 data-page-size="10"
-                data-page-number="1"
+                data-page-list="[10,20,30]"
                     >
                     <thead>
                         <tr>
@@ -103,15 +103,14 @@
         </script>
     {% endif %}
 {% endwith %}
-Make sure this block is placed insi
 <script>
     $('#addattendance_button').click(function (e) {
         $('#attendanceForm').submit();
     });
 
     $('#date_filter').datetimepicker({
-    minView: 0,
-    format: 'dd-mm-yyyy',
+    minView: 2,
+    format: 'dd-MM-yyyy',
     autoclose: true
 });
 $('#date_filter').datetimepicker('setDate', new Date());
@@ -135,12 +134,16 @@ function queryParams(params) {
     if (params.search == undefined || params.search == '') {
         params.search = '';
     }
-    params.filter_date = $('#date_filter').val();
+    params.date_filter = $('#date_filter').val();
     // Add pagination parameters
     params.limit = params.limit || 10;
     params.offset = params.offset || 0;
     return params;
 }
+
+$('#date_filter').change(function (e){
+    $('#table_user_master').bootstrapTable('refresh');
+})
 </script>
 
     {% include 'footer1.html' %}
