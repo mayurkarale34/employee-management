@@ -279,17 +279,17 @@ def retrive_tb_attendance():
         limit = request.args.get('limit', type=int)
         offset = request.args.get('offset', type=int)
 
-        if date_filter:
-            # Assuming the date format is day-month-year hour:minute:second (e.g., 17-12-2023 22:58:00)
-            attendance_date = datetime.strptime(date_filter, '%Y-%m-%d').strftime('%Y-%m-%d %H:%M:%S')
+        # Assuming the date format is day-month-year hour:minute:second (e.g., 17-12-2023 22:58:00)
+        attendance_date = datetime.strptime(date_filter, '%d-%B-%Y').strftime('%Y-%m-%d')
 
+        count_duery = text(f"SELECT count(1) as total FROM tb_attendance;")
+        result_count = connection.execute(count_duery)
+        response['total'] = result_count.fetchone()[0]
 
-
-            duery = text(f"SELECT * FROM tb_attendance WHERE date = :date LIMIT :limit OFFSET :offset;")
-            result = connection.execute(duery, {'date': attendance_date, 'limit': limit, 'offset': offset})
-        else:
-            duery = text(f"SELECT * FROM tb_attendance LIMIT :limit OFFSET :offset;")
-            result = connection.execute(duery, {'limit': limit, 'offset': offset})
+        query = text(f"SELECT * FROM tb_attendance WHERE date_format(date, '%Y-%m-%d') = '{attendance_date}' LIMIT {limit} OFFSET {offset};")
+        print(query)
+        result = connection.execute(query)
+        
 
         if result.rowcount:
             for row in result:
@@ -298,11 +298,6 @@ def retrive_tb_attendance():
                     "employee_name": row[1],
                     "date": row[2]
                 })
-
-        # Get the total count for pagination
-        total_count_query = text("SELECT COUNT(*) FROM tb_attendance;")
-        total_count_result = connection.execute(total_count_query)
-        response['total'] = total_count_result.scalar()
 
         return jsonify(response)
     except Exception as e:
@@ -318,13 +313,11 @@ def add_attendance():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
     transaction = connection.begin() 
-    current_date = datetime.now().date().strftime("%Y-%m-%d")
-    current_time = datetime.now().time().strftime("%H:%M")
     try:
         data = dict(request.form)
-        # attendance_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
+        attendance_date = datetime.strptime(data['date'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
         existing_data = connection.execute(
-            text(f"SELECT * FROM tb_attendance WHERE employee_name = '{data['employee_name']}' AND date = '{data['date']}'")).fetchone()
+            text(f"SELECT * FROM tb_attendance WHERE employee_name = '{data['employee_name']}' AND date = '{attendance_date}'")).fetchone()
 
         if existing_data:
             # Duplicate entry found
@@ -335,7 +328,7 @@ def add_attendance():
             return render_template('manage_attendance.html')
             
 
-        connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`) VALUES ('{data['employee_name']}', '{data['date']}');"))
+        connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`) VALUES ('{data['employee_name']}', '{attendance_date}');"))
         transaction.commit()
         connection.close()
 
