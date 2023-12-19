@@ -254,7 +254,7 @@ def retrive_metadata():
         return jsonify(response)
     
 @app.route('/manage_attendance')
-def manage_page():
+def manage_attendance(): 
     try:
         employees = retrive_employee ()
         return render_template('manage_attendance.html', employees=employees)
@@ -287,7 +287,6 @@ def retrive_tb_attendance():
         response['total'] = result_count.fetchone()[0]
 
         query = text(f"SELECT * FROM tb_attendance WHERE date_format(date, '%Y-%m-%d') = '{attendance_date}' LIMIT {limit} OFFSET {offset};")
-        print(query)
         result = connection.execute(query)
         
 
@@ -327,15 +326,14 @@ def add_attendance():
             flash("Attendance entry already exists for this employee on the given date.", "error")
             return render_template('manage_attendance.html')
             
-
         connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`) VALUES ('{data['employee_name']}', '{attendance_date}');"))
         transaction.commit()
         connection.close()
 
         response['status'] = True
-        response['message'] = "You have successfully added user!"
+        response['message'] = "You have successfully mark attendance!"
         flash(response['message'], 'success')
-        return render_template('manage_attendance.html', current_date=current_date, current_time=current_time )
+        return render_template('manage_attendance.html' )
     except Exception as e:
         print("Error while adding user, Please contact administrator. : "+ str(e))
         flash("Error while adding user. Please contact the administrator.", 'error')
