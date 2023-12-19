@@ -71,3 +71,6 @@ CREATE TABLE `tb_attendance` (
 ALTER TABLE `employee`.`tb_attendance` 
 DROP COLUMN `status`,
 DROP COLUMN `time`;
+
+ALTER TABLE `employee`.`tb_attendance` 
+CHANGE COLUMN `date` `date` DATETIME NULL DEFAULT NULL ;
