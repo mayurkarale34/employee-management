@@ -44,9 +44,11 @@ def retrive_employee ():
         select_query = text(f"select * from tb_manage_employee")
         result = connection.execute(select_query)
         for row in result:
-            full_name = f"{row[0]} {row[1]}"
-            data.append(full_name)
-            
+            employee_data = {
+                'employee_id': row[1],  # Assuming employee_id is the first column in your result
+                'name': f"{row[2]} {row[4]}"  # Assuming first and second columns are first name and last name
+            }
+            data.append(employee_data)  
         return data
     except Exception as e:
         print(e)
