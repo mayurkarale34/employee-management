@@ -108,7 +108,7 @@
 
                   <div class="form-group col-md-4 required">
                     <label class="d-flex flex-row align-items-center" for="contact">Contact_No *</label>  
-                    <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" pattern="[0-9]{10}" minlength="10" maxlength="10" title="Only numbers are allowed, and the length should be 10 digits" required>  
+                    <input type="text" class="form-control required" id="contact" name="contact" placeholder="Enter your Contact Number" pattern="[0-9]{10}" minlength="10" maxlength="10" title="Only numbers are allowed, and the length should be 10 digits" onkeypress="return isNumberKey(event)" required>  
                   </div>
           
                   <div class="form-group col-md-4 required"> 
@@ -134,8 +134,8 @@
                       <label for="blood_group">Blood Group</label>  
                       <select class="form-control select_field" name="blood_group" id="blood_group">
                         <option value="">Please Select Blood Group</option>
-                        {% for city in cities %}
-                        <option value={{city}}>{{city}}</option>
+                        {% for bloodgroup in bloodgroups %}
+                        <option value={{bloodgroup}}>{{bloodgroup}}</option>
                         {% endfor %}
                       </select>  
                   </div>  
@@ -143,13 +143,13 @@
               <div class="form-group col-md-4">
                 <label for="pan_number">PAN Number *</label>
                 <input type="text" class="form-control" id="pan_number" name="pan_number"
-                    placeholder="Enter your PAN Number" pattern="[A-Za-z]{5}[0-9]{4}[A-Za-z]{1}" minlength="10" maxlength="10" title="PAN Number should be 10 characters, starting with 5 letters, followed by 4 digits, and ending with 1 letter."
+                    placeholder="Enter your PAN Number" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" minlength="10" maxlength="10" title="PAN Number should be 10 characters, starting with 5 letters, followed by 4 digits, and ending with 1 letter."
                     required>
               </div>
 
               <div class="form-group col-md-4 required">  
                 <label for="aadhar_number">Aadhar Number *</label>  
-                <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" required>  
+                <input type="text" class="form-control" id="aadhar_number" name="aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" onkeypress="return isNumberKey(event)" required>  
               </div>
 
               <div class="form-group col-md-4 required">  

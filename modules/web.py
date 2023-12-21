@@ -79,11 +79,26 @@ def add_employee_page():
     try:
         cities = retrive_metadata_by_type("City")
         countries = retrive_metadata_by_type("Country")
-        return render_template('add_employee.html', cities = cities, countries = countries)
+        roles = retrive_metadata_by_type("Role")
+        bloodgroups = retrive_metadata_by_type("Blood Group")
+        return render_template('add_employee.html', cities = cities, countries = countries, roles = roles, bloodgroups = bloodgroups)
     except Exception as e:
         print("exception while rendering add_employee page : "+ str(e))
         return redirect('/')
-                                
+
+import random
+import string
+def generate_employee_id(data):
+    first_name = data.get("first_name", "")
+    last_name = data.get("last_name", "")
+    # Concatenate the first and last name
+    name_concatenated = f"{first_name.lower()}{last_name.lower()}"
+    # Generate a random 4-digit number
+    random_number = ''.join(random.choices(string.digits, k=4))
+    # Combine the name and random number to form the employee_id
+    employee_id = f"{name_concatenated}_{random_number}"
+    return employee_id
+  
 @app.route('/add_user', methods=['POST'])
 def add_user():
     response = {"status" : False, "message" : ""}
@@ -91,7 +106,12 @@ def add_user():
     transaction = connection.begin() 
     try:
         data = dict(request.form)
-        connection.execute(text(f"INSERT INTO tb_manage_employee(`first_name`, `middle_name`, `last_name`, `email_id`, `contact`, `gender`, `city`, `Country`, `aadhar_number`, `birth_date`, `blood_group`, `pan_number`, `total_experience`, `designation`, `employee_type`, `joining_date`, `current_address`, `permanent_address`) VALUES ('{data['first_name']}', '{data['middle_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact']}', '{data['gender']}', '{data['city']}', '{data['Country']}', '{data['aadhar_number']}', '{data['birth_date']}', '{data['blood_group']}', '{data['pan_number']}','{data['total_experience']}','{data['designation']}', '{data['employee_type']}', '{data['joining_date']}', '{data['current_address']}', '{data['permanent_address']}');"))
+        request_data = {
+            "first_name" : data['first_name'],
+            "last_name" : data['last_name']
+        }
+        data['employee_id'] = generate_employee_id(request_data)
+        connection.execute(text(f"INSERT INTO tb_manage_employee(`employee_id`, `first_name`, `middle_name`, `last_name`, `email_id`, `contact`, `gender`, `city`, `Country`, `aadhar_number`, `birth_date`, `blood_group`, `pan_number`, `total_experience`, `designation`, `employee_type`, `joining_date`, `current_address`, `permanent_address`) VALUES ('{data['employee_id']}', '{data['first_name']}', '{data['middle_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact']}', '{data['gender']}', '{data['city']}', '{data['Country']}', '{data['aadhar_number']}', '{data['birth_date']}', '{data['blood_group']}', '{data['pan_number']}','{data['total_experience']}','{data['designation']}', '{data['employee_type']}', '{data['joining_date']}', '{data['current_address']}', '{data['permanent_address']}');"))
         transaction.commit()
         connection.close()
 

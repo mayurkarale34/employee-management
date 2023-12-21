@@ -19,6 +19,18 @@
     <style>
         /* CSS section */
     </style>  
+    <script>
+        function runingFormater(value, row, index){
+            alert(index)
+            return index+1;
+        }
+        function queryParams(params){
+            if(params.search == undefined || params.search == ''){
+                params.search = '';
+            }
+            return params;
+        }
+    </script>
 </head>
 <body>
     {%include 'header1.html' %}
@@ -38,10 +50,12 @@
                     data-url="/retrive_tb_manage_employee"
                     data-search="true"
                     data-show-export="true"
-                    data-show-columns="true">
+                    data-show-columns="true"
+                    >
                     <thead>
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
+                            <th data-field="employee_id" class="text-center">Employee Id</th>
                             <th data-field="first_name" class="text-center">First Name</th>
                             <th data-field="middle_name" class="text-center">Middle Name</th>
                             <th data-field="last_name" class="text-center">Last Name</th>
