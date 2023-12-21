@@ -96,6 +96,10 @@ def generate_employee_id(data):
     random_number = ''.join(random.choices(string.digits, k=4))
     # Combine the name and random number to form the employee_id
     employee_id = name_concatenated + str(random_number)
+    # if employee_id_not_duplicate(employee_id):
+    #     return employee_id
+    
+    # return generate_employee_id(data)
     return employee_id
   
 @app.route('/add_user', methods=['POST'])
