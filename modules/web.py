@@ -89,14 +89,17 @@ def add_employee_page():
 import random
 import string
 def generate_employee_id(data):
-    first_name = data.get("first_name", "")
-    last_name = data.get("last_name", "")
+    name = 'john'
     # Concatenate the first and last name
-    name_concatenated = f"{first_name.lower()}{last_name.lower()}"
+    name_concatenated = str(data['first_name']).upper()[0] + str(data['last_name']).upper()[0]
     # Generate a random 4-digit number
     random_number = ''.join(random.choices(string.digits, k=4))
     # Combine the name and random number to form the employee_id
-    employee_id = f"{name_concatenated}_{random_number}"
+    employee_id = name_concatenated + str(random_number)
+    # if employee_id_not_duplicate(employee_id):
+    #     return employee_id
+    
+    # return generate_employee_id(data)
     return employee_id
   
 @app.route('/add_user', methods=['POST'])
@@ -111,6 +114,7 @@ def add_user():
             "last_name" : data['last_name']
         }
         data['employee_id'] = generate_employee_id(request_data)
+        
         connection.execute(text(f"INSERT INTO tb_manage_employee(`employee_id`, `first_name`, `middle_name`, `last_name`, `email_id`, `contact`, `gender`, `city`, `Country`, `aadhar_number`, `birth_date`, `blood_group`, `pan_number`, `total_experience`, `designation`, `employee_type`, `joining_date`, `current_address`, `permanent_address`) VALUES ('{data['employee_id']}', '{data['first_name']}', '{data['middle_name']}', '{data['last_name']}', '{data['email_id']}', '{data['contact']}', '{data['gender']}', '{data['city']}', '{data['Country']}', '{data['aadhar_number']}', '{data['birth_date']}', '{data['blood_group']}', '{data['pan_number']}','{data['total_experience']}','{data['designation']}', '{data['employee_type']}', '{data['joining_date']}', '{data['current_address']}', '{data['permanent_address']}');"))
         transaction.commit()
         connection.close()
@@ -164,7 +168,8 @@ def retrive_tb_manage_employee():
                     "employee_type" : row[15],
                     "joining_date" : row[16],
                     "current_address" : row[17],
-                    "permanent_address" : row[18] 
+                    "permanent_address" : row[18],
+                    "employee_id" : row[19] 
                     })
         response['total'] = len(response['rows'])
         return jsonify(response)
