@@ -90,15 +90,15 @@
                             <input type="text" class="form-control" id="edit_last_name" name="edit_last_name" placeholder="Enter Last Name">
                         </div>
                         <div class="form-group">
-                            <label for="contact_no">Mobile No</label>
-                            <input type="text" class="form-control" id="edit_contact_no" name="edit_contact_no" placeholder="Enter contact_no">
+                            <label for="edit_contact_no">Mobile No</label>
+                            <input type="text" class="form-control" id="edit_contact_no" name="edit_contact_no" placeholder="Enter contact_no" minlength="10" maxlength="10">
                         </div>
                         <div class="form-group">
-                            <label for="email_id">Email Id</label>
+                            <label for="edit_email_id">Email Id</label>
                             <input type="text" class="form-control" id="edit_email_id" name="edit_email_id" placeholder="Enter your email_id">
                         </div>
                         <div class="form-group">
-                            <label for="role">Role</label>
+                            <label for="edit_role">Role</label>
                             <select class="form-control select_field" name="edit_role" id="edit_role">
                                 {% for option in role_options %}
                                     <option value="{{ option}}">{{ option }}</option>
@@ -107,7 +107,7 @@
                             
                         </div> 
                         <div class="form-group">
-                            <label for="status">Status</label>
+                            <label for="edit_status">Status</label>
                             <select class="form-control select_field" name="edit_status" id="edit_status">
                                 <option value="">Please Select status</option>
                                 <option value="Active">Active</option>

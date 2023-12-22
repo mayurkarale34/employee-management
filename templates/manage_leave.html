@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/static/css/select2-bootstrap.css">
+    <link rel="stylesheet" href="/static/css/select2.min.css">
+    <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
+
+    <script src="/static/js/jquery-2.1.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/tableExport.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/daterangepicker.min.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/js/select2.min.js"></script>
+    
+    <title>Manage Attendance</title>
+    
+</head>
+<body>
+    {% include 'header1.html' %}
+    <div class="container-5">
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#leave_tab"><b> Leave Master</b></a></li>
+            <li class="pull-right"><button class="btn btn-primary" type="button" id="apply_leave_button">Apply Leave</button>  </li>
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pan fade in active" id="leave_tab">
+                <table id="table_user_master" class="table custom-bordered-table"
+                   
+                data-toggle="table"
+                data-url="/retrive_tb_leave"
+                data-search="true"
+                data-toolbar="#toolbar"
+                data-show-export="true"
+                data-show-columns="true"
+                data-query-params="queryParams"
+                data-pagination="true"
+                data-side-pagination="server"
+                data-page-size="10"
+                data-page-list="[10,20,30]"
+                    >
+                    <thead>
+                        <tr>
+                            <th data-field="id" class="text-center">ID</th>
+                            <th data-field="employee_name" class="text-center">Employee Name</th>
+                            <th data-field="from_date" class="text-center">From Date</th>
+                            <th data-field="from_shift" class="text-center">From Shift</th>
+                            <th data-field="to_date" class="text-center">To Date</th>
+                            <th data-field="to_shift" class="text-center">To Shift</th>
+                            <th data-field="no_of_days" class="text-center">Total Days</th>
+                            <th data-field="leave_reason" class="text-center">Leave Reason</th>
+                            <th data-field="status" class="text-center">Status</th>
+                            <th data-field="applied_by" class="text-center">Applied By</th>
+                            <th data-field="applied_on" class="text-center">Applies</th>
+                        </tr>      
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="edit_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>Add Attendance</h1>
+                </div>
+                <div class="modal-body">
+                    <form id="leaveform" action="/apply_leave" method="POST" >
+                        <div class="form-group">
+                            <label for="employee_name">Employee Name</label>
+                                <select id="employee_name" name="employee_name" class="form-control" required>
+                                    <option value="" disabled selected>Select Employee</option>
+                                    {% for emp in employees %}
+                                        <option value="{{ emp.employee_id }}">{{ emp.name }}</option>
+                                    {% endfor %}
+                                </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="from_date">From Date</label>
+                            <input type="text" id="from_date" name="from_date" class="form-control" placeholder="select date" style="background-color:#ffffff"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="from_shift">Form Shift</label>
+                            <select id="from_shift" name="from_shift" class="form-control" style="background-color:#ffffff">
+                                <option value="">Please select shift</option>
+                                <option value="half">Half</option>
+                                <option value="full">Full</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="to_date">To Date</label>
+                            <input type="text" id="to_date" name="to_date" class="form-control" placeholder="select date"  style="background-color:#ffffff"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="to_shift">To Shift</label>
+                            <select id="to_shift" name="to_shift" class="form-control" style="background-color:#ffffff">
+                                <option value="">Please select shift</option>
+                                <option value="half">Half</option>
+                                <option value="full">Full</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="no_of_days">Total Days</label>
+                            <input type="text" id="no_of_days" name="no_of_days" class="form-control" placeholder="select days" readonly style="background-color:#ffffff"/>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="leave_reason">Leave Reason</label>
+                            <input type="text" id="leave_reason" name="leave_reason" class="form-control" placeholder="give reason" style="background-color:#ffffff"/>
+                        </div>
+                            
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button type="submit" id="applyleave_button" class="btn btn-success">add attendance</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+        <script>
+            $(document).ready(function() {
+                {% for message in messages %}
+                    // Use a library or custom code to show a notification for each message
+                    // For simplicity, I'm using an alert here
+                    alert('{{ message }}');
+                {% endfor %}
+            });
+        </script>
+    {% endif %}
+{% endwith %}
+<script>
+    $('#applyleave_button').click(function (e) {
+        $('#leaveform').submit();
+    });
+
+    $('#date_filter').datetimepicker({
+    minView: 2,
+    format: 'dd-MM-yyyy',
+    autoclose: true
+});
+$('#date_filter').datetimepicker('setDate', new Date());
+
+// Initialize datetimepicker
+$('#from_date').datetimepicker({
+    minView: 2,
+    format: 'dd-mm-yyyy',
+    autoclose: true
+});
+
+$('#to_date').datetimepicker({
+    minView: 2,
+    format: 'dd-mm-yyyy',
+    autoclose: true
+});
+
+$('#apply_leave_button').click(function (e) {
+    // Show the modal
+    $('#edit_modal').modal('show');
+});
+
+function queryParams(params) {
+    if (params.search == undefined || params.search == '') {
+        params.search = '';
+    }
+    params.date_filter = $('#date_filter').val();
+    // Add pagination parameters
+    params.limit = params.limit || 10;
+    params.offset = params.offset || 0;
+    return params;
+}
+
+$('#date_filter').change(function (e){
+    $('#table_user_master').bootstrapTable('refresh');
+})
+
+$('select').select2({
+	width : '100%',
+	theme : 'bootstrap'
+})
+
+function calculateDays() {
+    var shift = document.getElementById("from_shift").value;
+    var startDate = new Date(document.getElementById("from_date").value);
+    var endDate = new Date(document.getElementById("to_date").value);
+
+    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
+        var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+
+        // Adjust the total days based on the selected shift
+        if (shift === "half") {
+            diffDays = diffDays / 2;
+        }
+
+        document.getElementById("no_of_days").value = diffDays;
+    } else {
+        document.getElementById("no_of_days").value = "";
+    }
+}
+</script>
+
+    {% include 'footer1.html' %}
+</body>
+</html>
