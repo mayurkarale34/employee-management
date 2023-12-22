@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
     <link rel="stylesheet" href="/static/css/select2-bootstrap.css">
     <link rel="stylesheet" href="/static/css/select2.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrapValidator.min.css">
     <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
 
     <script src="/static/js/jquery-2.1.3.min.js"></script>
@@ -19,6 +20,7 @@
     <script src="/static/js/daterangepicker.min.js"></script>
     <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
     <script src="/static/js/select2.min.js"></script>
+    <script src="/static/js/bootstrapValidator.min.js"></script>
     
     <title>Manage Attendance</title>
     
@@ -142,6 +144,59 @@
     {% endif %}
 {% endwith %}
 <script>
+    $('#leaveform').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            employee_name: {
+                validators: {
+                    notEmpty: {
+                        message : "Please select employee Name"
+                    }
+                }
+            },
+            from_date: {
+                validators: {
+                    notEmpty: {
+                        message : "Please select from date"
+                    },
+                    date: {
+                        format: 'dd-mm-yyyy',
+                        message: 'Date format should be dd-mm-yyyy'
+                    }
+                }
+            },
+            to_date: {
+                validators: {
+                    notEmpty: {
+                        message : "Please select to date"
+                    },
+                    date: {
+                        format: 'dd-mm-yyyy',
+                        message: 'Date format should be dd-mm-yyyy'
+                    }
+                }
+            },
+            // leave_reason: {
+            //     validators: {
+            //         notEmpty: {
+            //             message : "Please provide leave reason"
+            //         },
+            //         stringLength: {
+            //             min: 5,
+            //             max: 10,
+            //             message : 'should be 5 to 10 character'
+            //         }
+            //     }
+            // }
+        }
+    }).on('success.form.bv', function(e){
+
+    })
+
     $('#applyleave_button').click(function (e) {
         $('#leaveform').submit();
     });
@@ -192,6 +247,8 @@ $('select').select2({
 })
 
 $('#from_date, #to_date, #from_shift, #to_shift').change(function (e){
+    // $('#from_date').closest('form').bootstrapValidator('revalidateField', $('#from_date').prop('name'))
+    // $('#to_date').closest('form').bootstrapValidator('revalidateField', $('#to_date').prop('name'))
     calculateDays();
 });
 
