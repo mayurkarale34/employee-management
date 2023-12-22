@@ -91,9 +91,8 @@
                         <div class="form-group">
                             <label for="from_shift">Form Shift</label>
                             <select id="from_shift" name="from_shift" class="form-control" style="background-color:#ffffff">
-                                <option value="">Please select shift</option>
-                                <option value="half">Half</option>
-                                <option value="full">Full</option>
+                                <option value="First Half" selected>First Half</option>
+                                <option value="Second Half">Second Half</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -104,15 +103,14 @@
                         <div class="form-group">
                             <label for="to_shift">To Shift</label>
                             <select id="to_shift" name="to_shift" class="form-control" style="background-color:#ffffff">
-                                <option value="">Please select shift</option>
-                                <option value="half">Half</option>
-                                <option value="full">Full</option>
+                                <option value="First Half">First Half</option>
+                                <option value="Second Half" selected>Second Half</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="no_of_days">Total Days</label>
-                            <input type="text" id="no_of_days" name="no_of_days" class="form-control" placeholder="select days" readonly style="background-color:#ffffff"/>
+                            <input type="text" id="no_of_days" name="no_of_days" class="form-control" placeholder="select days" readonly />
                         </div>
 
                         <div class="form-group">
@@ -193,24 +191,34 @@ $('select').select2({
 	theme : 'bootstrap'
 })
 
+$('#from_date, #to_date, #from_shift, #to_shift').change(function (e){
+    calculateDays();
+});
+
 function calculateDays() {
-    var shift = document.getElementById("from_shift").value;
-    var startDate = new Date(document.getElementById("from_date").value);
-    var endDate = new Date(document.getElementById("to_date").value);
-
-    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-        var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-        // Adjust the total days based on the selected shift
-        if (shift === "half") {
-            diffDays = diffDays / 2;
+    let from_date = $('#from_date').val();
+    let from_shift = $('#from_shift').val();
+    let to_date = $('#to_date').val();
+    let to_shift = $('#to_shift').val();
+   
+    if(from_date != '' && to_date != ''){
+        let no_of_days = get_date_difference(from_date, to_date) + 1;
+        
+        if(from_shift == 'Second Half'){
+            no_of_days -= 0.5;
         }
 
-        document.getElementById("no_of_days").value = diffDays;
-    } else {
-        document.getElementById("no_of_days").value = "";
+        if(to_shift == 'First Half'){
+            no_of_days -= 0.5;
+        }
+
+        $('#no_of_days').val(no_of_days);
     }
+    else{
+        $('#no_of_days').val('');
+    }
+    
+    
 }
 </script>
 
