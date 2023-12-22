@@ -74,3 +74,21 @@ DROP COLUMN `time`;
 
 ALTER TABLE `employee`.`tb_attendance` 
 CHANGE COLUMN `date` `date` DATETIME NULL DEFAULT NULL ;
+
+CREATE TABLE `employee`.`tb_leave` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `employee_id` VARCHAR(45) NOT NULL,
+  `from_date` DATE NULL,
+  `from_shift` VARCHAR(45) NULL,
+  `to_date` DATE NULL,
+  `to_shift` VARCHAR(45) NULL,
+  `no_of_days` VARCHAR(45) NULL,
+  `status` VARCHAR(45) NULL,
+  `approved_on` DATETIME NULL,
+  `approved_by` VARCHAR(45) NULL,
+  `leave_reason` VARCHAR(45) NULL,
+  `applied_by` VARCHAR(45) NULL,
+  `applied_on` DATETIME NULL,
+  PRIMARY KEY (`id`, `employee_id`),
+  UNIQUE INDEX `employee_id_UNIQUE` (`employee_id` ASC) VISIBLE);
+

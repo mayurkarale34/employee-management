@@ -286,51 +286,42 @@ def manage_attendance():
     except Exception as e:
         print("exception while rendering index page : "+ str(e))  
 
-
-
-
-
 @app.route('/retrive_tb_attendance', methods=["GET"])
 def retrive_tb_attendance():
-    connection = app._engine.connect()
+    connection =  app._engine.connect()
     transaction = connection.begin()
     response = {
-        "rows": [],
-        "total": 0,
-        "message": ""
+        "rows" : [],
+        "total" : 0,
+        "message" : ""
     }
     try:
-        date_filter = request.args.get('date_filter')
-        limit = request.args.get('limit', type=int)
-        offset = request.args.get('offset', type=int)
-
-        # Assuming the date format is day-month-year hour:minute:second (e.g., 17-12-2023 22:58:00)
-        attendance_date = datetime.strptime(date_filter, '%d-%B-%Y').strftime('%Y-%m-%d')
-
-        count_duery = text(f"SELECT count(1) as total FROM tb_attendance;")
-        result_count = connection.execute(count_duery)
-        response['total'] = result_count.fetchone()[0]
-
-        query = text(f"SELECT * FROM tb_attendance WHERE date_format(date, '%Y-%m-%d') = '{attendance_date}' LIMIT {limit} OFFSET {offset};")
-        result = connection.execute(query)
-        
-
+       
+        duery = text(f"select * from tb_leave;")
+        result = connection.execute(duery)
         if result.rowcount:
             for row in result:
                 response['rows'].append({
-                    "id": row[0],
-                    "employee_name": row[1],
-                    "date": row[2]
-                })
-
+                    "id" : row[0],
+                    "employee_name" : row[1],
+                    "from_date" : row[2],
+                    "from_shift" : row[3],
+                    "to_date" : row[4],
+                    "to_shift" : row[5],
+                    "no_of_days" : row[6],
+                    "leave_reason" : row[7],
+                    "status" : row[8],
+                    "approved_on" : row[9],
+                    "approved_by" : row[10],
+                    "leave_reason" : row[11],
+                    "applied_by" : row[12],
+                    "applied_on" : row[13]
+                    })
+        response['total'] = len(response['rows'])
         return jsonify(response)
     except Exception as e:
-        print("Error while retrieving attendance data: " + str(e))
+        print("Error while adding user : "+ str(e))
         return jsonify(response)
-
- 
-
-
     
 @app.route('/add_attendance', methods=["GET", "POST"])
 def add_attendance():
@@ -349,7 +340,7 @@ def add_attendance():
             connection.close()
             response['message'] = "Attendance entry already exists for this employee on the given date."
             flash("Attendance entry already exists for this employee on the given date.", "error")
-            return render_template('manage_attendance.html')
+            return redirect('/manage_attendance' )
             
         connection.execute(text(f"INSERT INTO tb_attendance(`employee_name`,`date`) VALUES ('{data['employee_name']}', '{attendance_date}');"))
         transaction.commit()
@@ -358,8 +349,91 @@ def add_attendance():
         response['status'] = True
         response['message'] = "You have successfully mark attendance!"
         flash(response['message'], 'success')
-        return render_template('manage_attendance.html' )
+        return redirect('/manage_attendance' )
     except Exception as e:
         print("Error while adding user, Please contact administrator. : "+ str(e))
         flash("Error while adding user. Please contact the administrator.", 'error')
-        return jsonify(response)                       
+        return jsonify(response)          
+
+@app.route('/manage_leave')
+def manage_leave(): 
+    try:
+        employees = retrive_employee ()
+        return render_template('manage_leave.html', employees=employees)
+    except Exception as e:
+        print("exception while rendering index page : "+ str(e))       
+
+@app.route('/retrive_tb_leave', methods=["GET"])
+def retrive_tb_leave():
+    connection = app._engine.connect()
+    transaction = connection.begin()
+    response = {
+        "rows": [],
+        "total": 0,
+        "message": ""
+    }
+    try:
+        search = request.args.get('search')
+        limit = request.args.get('limit', type=int)
+        offset = request.args.get('offset', type=int)
+
+        # Assuming the date format is day-month-year hour:minute:second (e.g., 17-12-2023 22:58:00)
+
+        count_duery = text(f"SELECT count(1) as total FROM tb_leave;")
+        result_count = connection.execute(count_duery)
+        response['total'] = result_count.fetchone()[0]
+
+        query = text(f"SELECT * FROM tb_leave ;")
+        result = connection.execute(query)
+        
+        if result.rowcount:
+            for row in result:
+                response['rows'].append({
+                    "id": row[0],
+                    "employee_name": row[1],
+                    "from_date": row[2],
+                    "from_shift": row[3],
+                    "to_date": row[4],
+                    "to_shift": row[5],
+                    "no_of_days": row[6],
+                    "leave_reason": row[10]
+                })
+
+        return jsonify(response)
+    except Exception as e:
+        print("Error while retrieving attendance data: " + str(e))
+        return jsonify(response)
+   
+@app.route('/apply_leave', methods=["GET", "POST"])
+def apply_leave():
+    response = {"status" : False, "message" : ""}
+    connection =  app._engine.connect() 
+    transaction = connection.begin() 
+    try:
+        data = dict(request.form)
+        from_date = datetime.strptime(data['from_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
+        to_date = datetime.strptime(data['to_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
+        existing_data = connection.execute(
+            text(f"SELECT * FROM tb_leave WHERE employee_id = '{data['employee_name']}'")).fetchone()
+
+        if existing_data:
+            # Duplicate entry found
+            transaction.rollback()
+            connection.close()
+            response['message'] = "Attendance entry already exists for this employee on the given date."
+            flash("Attendance entry already exists for this employee on the given date.", "error")
+            return redirect('/manage_leave' )
+            
+        connection.execute(text(f"INSERT INTO tb_leave(`employee_id`,`from_date`,`from_shift`,`to_date`,`to_shift`,`no_of_days`,`leave_reason`) VALUES ('{data['employee_name']}', '{from_date}','{data['from_shift']}','{to_date}','{data['to_shift']}','{data['no_of_days']}','{data['leave_reason']}');"))
+        transaction.commit()
+        connection.close()
+
+        response['status'] = True
+        response['message'] = "You have successfully mark attendance!"
+        flash(response['message'], 'success')
+        return redirect('/manage_leave' )
+    except Exception as e:
+        print("Error while adding user, Please contact administrator. : "+ str(e))
+        flash("Error while adding user. Please contact the administrator.", 'error')
+        return jsonify(response)          
+
