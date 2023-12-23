@@ -23,6 +23,13 @@
     <script src="/static/js/bootstrapValidator.min.js"></script>
     
     <title>Manage Attendance</title>
+    <script>
+        function statusFormatter(value, row) {
+          return '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#statusModal">Change Status</button>';
+        }
+       
+      </script>
+      
     
 </head>
 <body>
@@ -60,7 +67,8 @@
                             <th data-field="leave_reason" class="text-center">Leave Reason</th>
                             <th data-field="status" class="text-center">Status</th>
                             <th data-field="applied_by" class="text-center">Applied By</th>
-                            <th data-field="applied_on" class="text-center">Applies</th>
+                            <th data-field="applied_on" class="text-center">Applied On</th>
+                            <th data-field="status" class="text-center" data-formatter="statusFormatter">Apply</th>
                         </tr>      
                     </thead>
                 </table>
@@ -129,6 +137,39 @@
             </div>
         </div>
     </div>
+    <form id="statusForm" action="/status_update" method="POST">
+        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="statusModalLabel">Change Status</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="approved_on">Select Date</label>
+                            <input type="text" id="approved_on" name="approved_on" class="form-control" style="background-color:#ffffff"/>
+                        </div>
+                        <div class="form-group">
+                            <label for="approv">Select</label>
+                            <select id="approv" name="approv" class="form-control">
+                                <option value="pending">Pending</option>
+                                <option value="approved">Approved</option>
+                                <option value="denied">Denied</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                        <button type="submit" id="update_button" class="btn btn-success">Update</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    
     
     {% with messages = get_flashed_messages() %}
     {% if messages %}
@@ -144,6 +185,7 @@
     {% endif %}
 {% endwith %}
 <script>
+
     $('#leaveform').bootstrapValidator({
         feedbackIcons: {
             valid: 'glyphicon glyphicon-ok',
@@ -197,6 +239,10 @@
 
     })
 
+    $('#update_button').click(function (e) {
+        $('#statusForm').submit()});
+
+
     $('#applyleave_button').click(function (e) {
         $('#leaveform').submit();
     });
@@ -216,6 +262,11 @@ $('#from_date').datetimepicker({
 });
 
 $('#to_date').datetimepicker({
+    minView: 2,
+    format: 'dd-mm-yyyy',
+    autoclose: true
+});
+$('#approved_on').datetimepicker({
     minView: 2,
     format: 'dd-mm-yyyy',
     autoclose: true
@@ -277,6 +328,21 @@ function calculateDays() {
     
     
 }
+
+    function updateStatus(newStatus, rowId) {
+    // Perform the logic to update the status (AJAX call, etc.)
+    // Use rowId to identify the row that needs to be updated
+
+    // Example: You can update the status using an AJAX call
+    // $.ajax({
+    //   url: '/update_status',
+    //   method: 'POST',
+    //   data: { row_id: rowId, new_status: newStatus },
+    //   success: function(response) {
+    //     // Update the table or perform any necessary actions
+    //   }
+    // });
+  }
 </script>
 
     {% include 'footer1.html' %}
