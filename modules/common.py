@@ -53,3 +53,21 @@ def retrive_employee ():
     except Exception as e:
         print(e)
         return data
+    
+# def start_monitoring(route):
+    # timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    # print(f"{timestamp} : Start monitoring for route: {route}")
+    # Add your monitoring logic here
+
+# def stop_monitoring(route):
+   
+   
+    # Add your monitoring stop logic here
+
+# def monitoring_decorator(route_function):
+#     def wrapper(*args, **kwargs):
+#         start_monitoring(request.path)  # Assuming request is available in the context
+#         result = route_function(*args, **kwargs)
+#         stop_monitoring(request.path)  # Assuming request is available in the context
+#         return result
+#     return wrapper
