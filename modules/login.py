@@ -1,6 +1,7 @@
 
 
 @app.route('/login_page', methods=['GET', 'POST'])
+# @monitoring_decorator
 def login_page():
     try:
         return render_template('login.html')
@@ -122,8 +123,36 @@ def forgotpassword_page():
 @app.route('/log_out', methods=['GET' ,'POST']) 
 def log_out():
     try:
-        session.pop("email",none)
-        return render_template('index.html')
+        session.clear()
+        with app.app_context():
+         cache.clear()
+         print("Cache cleared")
+
+    # Create a response with no caching for the logout page
+        response = make_response(render_template('index.html'))
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        return response
     except Exception as e:
         print("exception while rendering index page : "+ str(e))
-        return redirect('/')
+        return render_template('index.html')
+    
+@app.route('/status_update', methods=["GET", "POST"])
+def status_update():
+    connection =  app._engine.connect()
+    transaction = connection.begin()
+    try:
+        data = dict(request.form)
+        approved_on = datetime.strptime(data['approved_on'], '%d-%m-%Y').strftime('%Y-%m-%d')
+        print("yes")
+        query = text(f"update tb_leave set status = '{data['approv']}', approved_on= '{approved_on}';")
+        connection.execute(query)
+        transaction.commit()
+        connection.close()
+        return redirect('/manage_leave')
+    except Exception as e:
+        transaction.rollback()
+        connection.close()
+        print("Error while updating user : "+ str(e))
+        return redirect('/manage_leave')  
+
+                           

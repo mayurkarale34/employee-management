@@ -1,5 +1,6 @@
 
 @app.route('/')
+@cache.cached(timeout=60)
 def index():
     try:
         var1 = "Welcome to the Python Flask"
@@ -7,7 +8,14 @@ def index():
     except Exception as e:
         print("exception while rendering index page : "+ str(e))
 
+@app.route('/clear_cache')
+def clear_cache():
+    cache.clear()
+    print("clear cache")
+    return 'Cache cleared'
+
 @app.route('/home')
+
 def home():
     try:
         var1 = "Welcome to the Python Flask"
@@ -85,22 +93,6 @@ def add_employee_page():
     except Exception as e:
         print("exception while rendering add_employee page : "+ str(e))
         return redirect('/')
-
-import random
-import string
-def generate_employee_id(data):
-    name = 'john'
-    # Concatenate the first and last name
-    name_concatenated = str(data['first_name']).upper()[0] + str(data['last_name']).upper()[0]
-    # Generate a random 4-digit number
-    random_number = ''.join(random.choices(string.digits, k=4))
-    # Combine the name and random number to form the employee_id
-    employee_id = name_concatenated + str(random_number)
-    # if employee_id_not_duplicate(employee_id):
-    #     return employee_id
-    
-    # return generate_employee_id(data)
-    return employee_id
   
 @app.route('/add_user', methods=['POST'])
 def add_user():
@@ -144,7 +136,6 @@ def retrive_tb_manage_employee():
         "message" : ""
     }
     try:
-       
         duery = text(f"select * from tb_manage_employee;")
         result = connection.execute(duery)
         if result.rowcount:
@@ -202,39 +193,25 @@ def add_metadata():
         "status": False,
         "message": ""
     }
-
     try:
         data = request.get_json()
         # Check for existing data
-        existing_data = connection.execute(
-    text("SELECT element, type FROM tb_metadata WHERE element = :element AND type = :type"),
-    {"element": data['element'], "type": data['type']}
-).fetchone()
-
-
-
+        existing_data = connection.execute(text("SELECT element, type FROM tb_metadata WHERE element = :element AND type = :type"),{"element": data['element'], "type": data['type']}).fetchone()
         if existing_data:
             transaction.rollback()
             response['message'] = "Metadata already exists!"
         else:
             # Insert new metadata
-            connection.execute(
-    text("INSERT INTO tb_metadata (`element`, `type`) VALUES (:element, :type)"),
-    {"element": data['element'], "type": data['type']}
-)
-
+            connection.execute(text("INSERT INTO tb_metadata (`element`, `type`) VALUES (:element, :type)"),{"element": data['element'], "type": data['type']})
             transaction.commit()
             response['status'] = True
             response['message'] = "Metadata added successfully"
-
     except Exception as e:
         transaction.rollback()
         response['message'] = f"Error while adding metadata: {str(e)}"
     finally:
         connection.close()
-
     return jsonify(response)
-    
 
 @app.route('/retrive_metadata', methods=["GET"])
 def retrive_metadata():
@@ -296,7 +273,6 @@ def retrive_tb_attendance():
         "message" : ""
     }
     try:
-       
         duery = text(f"select * from tb_leave;")
         result = connection.execute(duery)
         if result.rowcount:
@@ -396,6 +372,8 @@ def retrive_tb_leave():
                     "to_date": row[4],
                     "to_shift": row[5],
                     "no_of_days": row[6],
+                    "status": row[7],
+                    "approved_on": row[8],
                     "leave_reason": row[10]
                 })
 
