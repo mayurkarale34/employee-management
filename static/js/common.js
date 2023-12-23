@@ -269,13 +269,7 @@ date2 = new Date(date2);
 var Difference_In_Time = date2.getTime() - date1.getTime();
 
 var Difference_In_Days = Difference_In_Time / (1000 * 3600 * 24);
-if (Difference_In_Days < 0){
-	return true
-}
-else{
-	return false
-}
-
+return Difference_In_Days;
 }
 
 // on every ajax call send a access token

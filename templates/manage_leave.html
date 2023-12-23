@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
     <link rel="stylesheet" href="/static/css/select2-bootstrap.css">
     <link rel="stylesheet" href="/static/css/select2.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrapValidator.min.css">
     <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
 
     <script src="/static/js/jquery-2.1.3.min.js"></script>
@@ -19,6 +20,7 @@
     <script src="/static/js/daterangepicker.min.js"></script>
     <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
     <script src="/static/js/select2.min.js"></script>
+    <script src="/static/js/bootstrapValidator.min.js"></script>
     
     <title>Manage Attendance</title>
     <script>
@@ -99,9 +101,8 @@
                         <div class="form-group">
                             <label for="from_shift">Form Shift</label>
                             <select id="from_shift" name="from_shift" class="form-control" style="background-color:#ffffff">
-                                <option value="">Please select shift</option>
-                                <option value="half">Half</option>
-                                <option value="full">Full</option>
+                                <option value="First Half" selected>First Half</option>
+                                <option value="Second Half">Second Half</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -112,15 +113,14 @@
                         <div class="form-group">
                             <label for="to_shift">To Shift</label>
                             <select id="to_shift" name="to_shift" class="form-control" style="background-color:#ffffff">
-                                <option value="">Please select shift</option>
-                                <option value="half">Half</option>
-                                <option value="full">Full</option>
+                                <option value="First Half">First Half</option>
+                                <option value="Second Half" selected>Second Half</option>
                             </select>
                         </div>
 
                         <div class="form-group">
                             <label for="no_of_days">Total Days</label>
-                            <input type="text" id="no_of_days" name="no_of_days" class="form-control" placeholder="select days" readonly style="background-color:#ffffff"/>
+                            <input type="text" id="no_of_days" name="no_of_days" class="form-control" placeholder="select days" readonly />
                         </div>
 
                         <div class="form-group">
@@ -185,8 +185,63 @@
     {% endif %}
 {% endwith %}
 <script>
+
+    $('#leaveform').bootstrapValidator({
+        feedbackIcons: {
+            valid: 'glyphicon glyphicon-ok',
+            invalid: 'glyphicon glyphicon-remove',
+            validating: 'glyphicon glyphicon-refresh'
+        },
+        fields: {
+            employee_name: {
+                validators: {
+                    notEmpty: {
+                        message : "Please select employee Name"
+                    }
+                }
+            },
+            from_date: {
+                validators: {
+                    notEmpty: {
+                        message : "Please select from date"
+                    },
+                    date: {
+                        format: 'dd-mm-yyyy',
+                        message: 'Date format should be dd-mm-yyyy'
+                    }
+                }
+            },
+            to_date: {
+                validators: {
+                    notEmpty: {
+                        message : "Please select to date"
+                    },
+                    date: {
+                        format: 'dd-mm-yyyy',
+                        message: 'Date format should be dd-mm-yyyy'
+                    }
+                }
+            },
+            // leave_reason: {
+            //     validators: {
+            //         notEmpty: {
+            //             message : "Please provide leave reason"
+            //         },
+            //         stringLength: {
+            //             min: 5,
+            //             max: 10,
+            //             message : 'should be 5 to 10 character'
+            //         }
+            //     }
+            // }
+        }
+    }).on('success.form.bv', function(e){
+
+    })
+
     $('#update_button').click(function (e) {
         $('#statusForm').submit()});
+
 
     $('#applyleave_button').click(function (e) {
         $('#leaveform').submit();
@@ -242,24 +297,36 @@ $('select').select2({
 	theme : 'bootstrap'
 })
 
+$('#from_date, #to_date, #from_shift, #to_shift').change(function (e){
+    // $('#from_date').closest('form').bootstrapValidator('revalidateField', $('#from_date').prop('name'))
+    // $('#to_date').closest('form').bootstrapValidator('revalidateField', $('#to_date').prop('name'))
+    calculateDays();
+});
+
 function calculateDays() {
-    var shift = document.getElementById("from_shift").value;
-    var startDate = new Date(document.getElementById("from_date").value);
-    var endDate = new Date(document.getElementById("to_date").value);
-
-    if (!isNaN(startDate.getTime()) && !isNaN(endDate.getTime())) {
-        var timeDiff = Math.abs(endDate.getTime() - startDate.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-
-        // Adjust the total days based on the selected shift
-        if (shift === "half") {
-            diffDays = diffDays / 2;
+    let from_date = $('#from_date').val();
+    let from_shift = $('#from_shift').val();
+    let to_date = $('#to_date').val();
+    let to_shift = $('#to_shift').val();
+   
+    if(from_date != '' && to_date != ''){
+        let no_of_days = get_date_difference(from_date, to_date) + 1;
+        
+        if(from_shift == 'Second Half'){
+            no_of_days -= 0.5;
         }
 
-        document.getElementById("no_of_days").value = diffDays;
-    } else {
-        document.getElementById("no_of_days").value = "";
+        if(to_shift == 'First Half'){
+            no_of_days -= 0.5;
+        }
+
+        $('#no_of_days').val(no_of_days);
     }
+    else{
+        $('#no_of_days').val('');
+    }
+    
+    
 }
 
     function updateStatus(newStatus, rowId) {
