@@ -27,6 +27,19 @@
         function statusFormatter(value, row) {
           return '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#statusModal">Change Status</button>';
         }
+
+
+        // function statusFormatter(value, row) {
+        //   return '<a class = "approve_leave" href = "#"><b> Approve</b></a>';
+        // }
+
+        // window.actionEvents = {
+        //     'click .approve_leave':  function (e, value, row, index){
+        //         alert('clicked');
+        //         // $('#leave_id').val(row['id']);
+        //         // $('#statusModal').modal('show');
+        //     }
+        // }
        
       </script>
       
@@ -68,7 +81,7 @@
                             <th data-field="status" class="text-center">Status</th>
                             <th data-field="applied_by" class="text-center">Applied By</th>
                             <th data-field="applied_on" class="text-center">Applied On</th>
-                            <th data-field="status" class="text-center" data-formatter="statusFormatter">Apply</th>
+                            <th data-field="status" class="text-center" data-formatter="statusFormatter" data-action="actionEvents">Apply</th>
                         </tr>      
                     </thead>
                 </table>

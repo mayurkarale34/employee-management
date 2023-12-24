@@ -63,11 +63,3 @@ def retrive_employee ():
    
    
     # Add your monitoring stop logic here
-
-# def monitoring_decorator(route_function):
-#     def wrapper(*args, **kwargs):
-#         start_monitoring(request.path)  # Assuming request is available in the context
-#         result = route_function(*args, **kwargs)
-#         stop_monitoring(request.path)  # Assuming request is available in the context
-#         return result
-#     return wrapper
