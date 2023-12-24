@@ -39,9 +39,26 @@ def manage_metadata():
     except Exception as e:
         print("exception while rendering index page : "+ str(e))           
 
+def login_required(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        try:
+            print("login required called")
+            if 'logged_user_name' in session:
+                return func(*args, **kwargs)
+            else:
+                return redirect('/login_page')
+        except Exception as e:
+            print(e)
+            # You might want to handle exceptions more appropriately, log them, or customize the behavior.
+            return Response("Internal Server Error", status=500)
+    return wrap
+
 @app.route('/resource', methods=['GET', 'POST'])
+@login_required
 def resource():
    try:
+        
         role_options = retrive_metadata_by_type("role")
         return render_template('resource.html', role_options=role_options)
 
