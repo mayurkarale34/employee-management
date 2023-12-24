@@ -1,4 +1,30 @@
 
+def login_required(func):
+    @wraps(func)
+    def wrap(*args, **kwargs):
+        try:
+            print("login required called")
+            if 'logged_user_name' in session:
+                return func(*args, **kwargs)
+            else:
+                return redirect('/login_page')
+        except Exception as e:
+            print(e)
+            # You might want to handle exceptions more appropriately, log them, or customize the behavior.
+            return Response("Internal Server Error", status=500)
+    return wrap
+
+def runtime_logger(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        app.logger.info('*** Start monitoring ' + func.__name__ + '()')
+        result = func(*args, **kwargs)
+        app.logger.info('*** Stop monitoring ' + func.__name__ + '()')
+
+        return result
+    return wrapper
+
 @app.route('/')
 @cache.cached(timeout=60)
 def index():
@@ -15,23 +41,16 @@ def clear_cache():
     return 'Cache cleared'
 
 @app.route('/home')
-
 def home():
     try:
         var1 = "Welcome to the Python Flask"
         return render_template('manage_resources.html', var = var1)
     except Exception as e:
         print("exception while rendering index page : "+ str(e))
-                
-@app.route('/helpd')
-def helpd():
-    try:
-        var1 = "Welcome to the Python Flask"
-        return render_template('helpdesk.html', var = var1)
-    except Exception as e:
-        print("exception while rendering index page : "+ str(e))
 
 @app.route('/manage_metadata')
+@login_required
+@runtime_logger
 def manage_metadata():
     try:
         var1 = "Welcome to the Python Flask"
@@ -39,23 +58,9 @@ def manage_metadata():
     except Exception as e:
         print("exception while rendering index page : "+ str(e))           
 
-def login_required(func):
-    @wraps(func)
-    def wrap(*args, **kwargs):
-        try:
-            print("login required called")
-            if 'logged_user_name' in session:
-                return func(*args, **kwargs)
-            else:
-                return redirect('/login_page')
-        except Exception as e:
-            print(e)
-            # You might want to handle exceptions more appropriately, log them, or customize the behavior.
-            return Response("Internal Server Error", status=500)
-    return wrap
-
 @app.route('/resource', methods=['GET', 'POST'])
 @login_required
+@runtime_logger
 def resource():
    try:
         
@@ -69,6 +74,8 @@ def resource():
 
     
 @app.route('/retrive_user_master', methods=["GET"])
+@login_required
+@runtime_logger
 def retrive_user_master():
     connection =  app._engine.connect()
     transaction = connection.begin()
@@ -100,6 +107,8 @@ def retrive_user_master():
         return jsonify(response)
     
 @app.route('/add_employee_page', methods=['GET', 'POST'])
+@login_required
+@runtime_logger
 def add_employee_page():
     try:
         cities = retrive_metadata_by_type("City")
@@ -112,6 +121,8 @@ def add_employee_page():
         return redirect('/')
   
 @app.route('/add_user', methods=['POST'])
+@login_required
+@runtime_logger
 def add_user():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
@@ -136,6 +147,8 @@ def add_user():
         return jsonify(response)
     
 @app.route('/employee_management')
+@login_required
+@runtime_logger
 def employee_management():
     try:
         var1 = "Welcome to the Python Flask"
@@ -144,6 +157,8 @@ def employee_management():
         print("exception while rendering index page : "+ str(e))    
 
 @app.route('/retrive_tb_manage_employee', methods=["GET"])
+@login_required
+@runtime_logger
 def retrive_tb_manage_employee():
     connection =  app._engine.connect()
     transaction = connection.begin()
@@ -186,6 +201,8 @@ def retrive_tb_manage_employee():
         return jsonify(response)
                             
 @app.route('/update_user', methods=["GET", "POST"])
+@login_required
+@runtime_logger
 def update_user():
     connection =  app._engine.connect()
     transaction = connection.begin()
@@ -203,6 +220,8 @@ def update_user():
         return redirect('/resource')                                
 
 @app.route('/add_metadata', methods=["POST"])
+@login_required
+@runtime_logger
 def add_metadata():
     connection = app._engine.connect()
     transaction = connection.begin()
@@ -231,6 +250,8 @@ def add_metadata():
     return jsonify(response)
 
 @app.route('/retrive_metadata', methods=["GET"])
+@login_required
+@runtime_logger
 def retrive_metadata():
     connection =  app._engine.connect()
     transaction = connection.begin()
@@ -273,6 +294,8 @@ def retrive_metadata():
         return jsonify(response)
     
 @app.route('/manage_attendance')
+@login_required
+@runtime_logger
 def manage_attendance(): 
     try:
         employees = retrive_employee ()
@@ -281,6 +304,8 @@ def manage_attendance():
         print("exception while rendering index page : "+ str(e))  
 
 @app.route('/retrive_tb_attendance', methods=["GET"])
+@login_required
+@runtime_logger
 def retrive_tb_attendance():
     connection =  app._engine.connect()
     transaction = connection.begin()
@@ -317,6 +342,8 @@ def retrive_tb_attendance():
         return jsonify(response)
     
 @app.route('/add_attendance', methods=["GET", "POST"])
+@login_required
+@runtime_logger
 def add_attendance():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
@@ -349,6 +376,8 @@ def add_attendance():
         return jsonify(response)          
 
 @app.route('/manage_leave')
+@login_required
+@runtime_logger
 def manage_leave(): 
     try:
         employees = retrive_employee ()
@@ -357,6 +386,8 @@ def manage_leave():
         print("exception while rendering index page : "+ str(e))       
 
 @app.route('/retrive_tb_leave', methods=["GET"])
+@login_required
+@runtime_logger
 def retrive_tb_leave():
     connection = app._engine.connect()
     transaction = connection.begin()
@@ -400,6 +431,8 @@ def retrive_tb_leave():
         return jsonify(response)
    
 @app.route('/apply_leave', methods=["GET", "POST"])
+@login_required
+@runtime_logger
 def apply_leave():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
