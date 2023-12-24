@@ -12,6 +12,8 @@ from cryptography.fernet import Fernet
 
 from config import ENCRYPTION_KEY
 
+from functools import wraps
+
 def init_engine(app):
     app._engine = create_engine('mysql://' + DATABASE_USERNAME + ':' + DATABASE_PASSWORD + '@' + DATABASE_HOSTNAME + '/' + DATABASE_NAME + '?charset=utf8', echo = False, pool_size = 50, max_overflow = 16, pool_recycle = 300)
 
