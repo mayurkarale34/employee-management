@@ -3,7 +3,6 @@ def login_required(func):
     @wraps(func)
     def wrap(*args, **kwargs):
         try:
-            print("login required called")
             if 'logged_user_name' in session:
                 return func(*args, **kwargs)
             else:
@@ -37,7 +36,6 @@ def index():
 @app.route('/clear_cache')
 def clear_cache():
     cache.clear()
-    print("clear cache")
     return 'Cache cleared'
 
 @app.route('/home')
@@ -63,16 +61,13 @@ def manage_metadata():
 @runtime_logger
 def resource():
    try:
-        
         role_options = retrive_metadata_by_type("role")
         return render_template('resource.html', role_options=role_options)
-
    except Exception as e:
         print("Error while fetching role options: " + str(e))
         # Handle the error gracefully, perhaps redirect to an error page or return an appropriate response
         return render_template('error.html', error_message="An error occurred.")
 
-    
 @app.route('/retrive_user_master', methods=["GET"])
 @login_required
 @runtime_logger

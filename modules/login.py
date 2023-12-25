@@ -1,7 +1,6 @@
 
 
 @app.route('/login_page', methods=['GET', 'POST'])
-# @monitoring_decorator
 def login_page():
     try:
         return render_template('login.html')
@@ -58,6 +57,8 @@ def signup_page():
         return redirect('/')
     
 @app.route('/manage_resources', methods=['GET'])
+@login_required
+@runtime_logger
 def manage_resources():
     try:
         return render_template('manage_resources1.html')
@@ -86,7 +87,6 @@ def sign_up():
             pdb.set_trace()"""
             login_id = generate_login_id()
             enc = encrypt_password(ENCRYPTION_KEY, data['confirmpassword'])
-            print(login_id)
             
             query = connection.execute(
                 text("INSERT INTO tluser(`first_name`, `last_name`, `email_id`, `contact_no`, `password`, `login_id`) "
@@ -126,7 +126,6 @@ def log_out():
         session.clear()
         with app.app_context():
          cache.clear()
-         print("Cache cleared")
 
     # Create a response with no caching for the logout page
         response = make_response(render_template('index.html'))
@@ -137,14 +136,15 @@ def log_out():
         return render_template('index.html')
     
 @app.route('/status_update', methods=["GET", "POST"])
+@login_required
+@runtime_logger
 def status_update():
     connection =  app._engine.connect()
     transaction = connection.begin()
     try:
         data = dict(request.form)
         approved_on = datetime.strptime(data['approved_on'], '%d-%m-%Y').strftime('%Y-%m-%d')
-        print("yes")
-        query = text(f"update tb_leave set status = '{data['approv']}', approved_on= '{approved_on}';")
+        query = text(f"UPDATE tb_leave SET status = '{data['approv']}', approved_on = '{approved_on}' WHERE id = '{data['leave_id']}'")
         connection.execute(query)
         transaction.commit()
         connection.close()

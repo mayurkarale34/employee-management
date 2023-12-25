@@ -25,7 +25,13 @@
     <title>Manage Attendance</title>
     <script>
         function statusFormatter(value, row) {
-          return '<button class="btn btn-info btn-sm" data-toggle="modal" data-target="#statusModal">Change Status</button>';
+          return '<button class="btn btn-info btn-sm change-status" data-toggle="modal" data-target="#statusModal"  data-id="' + row.id + '">Change Status</button>';
+        }
+        window.actionEvent = {
+            'click .change-status': function(e, value, row, index) {
+                $('#leave_id').val(row.id);
+                $('#statusForm').modal('show');
+            }
         }
 
 
@@ -81,7 +87,7 @@
                             <th data-field="status" class="text-center">Status</th>
                             <th data-field="applied_by" class="text-center">Applied By</th>
                             <th data-field="applied_on" class="text-center">Applied On</th>
-                            <th data-field="status" class="text-center" data-formatter="statusFormatter" data-action="actionEvents">Apply</th>
+                            <th data-field="" class="text-center" data-formatter="statusFormatter" data-events="actionEvent">Apply</th>
                         </tr>      
                     </thead>
                 </table>
@@ -168,12 +174,14 @@
                         <div class="form-group">
                             <label for="approv">Select</label>
                             <select id="approv" name="approv" class="form-control">
-                                <option value="pending">Pending</option>
-                                <option value="approved">Approved</option>
-                                <option value="denied">Denied</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Approved">Approved</option>
+                                <option value="Denied">Denied</option>
                             </select>
                         </div>
                     </div>
+                    <input type="text" name="leave_id" id="leave_id" hidden>
+
                     <div class="modal-footer">
                         <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                         <button type="submit" id="update_button" class="btn btn-success">Update</button>
@@ -199,42 +207,42 @@
 {% endwith %}
 <script>
 
-    $('#leaveform').bootstrapValidator({
-        feedbackIcons: {
-            valid: 'glyphicon glyphicon-ok',
-            invalid: 'glyphicon glyphicon-remove',
-            validating: 'glyphicon glyphicon-refresh'
-        },
-        fields: {
-            employee_name: {
-                validators: {
-                    notEmpty: {
-                        message : "Please select employee Name"
-                    }
-                }
-            },
-            from_date: {
-                validators: {
-                    notEmpty: {
-                        message : "Please select from date"
-                    },
-                    date: {
-                        format: 'dd-mm-yyyy',
-                        message: 'Date format should be dd-mm-yyyy'
-                    }
-                }
-            },
-            to_date: {
-                validators: {
-                    notEmpty: {
-                        message : "Please select to date"
-                    },
-                    date: {
-                        format: 'dd-mm-yyyy',
-                        message: 'Date format should be dd-mm-yyyy'
-                    }
-                }
-            },
+    // $('#leaveform').bootstrapValidator({
+    //     feedbackIcons: {
+    //         valid: 'glyphicon glyphicon-ok',
+    //         invalid: 'glyphicon glyphicon-remove',
+    //         validating: 'glyphicon glyphicon-refresh'
+    //     },
+    //     fields: {
+    //         employee_name: {
+    //             validators: {
+    //                 notEmpty: {
+    //                     message : "Please select employee Name"
+    //                 }
+    //             }
+    //         },
+    //         from_date: {
+    //             validators: {
+    //                 notEmpty: {
+    //                     message : "Please select from date"
+    //                 },
+    //                 date: {
+    //                     format: 'dd-mm-yyyy',
+    //                     message: 'Date format should be dd-mm-yyyy'
+    //                 }
+    //             }
+    //         },
+    //         to_date: {
+    //             validators: {
+    //                 notEmpty: {
+    //                     message : "Please select to date"
+    //                 },
+    //                 date: {
+    //                     format: 'dd-mm-yyyy',
+    //                     message: 'Date format should be dd-mm-yyyy'
+    //                 }
+    //             }
+    //         },
             // leave_reason: {
             //     validators: {
             //         notEmpty: {
@@ -247,10 +255,10 @@
             //         }
             //     }
             // }
-        }
-    }).on('success.form.bv', function(e){
+    //     }
+    // }).on('success.form.bv', function(e){
 
-    })
+    // })
 
     $('#update_button').click(function (e) {
         $('#statusForm').submit()});
@@ -342,20 +350,6 @@ function calculateDays() {
     
 }
 
-    function updateStatus(newStatus, rowId) {
-    // Perform the logic to update the status (AJAX call, etc.)
-    // Use rowId to identify the row that needs to be updated
-
-    // Example: You can update the status using an AJAX call
-    // $.ajax({
-    //   url: '/update_status',
-    //   method: 'POST',
-    //   data: { row_id: rowId, new_status: newStatus },
-    //   success: function(response) {
-    //     // Update the table or perform any necessary actions
-    //   }
-    // });
-  }
 </script>
 
     {% include 'footer1.html' %}
