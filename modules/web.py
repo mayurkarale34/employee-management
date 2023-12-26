@@ -379,51 +379,6 @@ def manage_leave():
         return render_template('manage_leave.html', employees=employees)
     except Exception as e:
         print("exception while rendering index page : "+ str(e))       
-
-@app.route('/retrive_tb_leave', methods=["GET"])
-@login_required
-@runtime_logger
-def retrive_tb_leave():
-    connection = app._engine.connect()
-    transaction = connection.begin()
-    response = {
-        "rows": [],
-        "total": 0,
-        "message": ""
-    }
-    try:
-        search = request.args.get('search')
-        limit = request.args.get('limit', type=int)
-        offset = request.args.get('offset', type=int)
-
-        # Assuming the date format is day-month-year hour:minute:second (e.g., 17-12-2023 22:58:00)
-
-        count_duery = text(f"SELECT count(1) as total FROM tb_leave;")
-        result_count = connection.execute(count_duery)
-        response['total'] = result_count.fetchone()[0]
-
-        query = text(f"SELECT * FROM tb_leave ;")
-        result = connection.execute(query)
-        
-        if result.rowcount:
-            for row in result:
-                response['rows'].append({
-                    "id": row[0],
-                    "employee_name": row[1],
-                    "from_date": row[2],
-                    "from_shift": row[3],
-                    "to_date": row[4],
-                    "to_shift": row[5],
-                    "no_of_days": row[6],
-                    "status": row[7],
-                    "approved_on": row[8],
-                    "leave_reason": row[10]
-                })
-
-        return jsonify(response)
-    except Exception as e:
-        print("Error while retrieving attendance data: " + str(e))
-        return jsonify(response)
    
 @app.route('/apply_leave', methods=["GET", "POST"])
 @login_required
@@ -459,4 +414,3 @@ def apply_leave():
         print("Error while adding user, Please contact administrator. : "+ str(e))
         flash("Error while adding user. Please contact the administrator.", 'error')
         return jsonify(response)          
-
