@@ -27,9 +27,28 @@ def integrate():
         app_run = fin.read()
         fin.close()
 
+        # ========================================================================
+
+        # create Leave management combine file
+        fin = open("modules/manage_leave/web/manage_leave.py", "r")
+        web_manage_leave = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_leave/api/manage_leave.py", "r")
+        api_manage_leave = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_leave/common/manage_leave.py", "r")
+        common_manage_leave = fin.read()
+        fin.close()
+        
+        manage_leave = web_manage_leave + api_manage_leave + common_manage_leave
+
+        # ========================================================================
+
         # Create combine file of content of all the python files
         # Note: app_run should be at last
-        combine_file = app_init + web_file + web_login +  common_file + app_run
+        combine_file = app_init + web_file + web_login +  common_file + manage_leave + app_run
 
         # Created new app file to run the app
         fout = open("employee.py", 'w')

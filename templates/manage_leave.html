@@ -25,27 +25,14 @@
     <title>Manage Attendance</title>
     <script>
         function statusFormatter(value, row) {
-          return '<button class="btn btn-info btn-sm change-status" data-toggle="modal" data-target="#statusModal"  data-id="' + row.id + '">Change Status</button>';
-        }
-        window.actionEvent = {
-            'click .change-status': function(e, value, row, index) {
-                $('#leave_id').val(row.id);
-                $('#statusForm').modal('show');
+            if(row.status =='New'){
+                return '<button class="btn btn-success btn-sm" onclick="approve_leave(' + row.id + ')">Approve</button>';
             }
+            else{
+                return '<button class="btn btn-success btn-sm" disabled>Approve</button>';
+            }
+          
         }
-
-
-        // function statusFormatter(value, row) {
-        //   return '<a class = "approve_leave" href = "#"><b> Approve</b></a>';
-        // }
-
-        // window.actionEvents = {
-        //     'click .approve_leave':  function (e, value, row, index){
-        //         alert('clicked');
-        //         // $('#leave_id').val(row['id']);
-        //         // $('#statusModal').modal('show');
-        //     }
-        // }
        
       </script>
       
@@ -77,6 +64,7 @@
                     <thead>
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
+                            <th data-field="employee_id" class="text-center">Employee ID</th>
                             <th data-field="employee_name" class="text-center">Employee Name</th>
                             <th data-field="from_date" class="text-center">From Date</th>
                             <th data-field="from_shift" class="text-center">From Shift</th>
@@ -87,7 +75,9 @@
                             <th data-field="status" class="text-center">Status</th>
                             <th data-field="applied_by" class="text-center">Applied By</th>
                             <th data-field="applied_on" class="text-center">Applied On</th>
-                            <th data-field="" class="text-center" data-formatter="statusFormatter" data-events="actionEvent">Apply</th>
+                            <th data-field="approved_by" class="text-center" data-visible="false">Approved By</th>
+                            <th data-field="approved_on" class="text-center" data-visible="false">Approved On</th>
+                            <th data-field="" class="text-center" data-formatter="statusFormatter">Approve</th>
                         </tr>      
                     </thead>
                 </table>
@@ -156,42 +146,7 @@
             </div>
         </div>
     </div>
-    <form id="statusForm" action="/status_update" method="POST">
-        <div class="modal fade" id="statusModal" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="statusModalLabel">Change Status</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label for="approved_on">Select Date</label>
-                            <input type="text" id="approved_on" name="approved_on" class="form-control" style="background-color:#ffffff"/>
-                        </div>
-                        <div class="form-group">
-                            <label for="approv">Select</label>
-                            <select id="approv" name="approv" class="form-control">
-                                <option value="Pending">Pending</option>
-                                <option value="Approved">Approved</option>
-                                <option value="Denied">Denied</option>
-                            </select>
-                        </div>
-                    </div>
-                    <input type="text" name="leave_id" id="leave_id" hidden>
 
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                        <button type="submit" id="update_button" class="btn btn-success">Update</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
-    
-    
     {% with messages = get_flashed_messages() %}
     {% if messages %}
         <script>
@@ -302,7 +257,6 @@ function queryParams(params) {
     if (params.search == undefined || params.search == '') {
         params.search = '';
     }
-    params.date_filter = $('#date_filter').val();
     // Add pagination parameters
     params.limit = params.limit || 10;
     params.offset = params.offset || 0;
@@ -349,6 +303,26 @@ function calculateDays() {
     
     
 }
+
+    function approve_leave(leave_id){
+        if(confirm("Are you sure want to approve leave?")){
+            $.ajax({
+                type: "POST",
+                url: "/approve_leave",
+                contentType: 'application/json; charset=utf-8', // Fix the typo here
+                dataType: 'json',
+                data: JSON.stringify({"leave_id": leave_id}),
+                success: function (response) {
+                        alert(response.message)
+                        $('#table_user_master').bootstrapTable('refresh');
+                }
+            });
+        }
+        else{
+            return false;
+        }
+        
+    }
 
 </script>
 
