@@ -8,12 +8,21 @@ def get_all_attendance_info(data, connection):
         "total" : 0
     }
     try:
-        count_duery = text(f"SELECT count(1) as total FROM tb_attendance;")
-        result_count = connection.execute(count_duery)
-        response['total'] = result_count.fetchone()[0]
 
-        query = text(f"SELECT tba.id, tba.employee_id,tba.date FROM tb_attendance tba left join tb_manage_employee tbme on(tba.employee_id = tbme.employee_id);")
-        result = connection.execute(query)
+        if data['search'] == '':
+            count_duery = text(f"SELECT count(1) as total FROM tb_attendance;")
+            result_count = connection.execute(count_duery)
+            response['total'] = result_count.fetchone()[0]
+
+            query = text(f"SELECT tba.id, tba.employee_id,tba.date FROM tb_attendance tba left join tb_manage_employee tbme on(tba.employee_id = tbme.employee_id) limit {data['offset']}, {data['limit']};")
+            result = connection.execute(query)
+        else:
+            count_duery = text(f"SELECT count(1) as total FROM tb_attendance;")
+            result_count = connection.execute(count_duery)
+            response['total'] = result_count.fetchone()[0]
+
+            query = text(f"SELECT tba.id, tba.employee_id,tba.date FROM tb_attendance tba left join tb_manage_employee tbme on(tba.employee_id = tbme.employee_id) where concat(COALESCE(tba.employee_id, ''), ' ', COALESCE(tba.date, '')) like '%{data['search']}%' limit {data['offset']}, {data['limit']};")
+            result = connection.execute(query)
         
         if result.rowcount:
             for row in result:
