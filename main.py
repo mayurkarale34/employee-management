@@ -46,9 +46,60 @@ def integrate():
 
         # ========================================================================
 
+        # create employee management combine file
+        fin = open("modules/manage_employee/web/manage_employee.py", "r")
+        web_manage_emplyoee = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_employee/api/manage_employee.py", "r")
+        api_manage_employee = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_employee/common/manage_employee.py", "r")
+        common_manage_employee = fin.read()
+        fin.close()
+        
+        manage_employee = web_manage_emplyoee + api_manage_employee + common_manage_employee
+
+        # ==========================================================================
+
+        # create Leave management combine file
+        fin = open("modules/manage_resources/web/manage_resources.py", "r")
+        web_manage_resources = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_resources/api/manage_resources.py", "r")
+        api_manage_resources = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_resources/common/manage_resources.py", "r")
+        common_manage_resources = fin.read()
+        fin.close()
+        
+        manage_resources = web_manage_resources + api_manage_resources + common_manage_resources
+
+        # ===========================================================================
+
+        # create Leave management combine file
+        fin = open("modules/manage_attendance/web/manage_attendance.py", "r")
+        web_manage_attendance = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_attendance/api/manage_attendance.py", "r")
+        api_manage_attendance = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_attendance/common/manage_attendance.py", "r")
+        common_manage_attendance = fin.read()
+        fin.close()
+        
+        manage_attendance = web_manage_attendance + api_manage_attendance + common_manage_attendance
+
+        # ========================================================================
+
         # Create combine file of content of all the python files
         # Note: app_run should be at last
-        combine_file = app_init + web_file + web_login +  common_file + manage_leave + app_run
+        combine_file = app_init + web_file + web_login +  common_file + manage_leave + manage_employee + manage_resources + manage_attendance + app_run
 
         # Created new app file to run the app
         fout = open("employee.py", 'w')

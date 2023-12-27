@@ -67,3 +67,48 @@ def approve_leave():
         connection.close()
         response['message'] = "Error while approving the leave, Please contact to Admin"
         return jsonify(response)
+
+@app.route('/manage_leave')
+@login_required
+@runtime_logger
+def manage_leave(): 
+    try:
+        employees = retrive_employee ()
+        return render_template('manage_leave.html', employees=employees)
+    except Exception as e:
+        print("exception while rendering index page : "+ str(e))
+
+@app.route('/apply_leave', methods=["GET", "POST"])
+@login_required
+@runtime_logger
+def apply_leave():
+    response = {"status" : False, "message" : ""}
+    connection =  app._engine.connect() 
+    transaction = connection.begin() 
+    try:
+        data = dict(request.form)
+        from_date = datetime.strptime(data['from_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
+        to_date = datetime.strptime(data['to_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
+        existing_data = connection.execute(
+            text(f"SELECT * FROM tb_leave WHERE employee_id = '{data['employee_name']}' AND from_date = '{from_date}'")).fetchone()
+        
+        if existing_data:
+            # Duplicate entry found
+            transaction.rollback()
+            connection.close()
+            response['message'] = "Attendance entry already exists for this employee on the given date."
+            flash("Attendance entry already exists for this employee on the given date.", "error")
+            return redirect('/manage_leave' )
+            
+        connection.execute(text(f"INSERT INTO tb_leave(`employee_id`,`from_date`,`from_shift`,`to_date`,`to_shift`,`no_of_days`,`leave_reason`) VALUES ('{data['employee_name']}', '{from_date}','{data['from_shift']}','{to_date}','{data['to_shift']}','{data['no_of_days']}','{data['leave_reason']}');"))
+        transaction.commit()
+        connection.close()
+
+        response['status'] = True
+        response['message'] = "You have successfully mark attendance!"
+        flash(response['message'], 'success')
+        return redirect('/manage_leave' )
+    except Exception as e:
+        print("Error while adding user, Please contact administrator. : "+ str(e))
+        flash("Error while adding user. Please contact the administrator.", 'error')
+        return jsonify(response)   
