@@ -17,7 +17,7 @@ def get_all_attendance_info(data, connection):
             query = text(f"SELECT tba.id, tba.employee_id,tba.date FROM tb_attendance tba left join tb_manage_employee tbme on(tba.employee_id = tbme.employee_id) limit {data['offset']}, {data['limit']};")
             result = connection.execute(query)
         else:
-            count_duery = text(f"SELECT count(1) as total FROM tb_attendance;")
+            count_duery = text(f"SELECT count(1) as total FROM tb_attendance where concat(COALESCE(tba.employee_id, ''), ' ', COALESCE(tba.date, '')) like '%{data['search']}%';")
             result_count = connection.execute(count_duery)
             response['total'] = result_count.fetchone()[0]
 
