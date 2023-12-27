@@ -23,6 +23,18 @@ def generate_login_id():
 
     return login_id
 
+def generate_employee_id(data):
+    first_name = data.get("first_name", "")
+    last_name = data.get("last_name", "")
+    # Concatenate the first and last name
+    name_concatenated = f"{first_name[0].lower()}{last_name[0].lower()}"
+    # Generate a random 4-digit number
+    random_number = ''.join(random.choices(string.digits, k=4))
+    # Combine the name and random number to form the employee_id
+    employee_id = f"{name_concatenated}_{random_number}"
+    return employee_id
+
+
 # Get metadata by Type
 def retrive_metadata_by_type(type):
     data = []

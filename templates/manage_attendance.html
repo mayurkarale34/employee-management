@@ -21,7 +21,7 @@
     <script src="/static/js/select2.min.js"></script>
     
     <title>Manage Attendance</title>
-    
+
 </head>
 <body>
     {% include 'header1.html' %}
@@ -35,7 +35,7 @@
                 <div id="toolbar">
                     <input type="text" id="date_filter" name="date_filter" class="form-control" readonly style="background-color:#ffffff"/>
                 </div>
-                <table id="table_user_master" class="table custom-bordered-table"
+                <table id="table_attendance_master" class="table custom-bordered-table"
                    
                 data-toggle="table"
                 data-url="/retrive_tb_attendance"
@@ -47,12 +47,12 @@
                 data-pagination="true"
                 data-side-pagination="server"
                 data-page-size="10"
-                data-page-list="[10,20,30]"
+                data-page-list="[5,10,20]"
                     >
                     <thead>
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
-                            <th data-field="employee_name" class="text-center">Employee Name</th>
+                            <th data-field="employee_id" class="text-center">Employee ID</th>
                             <th data-field="date" class="text-center">Date</th>
                         </tr>      
                     </thead>
@@ -120,8 +120,8 @@ $('#date_filter').datetimepicker('setDate', new Date());
 
 // Initialize datetimepicker
 $('#date').datetimepicker({
-    minView: 0,
-    format: 'dd-mm-yyyy hh:ii:ss',
+    minView: 2,
+    format: 'dd-mm-yyyy',
     autoclose: true
 });
 
