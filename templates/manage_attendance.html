@@ -46,7 +46,7 @@
                 data-query-params="queryParams"
                 data-pagination="true"
                 data-side-pagination="server"
-                data-page-size="10"
+                data-page-size="5"
                 data-page-list="[5,10,20]"
                     >
                     <thead>
@@ -138,9 +138,6 @@ function queryParams(params) {
         params.search = '';
     }
     params.date_filter = $('#date_filter').val();
-    // Add pagination parameters
-    params.limit = params.limit || 10;
-    params.offset = params.offset || 0;
     return params;
 }
 
