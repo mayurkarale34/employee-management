@@ -25,7 +25,8 @@ def retrive_tb_attendance():
         request_data['search'] = request.args.get('search')
         request_data['limit'] = request.args.get('limit', type=int)
         request_data['offset'] = request.args.get('offset', type=int)
-
+        request_data['date_filter'] = request.args.get('date_filter')
+        request_data['attendance_date'] = datetime.strptime(request_data['date_filter'], '%d-%B-%Y').strftime('%Y-%m-%d')
         result_attendance = get_all_attendance_info(request_data, connection)
         if result_attendance['status']:
             response['status'] = True
