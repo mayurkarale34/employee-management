@@ -58,8 +58,8 @@
                 data-query-params="queryParams"
                 data-pagination="true"
                 data-side-pagination="server"
-                data-page-size="10"
-                data-page-list="[10,20,30]"
+                data-page-size="5"
+                data-page-list="[5,10,20]"
                     >
                     <thead>
                         <tr>
@@ -258,10 +258,9 @@ function queryParams(params) {
         params.search = '';
     }
     // Add pagination parameters
-    params.limit = params.limit || 10;
-    params.offset = params.offset || 0;
     return params;
 }
+
 
 $('#date_filter').change(function (e){
     $('#table_user_master').bootstrapTable('refresh');
