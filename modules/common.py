@@ -31,7 +31,7 @@ def generate_employee_id(data):
     # Generate a random 4-digit number
     random_number = ''.join(random.choices(string.digits, k=4))
     # Combine the name and random number to form the employee_id
-    employee_id = f"{name_concatenated}_{random_number}"
+    employee_id = f"{name_concatenated}{random_number}"
     return employee_id
 
 
