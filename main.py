@@ -80,7 +80,7 @@ def integrate():
 
         # ===========================================================================
 
-        # create Leave management combine file
+        # create Attendance management combine file
         fin = open("modules/manage_attendance/web/manage_attendance.py", "r")
         web_manage_attendance = fin.read()
         fin.close()
@@ -97,9 +97,26 @@ def integrate():
 
         # ========================================================================
 
+        # create Reports management combine file
+        fin = open("modules/manage_reports/web/manage_reports.py", "r")
+        web_manage_reports = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_reports/api/manage_reports.py", "r")
+        api_manage_reports = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_reports/common/manage_reports.py", "r")
+        common_manage_reports = fin.read()
+        fin.close()
+        
+        manage_reports = web_manage_reports + api_manage_reports+ common_manage_reports
+
+        # ========================================================================
+
         # Create combine file of content of all the python files
         # Note: app_run should be at last
-        combine_file = app_init + web_file + web_login +  common_file + manage_leave + manage_employee + manage_resources + manage_attendance + app_run
+        combine_file = app_init + web_file + web_login +  common_file + manage_leave + manage_employee + manage_resources + manage_attendance + manage_reports + app_run
 
         # Created new app file to run the app
         fout = open("employee.py", 'w')
