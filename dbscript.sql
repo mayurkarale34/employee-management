@@ -60,20 +60,9 @@ ADD COLUMN `joining_date` VARCHAR(45) NULL AFTER `employee_type`,
 ADD COLUMN `current_address` VARCHAR(1000) NULL AFTER `joining_date`,
 ADD COLUMN `permanent_address` VARCHAR(1000) NULL AFTER `current_address`;
 
-CREATE TABLE `tb_attendance` (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `employee_name` VARCHAR(45) NULL,
-  `date` VARCHAR(45) NULL,
-  `time` VARCHAR(45) NULL,
-  `status` VARCHAR(45) NULL,
-  PRIMARY KEY (`id`))
-
 ALTER TABLE `employee`.`tb_attendance` 
 DROP COLUMN `status`,
 DROP COLUMN `time`;
-
-ALTER TABLE `employee`.`tb_attendance` 
-CHANGE COLUMN `date` `date` DATETIME NULL DEFAULT NULL ;
 
 CREATE TABLE `employee`.`tb_leave` (
   `id` INT NOT NULL AUTO_INCREMENT,
@@ -92,7 +81,12 @@ CREATE TABLE `employee`.`tb_leave` (
   PRIMARY KEY (`id`, `employee_id`),
   UNIQUE INDEX `employee_id_UNIQUE` (`employee_id` ASC) VISIBLE);
 
-ALTER TABLE `tb_attendance` 
-CHANGE COLUMN `date` `attendance_date` DATE NULL DEFAULT NULL ,
-CHANGE COLUMN `time` `clock_in` DATETIME NULL DEFAULT NULL ,
-CHANGE COLUMN `status` `clock_out` DATETIME NULL DEFAULT NULL ;
+CREATE TABLE `tb_attendance` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `employee_id` varchar(45) DEFAULT NULL,
+  `attendance_date` date DEFAULT NULL,
+  `clock_in` datetime DEFAULT NULL,
+  `clock_out` datetime DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
