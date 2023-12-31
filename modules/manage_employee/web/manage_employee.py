@@ -67,5 +67,34 @@ def retrive_tb_manage_employee():
         print("Error while retrieving employee data: " + str(e))
         return jsonify(response)
 
-    
-        
+# Get teh employee details as per the feature filter for select2
+@app.route('/get_employees', methods = ["GET"])
+@runtime_logger
+def get_employees():
+	response = {"total": 0, "data":[]}
+	employee_list = []
+	try:
+		search_val = request.args.get('search')
+		page_no = request.args.get('page_no')
+		limit = request.args.get('page_size')
+		offset = int(page_no) * int(limit)
+
+		data = {}
+		data['limit'] = limit
+		data['offset'] = offset
+		data['search_val'] = search_val
+		data['employee_status'] = "All"
+
+		employee_data = get_all_employees(data)
+		
+		for employee in employee_data['rows']:
+			employee_list.append({
+                        "id":employee['employee_id'],
+                        "text": '(' + employee['employee_id'] + ') ' + employee['employee_name']
+                    })
+		response['total'] = employee_data['total']
+		response['data'] = employee_list
+		return jsonify(response)
+	except Exception as e:
+		print(str(e))
+		return jsonify(response)

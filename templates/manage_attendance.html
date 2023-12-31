@@ -35,7 +35,7 @@
                 <div id="toolbar">
                     <input type="text" id="date_filter" name="date_filter" class="form-control" readonly style="background-color:#ffffff"/>
                 </div>
-                <table id="table_attendance_master" class="table custom-bordered-table"
+                <table id="table_manage_attendance" class="table custom-bordered-table"
                    
                 data-toggle="table"
                 data-url="/retrive_tb_attendance"
@@ -60,34 +60,31 @@
             </div>
         </div>
     </div>
-    <div class="modal" id="edit_modal">
+    <div class="modal" id="attendance_modal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1>Add Attendance</h1>
                 </div>
                 <div class="modal-body">
-                    <form id="attendanceForm" action="/add_attendance" method="POST" >
+                    <form id="attendanceForm" >
                         <div class="form-group">
                             <label for="employee_name">Employee Name</label>
-                                <select id="employee_name" name="employee_name" class="form-control" required>
-                                    <option value="" disabled selected>Select Employee</option>
-                                    {% for emp in employees %}
-                                        <option value="{{ emp.employee_id }}">{{ emp.name }}</option>
-                                    {% endfor %}
+                                <select id="employee_id" name="employee_id" class="form-control" required>
+                                    
                                 </select>
                         </div>
                         
                         <div class="form-group">
                             <label for="date">Select Date</label>
-                            <input type="text" id="date" name="date" class="form-control" readonly style="background-color:#ffffff"/>
+                            <input type="text" id="clock_in_date_time" name="clock_in_date_time" class="form-control" readonly style="background-color:#ffffff"/>
                         </div>
                             
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                    <button type="submit" id="addattendance_button" class="btn btn-success">add attendance</button>
+                    <button type="button" id="submit_attendance" class="btn btn-success">add attendance</button>
                 </div>
             </div>
         </div>
@@ -107,9 +104,6 @@
     {% endif %}
 {% endwith %}
 <script>
-    $('#addattendance_button').click(function (e) {
-        $('#attendanceForm').submit();
-    });
 
     $('#date_filter').datetimepicker({
     minView: 2,
@@ -119,18 +113,18 @@
 $('#date_filter').datetimepicker('setDate', new Date());
 
 // Initialize datetimepicker
-$('#date').datetimepicker({
-    minView: 2,
-    format: 'dd-mm-yyyy',
+$('#clock_in_date_time').datetimepicker({
+    minView: 0,
+    format: 'dd-mm-yyyy hh:ii:ss',
     autoclose: true
 });
 
 $('#add_attendance_button').click(function (e) {
     var attendance_date = new Date();
     // make future date disabled
-    $('#date').datetimepicker('setDate', attendance_date);
+    $('#clock_in_date_time').datetimepicker('setDate', attendance_date);
     // Show the modal
-    $('#edit_modal').modal('show');
+    $('#attendance_modal').modal('show');
 });
 
 function queryParams(params) {
@@ -142,13 +136,67 @@ function queryParams(params) {
 }
 
 $('#date_filter').change(function (e){
-    $('#table_attendance_master').bootstrapTable('refresh');
+    $('#table_manage_attendance').bootstrapTable('refresh');
 })
 
 $('select').select2({
 	width : '100%',
 	theme : 'bootstrap'
 })
+
+$("#employee_id").select2({
+		theme: "bootstrap",
+		width: "100%",
+		minimumInputLength: 1,
+		ajax: {
+			url: "/get_employees",
+		 type: "get",
+		 dataType: 'json',
+		 data: function (params) {
+			var query = {
+				search: params.term,
+				page_no: params.page || 0,
+				page_size: params.page || 20,
+			}
+
+			// Query parameters will be ?search=[term]&page_no=[page_no]&page_size=[page_size]
+			return query;
+		 },
+		 processResults: function (response, params) {
+		 return {
+				results: response.data,
+				 pagination: {
+						more: (params.page * 20) < response.total
+				}
+		 };
+		},
+	 }
+	});
+
+    $('#submit_attendance').click(function(e){
+        add_attendance();
+    })
+
+    function add_attendance(){
+            $.ajax({
+                type: "POST",
+                url: "/add_attendance",
+                data: $('#attendanceForm').serialize(),
+                success: function (response) {
+                        if(response.status){
+                            alert(response.message)
+                            $('#table_manage_attendance').bootstrapTable('refresh');
+                            $('#attendance_modal').modal('hide');
+                        }
+                        else{
+                            alert(response.message)
+                        }
+                        
+                }
+            });
+        }
+        
+        
 </script>
 
     {% include 'footer1.html' %}
