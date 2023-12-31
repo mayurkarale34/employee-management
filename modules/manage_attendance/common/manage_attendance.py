@@ -17,7 +17,7 @@ def get_all_attendance_info(data, connection):
             query = text(f"SELECT  tba.id, tba.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, date_format(tba.attendance_date, '%d-%m-%Y') as attendance_date, date_format(tba.clock_in, '%d-%m-%Y %H:%i:%S') as clock_in, date_format(tba.clock_out, '%d-%m-%Y %H:%i:%S') as clock_out FROM tb_attendance tba left join tb_manage_employee tbme on(tba.employee_id = tbme.employee_id) where attendance_date = '{data['attendance_date']}' limit {data['offset']}, {data['limit']};")
             result = connection.execute(query)
         else:
-            count_duery = text(f"SELECT count(1) as total FROM tb_attendance tba where date = '{data['attendance_date']}' and concat(COALESCE(tba.employee_id, ''), ' ', COALESCE(tba.attendance_date, '')) like '%{data['search']}%';")
+            count_duery = text(f"SELECT count(1) as total FROM tb_attendance tba where attendance_date = '{data['attendance_date']}' and concat(COALESCE(tba.employee_id, ''), ' ', COALESCE(tba.attendance_date, '')) like '%{data['search']}%';")
             result_count = connection.execute(count_duery)
             response['total'] = result_count.fetchone()[0]
 
