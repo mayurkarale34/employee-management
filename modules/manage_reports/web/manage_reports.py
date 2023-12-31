@@ -14,17 +14,21 @@ def download_all_attendance():
         # Generate attendance data for all entries
         """import pdb
         pdb.set_trace()"""
-        selected_month = request.form.get('month')
-
+        selected_month =int( request.form.get('month'))
+        selected_year = int(request.form.get('year')
+)
         # Generate attendance data for the selected month
-        attendance_data = generate_all_attendance_data(selected_month)
+        attendance_data = generate_all_attendance_data(selected_month,selected_year)
 
         # Create a DataFrame from the attendance data
         df = pd.DataFrame(attendance_data)
+        if 'attendance' not in df.columns:
+            df['attendance'] = 'P'
+        attendance_pivot = df.groupby(['employee_id', 'date'])['attendance'].first().unstack(fill_value='A')
 
         # Save the DataFrame to an Excel file
         excel_filename = "all_attendance_sheet.xlsx"
-        df.to_excel(excel_filename, index=False)
+        attendance_pivot.to_excel(excel_filename)
 
         # Send the Excel file as a downloadable attachment
         return send_file(excel_filename, as_attachment=True, download_name="all_attendance_sheet.xlsx")
