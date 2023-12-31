@@ -16,30 +16,11 @@ def get_all_employee_info(data, connection):
         result = connection.execute(query)
         
         if result.rowcount:
+            columns = result.keys()
             for row in result:
-                response['rows'].append({
-                    "id" : row[0],
-                    "employee_id" : row[1],
-                    "first_name" : row[2],
-                    "middle_name" : row[3],
-                    "last_name" : row[4],
-                    "contact" : row[5],
-                    "email_id" : row[6],
-                    "gender" : row[7],
-                    "city" : row[8],
-                    "Country" : row[9],
-                    "aadhar_number" : row[10],
-                    "birth_date" : row[11],
-                    "blood_group" : row[12],
-                    "pan_number" : row[13],
-                    "total_experience" : row[14],
-                    "designation" : row[15],
-                    "employee_type" : row[16],
-                    "joining_date" : row[17],
-                    "current_address" : row[18],
-                    "permanent_address" : row[19],
-                    
-                })
+                row_dict = dict(zip(columns, row))
+                response['rows'].append(row_dict)
+
         response['status'] = True
         response['message'] = "data retrived successfully"
         return response
@@ -48,4 +29,27 @@ def get_all_employee_info(data, connection):
         exception = "Exception : " + str(e)
         print(exception)
         response['message'] = exception
+        return response
+
+@runtime_logger
+def get_all_employees(data):
+    response = {
+        "status" : False,
+        "message" : "",
+        "rows" : [],
+        "total" : 0
+    }
+    try:
+        query = text(f"SELECT employee_id, concat(first_name, ' ', last_name) as employee_name from tb_manage_employee where concat(COALESCE(employee_id, ''), ' ', COALESCE(first_name, ''), ' ', COALESCE(last_name, '')) like '%{data['search_val']}%';")
+        result = app._engine.connect().execute(query)
+        for row in result:
+            columns = result.keys()
+            row_dict = dict(zip(columns, row))
+            response['rows'].append(row_dict)
+            
+        response['status'] = True
+        response['total'] = len(response['rows'])
+        return response
+    except Exception as e:
+        response['message'] = str(e)
         return response

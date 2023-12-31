@@ -92,3 +92,7 @@ CREATE TABLE `employee`.`tb_leave` (
   PRIMARY KEY (`id`, `employee_id`),
   UNIQUE INDEX `employee_id_UNIQUE` (`employee_id` ASC) VISIBLE);
 
+ALTER TABLE `tb_attendance` 
+CHANGE COLUMN `date` `attendance_date` DATE NULL DEFAULT NULL ,
+CHANGE COLUMN `time` `clock_in` DATETIME NULL DEFAULT NULL ,
+CHANGE COLUMN `status` `clock_out` DATETIME NULL DEFAULT NULL ;

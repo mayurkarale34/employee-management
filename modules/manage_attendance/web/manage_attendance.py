@@ -44,7 +44,7 @@ def retrive_tb_attendance():
 
 
 
-@app.route('/add_attendance', methods=["GET", "POST"])
+@app.route('/add_attendance', methods=["POST"])
 @login_required
 @runtime_logger
 def add_attendance():
@@ -52,28 +52,21 @@ def add_attendance():
     connection =  app._engine.connect() 
     transaction = connection.begin()
     try:
-        data = dict(request.form)
-        attendance_date = datetime.strptime(data['date'], '%d-%m-%Y').strftime('%Y-%m-%d')
-        existing_data = connection.execute(
-            text(f"SELECT * FROM tb_attendance WHERE employee_id = '{data['employee_name']}' AND date = '{attendance_date}'")).fetchone()
-
-        if existing_data:
-            # Duplicate entry found
+        data = request.form.to_dict()
+        data['attendance_date'] = datetime.strptime(data['clock_in_date_time'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d')
+        
+        add_attendance_response = add_attendance_info(data, connection)
+        if not add_attendance_response['status']:
+            response['message'] = add_attendance_response['message']
             transaction.rollback()
             connection.close()
-            response['message'] = "Attendance entry already exists for this employee on the given date."
-            flash("Attendance entry already exists for this employee on the given date.", "error")
-            return redirect('/manage_attendance' )
-            
-        connection.execute(text(f"INSERT INTO tb_attendance(`employee_id`,`date`) VALUES ('{data['employee_name']}', '{attendance_date}');"))
+        
+        response['status'] = True
+        response['message'] = "Attendance Marked Successfully."
         transaction.commit()
         connection.close()
 
-        response['status'] = True
-        response['message'] = "You have successfully mark attendance!"
-        flash(response['message'], 'success')
-        return redirect('/manage_attendance' )
+        return jsonify(response)
     except Exception as e:
         print("Error while adding user, Please contact administrator. : "+ str(e))
-        flash("Error while adding user. Please contact the administrator.", 'error')
         return jsonify(response)          
