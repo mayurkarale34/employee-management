@@ -122,18 +122,10 @@
                         <div class="form-group">
                             <label for="month">Choose Month:</label>
                             <select id="month" name="month" required>
-                                <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
+                               
+                            </select>
+                            <select id="year" name="year" required>
+                                <!-- Add options for all relevant years using JavaScript -->
                             </select>
                         </div>
 
@@ -167,7 +159,55 @@
         };
     }
 });
+function populateMonths(currentMonth) {
+        var monthDropdown = document.getElementById("month");
 
+        // Array of month names
+        var monthNames = [
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+        ];
+
+        for (var i = 1; i <= 12; i++) {
+            var option = document.createElement("option");
+            option.value = i < 10 ? "0" + i : "" + i;
+            option.text = monthNames[i - 1];
+
+            // Automatically select the present month
+            if (i === currentMonth) {
+                option.selected = true;
+            }
+
+            monthDropdown.add(option);
+        }
+    }
+
+    // Function to populate the years dropdown
+    function populateYears() {
+        var yearDropdown = document.getElementById("year");
+        var currentYear = new Date().getFullYear();
+
+        // Include past and future years
+        for (var year = currentYear - 10; year <= currentYear + 10; year++) {
+            var option = document.createElement("option");
+            option.value = "" + year;
+            option.text = "" + year;
+
+            // Automatically select the present year
+            if (year === currentYear) {
+                option.selected = true;
+            }
+
+            yearDropdown.add(option);
+        }
+    }
+
+    // Get the current month
+    var currentMonth = new Date().getMonth() + 1; // Adding 1 because months are zero-based
+
+    // Call the functions to populate the dropdowns
+    populateMonths(currentMonth);
+    populateYears();
     </script>
 </body>
 </html>    
