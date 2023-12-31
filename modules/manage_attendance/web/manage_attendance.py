@@ -62,7 +62,7 @@ def add_attendance():
             response['message'] = add_attendance_response['message']
             transaction.rollback()
             connection.close()
-            return response
+            return jsonify(response)
         
         response['status'] = True
         response['message'] = "Attendance Marked Successfully."
