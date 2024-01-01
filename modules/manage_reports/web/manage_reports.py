@@ -18,14 +18,21 @@ def download_all_attendance():
         selected_year = int(request.form.get('year')
 )
         # Generate attendance data for the selected month
+        new = generate_all_dates_table(selected_month, selected_year)
+       
         attendance_data = generate_all_attendance_data(selected_month,selected_year)
-
-        # Create a DataFrame from the attendance data
+        
+        # # Create a DataFrame from the attendance data
         df = pd.DataFrame(attendance_data)
-        if 'attendance' not in df.columns:
-            df['attendance'] = 'P'
-        attendance_pivot = df.groupby(['employee_id', 'date'])['attendance'].first().unstack(fill_value='A')
 
+        df['attendance_date'] = pd.to_datetime(df['attendance_date'])
+        new.index = pd.to_datetime(new.index)
+        # Append 'new' DataFrame to 'df' DataFrame
+        df = pd.concat([df, new], axis=1)
+        if 'attendance' not in df.columns:
+         df['attendance'] = 'P'
+        # attendance_pivot = df.groupby(['employee_id', 'attendance_date'])['attendance'].first().unstack(fill_value='A')
+        attendance_pivot = df.groupby(['employee_id'])[new.columns].first().fillna('A')
         # Save the DataFrame to an Excel file
         excel_filename = "all_attendance_sheet.xlsx"
         attendance_pivot.to_excel(excel_filename)
@@ -57,11 +64,11 @@ def retrive_attendance():
         search_term = request.args.get('search', '')  # Adjust as needed
 
         # Use a parameterized query to avoid SQL injection
-        query = text("SELECT id, employee_id, date FROM tb_attendance WHERE MONTH(date) = :selected_month AND (employee_id LIKE :search_term OR date LIKE :search_term) LIMIT :limit OFFSET :offset")
+        query = text("SELECT id, employee_id, attendance_date FROM tb_attendance WHERE MONTH(attendance_date) = :selected_month AND (employee_id LIKE :search_term OR attendance_date LIKE :search_term) LIMIT :limit OFFSET :offset")
         result = connection.execute(query.params(selected_month=selected_month, search_term=f'%{search_term}%', limit=limit, offset=offset))
 
         # Fetch total count without limit and offset for pagination
-        total_query = text("SELECT COUNT(*) FROM tb_attendance WHERE MONTH(date) = :selected_month AND (employee_id LIKE :search_term OR date LIKE :search_term)")
+        total_query = text("SELECT COUNT(*) FROM tb_attendance WHERE MONTH(attendance_date) = :selected_month AND (employee_id LIKE :search_term OR attendance_date LIKE :search_term)")
         total_result = connection.execute(total_query.params(selected_month=selected_month, search_term=f'%{search_term}%'))
         response['total'] = total_result.scalar()
 
@@ -70,7 +77,7 @@ def retrive_attendance():
                 response['rows'].append({
                     "id": row[0],
                     "employee_id": row[1],
-                    "date": row[2].strftime("%Y-%m-%d")  # Format the date as needed
+                    "attendance_date": row[2].strftime("%Y-%m-%d")  # Format the date as needed
                 })
 
             response['message'] = "Attendance data retrieved successfully"
