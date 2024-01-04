@@ -19,14 +19,14 @@ def generate_all_attendance_data(selected_month, selected_year):
         # Execute the SQL query to retrieve attendance data
         attendance_data = connection.execute(
             text(
-                "SELECT tba.id, tba.employee_id, tba.attendance_date,  concat(tbme.first_name, ' ', tbme.last_name) as employee_name FROM tb_attendance tba left join tb_manage_employee tbme on (tbme.employee_id = tba.employee_id) WHERE tba.attendance_date BETWEEN :start_date AND :end_date"
+                "SELECT tba.id, tba.employee_id, date_format(tba.attendance_date, '%d') as day,  concat(tbme.first_name, ' ', tbme.last_name) as employee_name FROM tb_attendance tba left join tb_manage_employee tbme on (tbme.employee_id = tba.employee_id) WHERE tba.attendance_date BETWEEN :start_date AND :end_date"
             ),
             {"start_date": start_date, "end_date": end_date},
         ).fetchall()
 
         # Convert the SQLAlchemy results to a list of dictionaries
         attendance_data_list = [
-            {"id": entry[0], "employee_id": entry[1], "attendance_date": entry[2].strftime("%Y-%m-%d"), "employee_name": entry[3]}
+            {"id": entry[0], "employee_id": entry[1], "day": entry[2], "employee_name": entry[3]}
             for entry in attendance_data
         ]
 
