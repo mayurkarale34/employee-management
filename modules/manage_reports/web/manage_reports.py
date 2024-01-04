@@ -29,10 +29,15 @@ def download_all_attendance():
 
         # Get the name of the selected month
         month_name = calendar.month_name[selected_month]
+        
+        month_days = {}
+        month_days['employee_id'] = ''
+        month_days['employee_name'] = ''
+        for day in range(1, total_days_in_month + 1):
+            month_days['Day_'+str(day)] = 'A'
 
         # Fetch attendance data for the selected month
         attendance_data = generate_all_attendance_data(selected_month, selected_year)
-
         # Initialize the attendance dictionary
         attendance = {}
 
@@ -40,40 +45,29 @@ def download_all_attendance():
         for emp_attendance in attendance_data:
             employee_id = emp_attendance['employee_id']
             employee_name = emp_attendance['employee_name']  # Fetch the employee name from the database if available
+            day = emp_attendance['day']
+            day_key = 'Day_'+str(int(day))
 
-            # Convert attendance_date to a datetime object
-            attendance_date = datetime.strptime(emp_attendance['attendance_date'], "%Y-%m-%d")
+            if employee_id in attendance:
 
-            # Update attendance dictionary for all days of the month
-            for day in range(1, total_days_in_month + 1):
-                Day_key = f"Day_{day}"
+                attendance[employee_id][day_key] = 'P'
+                attendance[employee_id]['present_days'] += 1  # Increment present days
+                attendance[employee_id]['absent_days'] -= 1  
+            else:
+                dict_format = month_days.copy()
+                dict_format['employee_id'] = employee_id
+                dict_format['employee_name'] = employee_name
+                dict_format['total_days'] = total_days_in_month
+                
+                attendance[employee_id] = dict_format
 
-                if employee_id in attendance:
-                    # Check if the attendance date matches the current day
-                    if day == int(attendance_date.strftime("%d")):
-                        attendance[employee_id][Day_key] = 'P'  # Mark 'P' for present
-                        attendance[employee_id]['present_days'] += 1  # Increment present days
-                        attendance[employee_id]['absent_days'] -= 1  # Decrement absent days
-                    else:
-                        attendance[employee_id][Day_key] = 'A'  # Mark 'A' for absent
+                attendance[employee_id]['present_days'] = 1  # Increment present days
+                attendance[employee_id]['absent_days'] = total_days_in_month-1  
+                attendance[employee_id][day_key] = 'P'
+                
 
-                else:
-                    # Create new entry for the employee
-                    data = {
-                        "employee_id": employee_id,
-                        "employee_name": employee_name,
-                        "total_days": total_days_in_month,
-                        "present_days": 0,  # Initialize present days as 0
-                        "absent_days": total_days_in_month  # Initialize absent days as total_days_in_month
-
-                    }
-
-                    data[Day_key] = 'P' if day == int(attendance_date.strftime("%d")) else 'A'  # Mark 'P' for present and 'A' for absent
-
-                    attendance[employee_id] = data
         # Convert the dictionary to a list
         final_data = list(attendance.values())
-
         # Create a DataFrame from the attendance data
         df = pd.DataFrame(final_data)
 
