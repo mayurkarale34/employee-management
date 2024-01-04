@@ -85,11 +85,13 @@ def apply_leave():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
     transaction = connection.begin() 
+    """ import pdb
+    pdb.set_trace()"""
     try:
         data = dict(request.form)
         employees = retrive_employee ()
         applied_by=employees[0]['name']
-        applied_on=datetime.now().strftime('%H:%M:%S')
+        applied_on=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         from_date = datetime.strptime(data['from_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
         to_date = datetime.strptime(data['to_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
         existing_data = connection.execute(

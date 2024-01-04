@@ -38,6 +38,7 @@ def download_all_attendance():
 
         # Fetch attendance data for the selected month
         attendance_data = generate_all_attendance_data(selected_month, selected_year)
+
         # Initialize the attendance dictionary
         attendance = {}
 
@@ -52,7 +53,8 @@ def download_all_attendance():
 
                 attendance[employee_id][day_key] = 'P'
                 attendance[employee_id]['present_days'] += 1  # Increment present days
-                attendance[employee_id]['absent_days'] -= 1  
+                attendance[employee_id]['absent_days'] -= 1 
+
             else:
                 dict_format = month_days.copy()
                 dict_format['employee_id'] = employee_id
@@ -64,8 +66,25 @@ def download_all_attendance():
                 attendance[employee_id]['present_days'] = 1  # Increment present days
                 attendance[employee_id]['absent_days'] = total_days_in_month-1  
                 attendance[employee_id][day_key] = 'P'
-                
 
+         # Fetch leave data for the selected month and date range
+        leave_data = generate_all_leave_data(selected_month, selected_year)
+        print(leave_data)
+
+        # Incorporate leave data into the attendance dictionary
+        for leave_entry in leave_data:
+            employee_id = leave_entry['employee_id']
+            leave_start_date = leave_entry['from_date']
+            leave_end_date = leave_entry['to_date']
+
+            # Iterate over the date range and mark each corresponding day as leave
+            for leave_date in daterange(leave_start_date, leave_end_date):
+                leave_day = leave_date.day
+                leave_day_key = 'Day_'+str(leave_day)
+
+                if employee_id in attendance:
+                    attendance[employee_id][leave_day_key] = 'L'
+        
         # Convert the dictionary to a list
         final_data = list(attendance.values())
         # Create a DataFrame from the attendance data

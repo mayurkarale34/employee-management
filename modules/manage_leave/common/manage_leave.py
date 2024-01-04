@@ -25,22 +25,13 @@ def get_all_leave_info(data, connection):
             
         if result.rowcount:
             for row in result:
-                response['rows'].append({
-                    "id": row[0],
-                    "employee_id": row[1],
-                    "employee_name": row[2],
-                    "from_date": row[3],
-                    "from_shift": row[4],
-                    "to_date": row[5],
-                    "to_shift": row[6],
-                    "no_of_days": row[7],
-                    "status": row[8],
-                    "approved_by": row[9],
-                    "approved_on": str(row[10]),
-                    "applied_by": row[11],
-                    "applied_on": str(row[12]),
-                    "leave_reason": row[13]
-                })
+                columns = result.keys()
+                row_dict = dict(zip(columns, row))
+                row_dict['from_date'] = row_dict['from_date'].strftime('%Y-%m-%d')
+                row_dict['to_date'] = row_dict['to_date'].strftime('%Y-%m-%d')
+                row_dict['approved_on'] = str(row_dict['approved_on'])
+                row_dict['applied_on'] = str(row_dict['applied_on'])
+                response['rows'].append(row_dict)
         response['status'] = True
         response['message'] = "data retrived successfully"
         return response
