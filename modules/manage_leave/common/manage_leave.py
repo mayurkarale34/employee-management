@@ -19,7 +19,6 @@ def get_all_leave_info(data, connection):
             count_duery = text(f"SELECT count(1) as total FROM tb_leave tbl where tbl.employee_id like '%{data['search']}%';")
             result_count = connection.execute(count_duery)
             response['total'] = result_count.fetchone()[0]
-            print(data['search'])
 
             query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id)  where tbl.employee_id like '%{data['search']}%' limit {data['offset']}, {data['limit']};")
             result = connection.execute(query)
@@ -37,9 +36,9 @@ def get_all_leave_info(data, connection):
                     "no_of_days": row[7],
                     "status": row[8],
                     "approved_by": row[9],
-                    "approved_on": row[10],
+                    "approved_on": str(row[10]),
                     "applied_by": row[11],
-                    "applied_on": row[12],
+                    "applied_on": str(row[12]),
                     "leave_reason": row[13]
                 })
         response['status'] = True

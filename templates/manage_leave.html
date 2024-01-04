@@ -25,8 +25,8 @@
     <title>Manage Attendance</title>
     <script>
         function statusFormatter(value, row) {
-            if(row.status =='New'){
-                return '<button class="btn btn-success btn-sm" onclick="approve_leave(' + row.id + ')">Approve</button>';
+            if(row.status =='pending'){
+                return '<button class="btn btn-danger btn-sm" onclick="approve_leave(' + row.id + ')">Approve</button>';
             }
             else{
                 return '<button class="btn btn-success btn-sm" disabled>Approve</button>';
@@ -93,12 +93,9 @@
                 <div class="modal-body">
                     <form id="leaveform" action="/apply_leave" method="POST" >
                         <div class="form-group">
-                            <label for="employee_name">Employee Name</label>
-                                <select id="employee_name" name="employee_name" class="form-control" required>
-                                    <option value="" disabled selected>Select Employee</option>
-                                    {% for emp in employees %}
-                                        <option value="{{ emp.employee_id }}">{{ emp.name }}</option>
-                                    {% endfor %}
+                            <label for="employee_id">Employee Name</label>
+                                <select id="employee_id" name="employee_id" class="form-control" required>
+                                    
                                 </select>
                         </div>
                         
@@ -141,7 +138,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
-                    <button type="submit" id="applyleave_button" class="btn btn-success">add attendance</button>
+                    <button type="submit" id="apply_leave_button" class="btn btn-success">apply leave</button>
                 </div>
             </div>
         </div>
@@ -219,7 +216,7 @@
         $('#statusForm').submit()});
 
 
-    $('#applyleave_button').click(function (e) {
+    $('#apply_leave_button').click(function (e) {
         $('#leaveform').submit();
     });
 
@@ -322,6 +319,35 @@ function calculateDays() {
         }
         
     }
+    
+$("#employee_id").select2({
+		theme: "bootstrap",
+		width: "100%",
+		minimumInputLength: 1,
+		ajax: {
+			url: "/get_employees",
+		 type: "get",
+		 dataType: 'json',
+		 data: function (params) {
+			var query = {
+				search: params.term,
+				page_no: params.page || 0,
+				page_size: params.page || 20,
+			}
+
+			// Query parameters will be ?search=[term]&page_no=[page_no]&page_size=[page_size]
+			return query;
+		 },
+		 processResults: function (response, params) {
+		 return {
+				results: response.data,
+				 pagination: {
+						more: (params.page * 20) < response.total
+				}
+		 };
+		},
+	 }
+	});
 
 </script>
 
