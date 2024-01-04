@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/static/css/select2-bootstrap.css">
     <link rel="stylesheet" href="/static/css/select2.min.css">
     <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
-
+   
     <script src="/static/js/jquery-2.1.3.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
     <script src="/static/js/tableExport.js"></script>
@@ -19,7 +19,7 @@
     <script src="/static/js/daterangepicker.min.js"></script>
     <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
     <script src="/static/js/select2.min.js"></script>
-    
+
     <title>Manage Reports</title>
     <style>
         body {
@@ -64,51 +64,13 @@
         <div class="report-div">
             <div class="report-heading">Human Resource</div>
             <a href="#report_modal" data-toggle="modal" class="report-link">Monthly Attendance Report</a>
-            <div class="tab-content">
-                <label for="monthFilter">Select Month:</label>
-                    <select id="monthFilter" class="form-control" onchange="applyMonthFilter()">
-                        <option value="01">January</option>
-                                <option value="02">February</option>
-                                <option value="03">March</option>
-                                <option value="04">April</option>
-                                <option value="05">May</option>
-                                <option value="06">June</option>
-                                <option value="07">July</option>
-                                <option value="08">August</option>
-                                <option value="09">September</option>
-                                <option value="10">October</option>
-                                <option value="11">November</option>
-                                <option value="12">December</option>
-                    </select>
-                <table id="table_report_master" class="table custom-bordered-table"
-                    data-toggle="table"
-                    data-url="/retrive_attendance"
-                    data-search="true"
-                    data-toolbar="#toolbar"
-                    data-show-export="true"
-                    data-pagination="true"
-                    data-page-size="20"
-                    data-page-list="[5, 10, 20, 50]">
-                        <thead>
-                            <tr>
-                                <th data-field="id" class="text-center">ID</th>
-                                <th data-field="employee_id" class="text-center">Employee ID</th>
-                                <th data-field="date" class="text-center">Date</th>
-                            </tr>      
-                        </thead>
-                </table>
-            </div>
-        </div>
+        </div>    
 
         <!-- Div 2 (Add more divs as needed) -->
         <div class="report-div">
             <!-- Another report content here -->
         </div>
 
-        <!-- Div 3 (Add more divs as needed) -->
-        <!-- <div class="report-div"> -->
-            <!-- Another report content here -->
-        <!-- </div> -->
     </div>
     <div class="modal" id="report_modal">
         <div class="modal-dialog">
@@ -117,18 +79,12 @@
                     <h1><b>Monthly Report</b></h1>
                 </div>
                 <div class="modal-body">
-                    
-                    <form id="report_form" action="/download_all_attendance" method="POST" >
+                    <form id="report_form" action="/download_all_attendance" method="POST">
                         <div class="form-group">
-                            <label for="month">Choose Month:</label>
-                            <select id="month" name="month" required>
-                               
-                            </select>
-                            <select id="year" name="year" required>
-                                <!-- Add options for all relevant years using JavaScript -->
-                            </select>
+                            <label for="year_month">Choose Month and Year :</label>
+                            <input type="text" id="year_month" name="year_month" placeholder= " Select Month and Year" class="form-control" style="background-color:#ffffff"/>
                         </div>
-
+                    
                         <div class="modal-footer">
                             <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
                             <button type="submit" id="download_button" class="btn btn-success">Download</button>
@@ -141,73 +97,15 @@
 
     {% include 'footer1.html' %}
     <script>
-        function applyMonthFilter() {
-        var selectedMonth = document.getElementById("monthFilter").value;
-        // Refresh the table with the selected month
-        $('#table_report_master').bootstrapTable('refresh', { query: { month: selectedMonth } });
-        }
-        $('#table_report_master').bootstrapTable({
-    url: '/retrive_attendance',
-    queryParams: function (params) {
-        const monthFilter = $('#monthFilter').val();
-        const offset = params.offset;
-        const limit = params.limit;
-        return {
-            monthFilter: monthFilter,
-            offset: offset,
-            limit: limit
-        };
-    }
+    $(function () {
+    
+    $('#year_month').datetimepicker({
+        minView: 3,
+        format: 'yyyy-mm',
+        autoclose: true
+    });
+
 });
-function populateMonths(currentMonth) {
-        var monthDropdown = document.getElementById("month");
-
-        // Array of month names
-        var monthNames = [
-            "January", "February", "March", "April", "May", "June",
-            "July", "August", "September", "October", "November", "December"
-        ];
-
-        for (var i = 1; i <= 12; i++) {
-            var option = document.createElement("option");
-            option.value = i < 10 ? "0" + i : "" + i;
-            option.text = monthNames[i - 1];
-
-            // Automatically select the present month
-            if (i === currentMonth) {
-                option.selected = true;
-            }
-
-            monthDropdown.add(option);
-        }
-    }
-
-    // Function to populate the years dropdown
-    function populateYears() {
-        var yearDropdown = document.getElementById("year");
-        var currentYear = new Date().getFullYear();
-
-        // Include past and future years
-        for (var year = currentYear - 10; year <= currentYear + 10; year++) {
-            var option = document.createElement("option");
-            option.value = "" + year;
-            option.text = "" + year;
-
-            // Automatically select the present year
-            if (year === currentYear) {
-                option.selected = true;
-            }
-
-            yearDropdown.add(option);
-        }
-    }
-
-    // Get the current month
-    var currentMonth = new Date().getMonth() + 1; // Adding 1 because months are zero-based
-
-    // Call the functions to populate the dropdowns
-    populateMonths(currentMonth);
-    populateYears();
     </script>
 </body>
 </html>    

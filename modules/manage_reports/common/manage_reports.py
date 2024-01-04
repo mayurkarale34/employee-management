@@ -1,45 +1,53 @@
 
-def generate_all_attendance_data(selected_month,selected_year):
+def generate_all_attendance_data(selected_month, selected_year):
+    # Response dictionary to track the status and provide messages
     response = {
-        "status" : False,
-        "message" : "",
+        "status": False,
+        "message": "",
     }
-    connection =  app._engine.connect() 
+
+    # Connect to the database
+    connection = app._engine.connect()
     transaction = connection.begin()
+
     try:
-    # Fetch all attendance data from the database
+        # Fetch all attendance data from the database
         start_date = datetime.strptime(f"{selected_year}-{selected_month}-01", "%Y-%m-%d")
         last_day_of_month = calendar.monthrange(selected_year, selected_month)[1]
         end_date = start_date.replace(day=last_day_of_month)
-            # Execute the query with parameters
-        attendance_data = connection.execute(text("SELECT id, employee_id, attendance_date,status,clock_in FROM tb_attendance WHERE attendance_date BETWEEN :start_date AND :end_date"), {"start_date": start_date, "end_date": end_date}).fetchall()
-            # Convert the SQLAlchemy results to a list of dictionaries
+
+        # Execute the SQL query to retrieve attendance data
+        attendance_data = connection.execute(
+            text(
+                "SELECT tba.id, tba.employee_id, tba.attendance_date,  concat(tbme.first_name, ' ', tbme.last_name) as employee_name FROM tb_attendance tba left join tb_manage_employee tbme on (tbme.employee_id = tba.employee_id) WHERE tba.attendance_date BETWEEN :start_date AND :end_date"
+            ),
+            {"start_date": start_date, "end_date": end_date},
+        ).fetchall()
+
+        # Convert the SQLAlchemy results to a list of dictionaries
         attendance_data_list = [
-                {"id": entry.id, "employee_id": entry.employee_id, "attendance_date": entry.attendance_date.strftime("%Y-%m-%d"),"status":entry.status,"clock_in":entry.clock_in}
-                for entry in attendance_data
-            ]
+            {"id": entry[0], "employee_id": entry[1], "attendance_date": entry[2].strftime("%Y-%m-%d"), "employee_name": entry[3]}
+            for entry in attendance_data
+        ]
+
+        # Commit the transaction and close the database connection
         transaction.commit()
         connection.close()
-        response['status'] = True
-        response['message'] = "data extract successfully"
-        flash(response['message'], 'success')
+
+        # Update response with success status and message
+        response["status"] = True
+        response["message"] = "Data extracted successfully"
+        flash(response["message"], "success")
+
+        # Return the list of attendance data
         return attendance_data_list
-    
+
     except Exception as e:
+        # Rollback the transaction, close the connection, and handle the exception
         transaction.rollback()
         connection.close()
-        print("Error while adding user, Please contact administrator. : "+ str(e))
-        flash("Error while adding user. Please contact the administrator.", 'error')
-        return jsonify(response)    
+        print("Error while adding user, Please contact administrator. : " + str(e))
+        flash("Error while adding user. Please contact the administrator.", "error")
 
-
-def generate_all_dates_table(month, year):
-    _, last_day = calendar.monthrange(year, month)
-    first_date = datetime(year, month, 1)
-    last_date = datetime(year, month, last_day)
-
-    all_dates = [first_date + timedelta(days=i) for i in range((last_date - first_date).days + 1)]
-
-    # Create a DataFrame with one column 'Date' containing all the dates
-    df = pd.DataFrame({date: [date] for date in all_dates})
-    return df
+        # Return the response as JSON
+        return jsonify(response)

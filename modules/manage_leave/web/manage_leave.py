@@ -87,10 +87,13 @@ def apply_leave():
     transaction = connection.begin() 
     try:
         data = dict(request.form)
+        employees = retrive_employee ()
+        applied_by=employees[0]['name']
+        applied_on=datetime.now().strftime('%H:%M:%S')
         from_date = datetime.strptime(data['from_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
         to_date = datetime.strptime(data['to_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
         existing_data = connection.execute(
-            text(f"SELECT * FROM tb_leave WHERE employee_id = '{data['employee_name']}' AND from_date = '{from_date}'")).fetchone()
+            text(f"SELECT * FROM tb_leave WHERE employee_id = '{data['employee_id']}' AND from_date = '{from_date}'")).fetchone()
         
         if existing_data:
             # Duplicate entry found
@@ -100,7 +103,7 @@ def apply_leave():
             flash("Attendance entry already exists for this employee on the given date.", "error")
             return redirect('/manage_leave' )
             
-        connection.execute(text(f"INSERT INTO tb_leave(`employee_id`,`from_date`,`from_shift`,`to_date`,`to_shift`,`no_of_days`,`leave_reason`) VALUES ('{data['employee_name']}', '{from_date}','{data['from_shift']}','{to_date}','{data['to_shift']}','{data['no_of_days']}','{data['leave_reason']}');"))
+        connection.execute(text(f"INSERT INTO tb_leave(`employee_id`,`from_date`,`from_shift`,`to_date`,`to_shift`,`no_of_days`,`leave_reason`,`status`,`applied_by`,`applied_on`) VALUES ('{data['employee_id']}', '{from_date}','{data['from_shift']}','{to_date}','{data['to_shift']}','{data['no_of_days']}','{data['leave_reason']}','pending','{applied_by}','{applied_on}');"))
         transaction.commit()
         connection.close()
 

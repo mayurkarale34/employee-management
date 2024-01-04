@@ -46,7 +46,9 @@ def add_attendance_info(data, connection):
        "message" : ""
    }
     try:
-        existing_data = connection.execute(text(f"SELECT count(1) as total FROM tb_attendance WHERE employee_id = '{data['employee_id']}' AND attendance_date = '{data['attendance_date']}'")).fetchone()[0]
+        attendance_date = datetime.strptime(data['attendance_date'], '%Y-%m-%d')
+        formatted_date = attendance_date.strftime('%Y-%m-%d')
+        existing_data = connection.execute(text(f"SELECT count(1) as total FROM tb_attendance WHERE employee_id = '{data['employee_id']}' AND attendance_date = '{formatted_date}'")).fetchone()[0]
 
         if existing_data > 0:
             response['message'] = "Attendance entry already exists for this employee on the given date."
@@ -59,4 +61,4 @@ def add_attendance_info(data, connection):
         return response
     except Exception as e:
         print("Error while adding Attendance, Please contact administrator. : "+ str(e))
-        return response     
+        return response['message']     
