@@ -98,3 +98,20 @@ def get_employees():
 	except Exception as e:
 		print(str(e))
 		return jsonify(response)
+     
+@app.route('/update_employee', methods=["GET", "POST"])
+def update_employee():
+    connection =  app._engine.connect()
+    transaction = connection.begin()
+    try:
+        data = dict(request.form)
+        query = text(f"update tb_manage_employee set first_name = '{data['edit_first_name']}', middle_name = '{data['edit_middle_name']}', last_name = '{data['edit_last_name']}', contact = '{data['edit_contact']}', email_id = '{data['edit_email_id']}', gender = '{data['edit_gender']}', birth_date = '{data['edit_birth_date']}', blood_group = '{data['edit_blood_group']}', pan_number = '{data['edit_pan_number']}', aadhar_number = '{data['edit_aadhar_number']}', total_experience = '{data['edit_total_experience']}', designation = '{data['edit_designation']}', employee_type = '{data['edit_employee_type']}', joining_date = '{data['edit_joining_date']}', city = '{data['edit_city']}', Country = '{data['edit_Country']}', current_address = '{data['edit_current_address']}', permanent_address = '{data['edit_permanent_address']}', status = '{data['edit_status']}'  where id = '{data['id']}';")
+        connection.execute(query)
+        transaction.commit()
+        connection.close()
+        return redirect('/employee_management')
+    except Exception as e:
+        transaction.rollback()
+        connection.close()
+        print("Error while updating user : "+ str(e))
+        return redirect('/employee_management')             

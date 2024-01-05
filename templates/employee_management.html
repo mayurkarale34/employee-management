@@ -30,6 +30,36 @@
             }
             return params;
         }
+
+        function editFormater(value, row, index){
+            return '<a class= "update" >Edit</a>'
+        }
+    
+        window.actionEvent = {
+            'click .update': function(e, value, row, index){
+                $('#edit_first_name').val(row.first_name);
+                $('#edit_middle_name').val(row.middle_name);
+                $('#edit_last_name').val(row.last_name);
+                $('#edit_contact').val(row.contact);
+                $('#edit_email_id').val(row.email_id);
+                $('#edit_gender').val(row.gender);
+                $('#edit_birth_date').val(row.birth_date);
+                $('#edit_blood_group').val(row.blood_group);
+                $('#edit_pan_number').val(row.pan_number);
+                $('#edit_aadhar_number').val(row.aadhar_number);
+                $('#edit_total_experience').val(row.total_experience);
+                $('#edit_designation').val(row.designation);
+                $('#edit_employee_type').val(row.employee_type);
+                $('#edit_joining_date').val(row.joining_date);
+                $('#edit_city').val(row.city);
+                $('#edit_Country').val(row.Country);
+                $('#edit_current_address').val(row.current_address);
+                $('#edit_permanent_address').val(row.permanent_address);
+                $('#edit_status').val(row.status);
+                $('#id').val(row.id);
+                $('#edit_modal').modal('show');
+            }
+        }
     </script>
 </head>
 <body>
@@ -56,6 +86,10 @@
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
                             <th data-field="employee_id" class="text-center">Employee Id</th>
+                            {%  if session['logged_user_role'] =='Admin' %}
+                            <th data-formatter="editFormater" data-events="actionEvent" class="text-center" >Edit</th>
+                            {% endif %}
+                            <th data-formatter="viewFormater" data-events="actionEvent" class="text-center">View</th>
                             <th data-field="first_name" class="text-center">First Name</th>
                             <th data-field="middle_name" class="text-center">Middle Name</th>
                             <th data-field="last_name" class="text-center">Last Name</th>
@@ -80,12 +114,321 @@
             </div>
         </div>
     </div>
+
+    <div class="modal" id="view_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1>View User Details</h1>
+                </div>
+                <div class="modal-body">
+                    <!-- Add fields to display details -->
+                    <p><strong>First Name:</strong> <span id="view_first_name"></span></p>
+                    <p><strong>Middle Name:</strong> <span id="view_middle_name"></span></p>
+                    <p><strong>Last Name:</strong> <span id="view_last_name"></span></p>
+                    <p><strong>Contact_No:</strong> <span id="view_contact"></span></p>
+                    <p><strong>Email Id:</strong> <span id="view_email_id"></span></p>
+                    <p><strong>Gender:</strong> <span id="view_gender"></span></p>
+                    <p><strong>Birth Date:</strong> <span id="view_birth_date"></span></p>
+                    <p><strong>Blood Group:</strong> <span id="view_blood_group"></span></p>
+                    <p><strong>PAN Number:</strong> <span id="view_pan_number"></span></p>
+                    <p><strong>Aadhar Number:</strong> <span id="view_aadhar_number"></span></p>
+                    <p><strong>Total Experience:</strong> <span id="view_total_experience"></span></p>
+                    <p><strong>Designation:</strong> <span id="view_designation"></span></p>
+                    <p><strong>Employee Type:</strong> <span id="view_employee_type"></span></p>
+                    <p><strong>Joining Date:</strong> <span id="view_joining_date"></span></p>
+                    <p><strong>City:</strong> <span id="view_city"></span></p>
+                    <p><strong>Country:</strong> <span id="view_Country"></span></p>
+                    <p><strong>Current Address:</strong> <span id="view_current_address"></span></p>
+                    <p><strong>Permanent Address:</strong> <span id="view_permanent_address"></span></p>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="edit_modal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4>Edit User</h4>
+                </div>
+                <div class="modal-body">
+                    <form id="edit_user_form" action="/update_employee" method="POST" >
+                        <div class="form-group">
+                            <label for="edit_first_name">First Name</label>
+                            <input type="text" class="form-control" id="edit_first_name" name="edit_first_name" placeholder="Enter First Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_middle_name">Middle Name</label>
+                            <input type="text" class="form-control" id="edit_middle_name" name="edit_middle_name" placeholder="Enter Middle Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_last_name">Last Name</label>
+                            <input type="text" class="form-control" id="edit_last_name" name="edit_last_name" placeholder="Enter Last Name">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_contact">Contact_No</label>
+                            <input type="text" class="form-control" id="edit_contact" name="edit_contact" placeholder="Enter Contact_No" minlength="10" maxlength="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="edit_email_id">Email Id</label>
+                            <input type="text" class="form-control" id="edit_email_id" name="edit_email_id" placeholder="Enter your Email Id">
+                        </div>
+
+                        <div class="form-group">  
+                            <label class="d-flex flex-row align-items-center" for="edit_gender">Gender</label>  
+                            <select class="form-control select_field" name="edit_gender" id="edit_gender">
+                              <option value="">Please Select Gender</option>
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>  
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="d-flex flex-row align-items-center" for="edit_birth_date">Birth Date *</label>  
+                            <input type="text" class="form-control required datepicker" id="edit_birth_date" name="edit_birth_date" placeholder="Enter your Birth Date">  
+                          </div>
+                
+                          <div class="form-group">  
+                              <label for="edit_blood_group">Blood Group</label>  
+                              <select class="form-control select_field" name="edit_blood_group" id="edit_blood_group">
+                                <option value="">Please Select Blood Group</option>
+                                {% for bloodgroup in bloodgroups %}
+                                <option value={{bloodgroup}}>{{bloodgroup}}</option>
+                                {% endfor %}
+                              </select>  
+                          </div>  
+                          blood_group
+                      <div class="form-group">
+                        <label for="edit_pan_number">PAN Number *</label>
+                        <input type="text" class="form-control" id="edit_pan_number" name="edit_pan_number"
+                            placeholder="Enter your PAN Number" pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" minlength="10" maxlength="10" title="PAN Number should be 10 characters, starting with 5 letters, followed by 4 digits, and ending with 1 letter.">
+                      </div>
+        
+                      <div class="form-group">  
+                        <label for="edit_aadhar_number">Aadhar Number *</label>  
+                        <input type="text" class="form-control" id="edit_aadhar_number" name="edit_aadhar_number" placeholder="Enter your Aadhar Number" pattern="\d{12}" minlength="12" maxlength="12" title="Only numbers are allowed, and the length should be 12 digits" onkeypress="return isNumberKey(event)">  
+                      </div>
+        
+                      <div class="form-group">  
+                        <label class="d-flex flex-row align-items-center" for="edit_total_experience">Total Experience</label>  
+                        <select class="form-control select_field" name="edit_total_experience" id="edit_total_experience">
+                          <option value="">Please Select Total Experience</option>
+                          <option value="0">0</option>
+                          <option value="1">1</option>
+                          <option value="2">2</option>
+                          <option value="3">3</option>
+                          <option value="4">4</option>
+                          <option value="5">5</option>
+                          <option value="6">6</option>
+                          <option value="7">7</option>
+                          <option value="8">8</option>
+                          <option value="9">9</option>
+                          <option value="10">10</option>
+                          <option value="11">11</option>
+                          <option value="12">12</option>
+                          <option value="13">13</option>
+                          <option value="14">14</option>
+                          <option value="15">15</option>
+                          <option value="16">16</option>
+                          <option value="17">17</option>
+                        </select>  
+                      </div>
+        
+                      <div class="form-group">  
+                        <label for="edit_designation">Designation</label>  
+                        <select class="form-control select_field" name="edit_designation" id="edit_designation">
+                          <option value="">Please Select Designation</option>
+                          {% for role in roles %}
+                          <option value={{role}}>{{role}}</option>
+                          {% endfor %}
+                        </select>  
+                      </div>  
+        
+                      <div class="form-group">  
+                        <label class="d-flex flex-row align-items-center" for="edit_employee_type">Employee Type</label>  
+                        <select class="form-control select_field" name="edit_employee_type" id="edit_employee_type">
+                          <option value="">Please Select Employee Type</option>
+                          <option value="full_time">Full Time</option>
+                          <option value="part_time">Part Time</option>
+                          <option value="seasonal">Seasonal</option>
+                          <option value="temporary">Temporary</option>
+                          <option value="leased">Leased</option>
+                        </select>  
+                      </div>  
+        
+                      <div class="form-group">
+                          <label class="d-flex flex-row align-items-center" for="edit_joining_date">Joining Date</label>  
+                          <input type="text" class="form-control datepicker" id="edit_joining_date" name="edit_joining_date" placeholder="Enter your Joining Date">  
+                      </div>
+        
+                      <div class="form-group">  
+                        <label for="edit_city">City</label>  
+                        <select class="form-control select_field" name="edit_city" id="edit_city">
+                          <option value="">Please Select City</option>
+                          {% for city in cities %}
+                          <option value={{city}}>{{city}}</option>
+                          {% endfor %}
+                        </select>  
+                      </div>  
+                    
+                      <div class="form-group">  
+                        <label for="edit_Country">Country</label>  
+                        <select class="form-control select_field" name="edit_Country" id="edit_Country">
+                          <option value="">Please Select Country</option>
+                          {% for country in countries %}
+                            <option value="{{ country }}">{{ country }}</option>
+                          {% endfor %}
+                        </select>                
+                      </div>  
+                        
+                      <div class="form-group">  
+                        <label for="edit_current_address">Current Address</label>  
+                        <input type="text" class="form-control" id="edit_current_address" name="edit_current_address">  
+                      </div>
+        
+                      <div class="form-group">  
+                        <label for="edit_permanent_address">Permanent Address</label>  
+                        <input type="text" class="form-control" id="edit_permanent_address" name="edit_permanent_address">  
+                      </div>
+                        
+                        <div class="form-group">
+                            <label for="edit_status">Status</label>
+                            <select class="form-control select_field" name="edit_status" id="edit_status">
+                                <option value="">Please Select status</option>
+                                <option value="Active">Active</option>
+                                <option value="Inactive" selected >Inactive</option>
+                            </select>
+                        </div>   
+                        <input type="text" name="id" id="id" hidden>                               
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                    <button type="submit" id="update_button" class="btn btn-success">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
     {%include 'footer1.html' %}
 </body>
 <script>
     $('#add_employee').click(function(){
         window.location.href = 'add_employee_page';
     })
+
+    $('#update_button').click(function (e) {
+        $('#edit_user_form').submit();
+    });
+
+    $(document).ready(function () {
+    // Move the 'click' event binding outside of the actionEvent
+    $('#table_user_master').on('click', '.update', function (e) {
+        e.preventDefault(); // Prevent default behavior of the link
+
+        // Retrieve row data
+        var index = $(this).closest('tr').data('index');
+        var row = $('#table_user_master').bootstrapTable('getData')[index];
+
+        // Populate modal with data
+        $('#edit_first_name').val(row.first_name);
+        // ... (populate other fields similarly)
+        $('#edit_middle_name').val(row.middle_name);
+                $('#edit_last_name').val(row.last_name);
+                $('#edit_contact').val(row.contact);
+                $('#edit_email_id').val(row.email_id);
+                $('#edit_gender').val(row.gender);
+                $('#edit_birth_date').val(row.birth_date);
+                $('#edit_blood_group').val(row.blood_group);
+                $('#edit_pan_number').val(row.pan_number);
+                $('#edit_aadhar_number').val(row.aadhar_number);
+                $('#edit_total_experience').val(row.total_experience);
+                $('#edit_designation').val(row.designation);
+                $('#edit_employee_type').val(row.employee_type);
+                $('#edit_joining_date').val(row.joining_date);
+                $('#edit_city').val(row.city);
+                $('#edit_Country').val(row.Country);
+                $('#edit_current_address').val(row.current_address);
+                $('#edit_permanent_address').val(row.permanent_address);
+                $('#edit_status').val(row.status);
+                $('#id').val(row.id);
+                $('#edit_modal').modal('show');
+
+        $('#id').val(row.id);
+        $('#edit_modal').modal('show');
+    });
+
+    // Move the 'update_button' click event outside of the actionEvent
+    $('#update_button').click(function (e) {
+        e.preventDefault(); // Prevent default behavior of the button
+
+        // Prepare data for submission
+        var formData = $('#edit_user_form').serialize();
+
+        // Send AJAX request to update_employee route
+        $.ajax({
+            url: '/update_employee',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    // Update the table or UI as needed
+                    alert('Employee data updated successfully!');
+                    $('#edit_modal').modal('hide');
+                    $('#table_user_master').bootstrapTable('refresh'); // Refresh the table
+                } else {
+                    alert('Failed to update employee data.');
+                }
+            }
+        });
+    });
+});
+
+// Define the actionEvent as before
+window.actionEvent = {
+    'click .update': function (e, value, row, index) {
+        // This function is still called when the 'update' class is clicked
+    }
+};
+
+function viewFormater(value, row, index) {
+    return '<a class="view">View</a>';
+}
+
+window.actionEvent = {
+    'click .update': function (e, value, row, index) {
+        // Edit button click logic
+    },
+    'click .view': function (e, value, row, index) {
+        // View button click logic
+        // Populate the modal with details similar to the edit logic
+        $('#view_first_name').text(row.first_name);
+        $('#view_middle_name').text(row.middle_name);
+        
+        $('#view_last_name').text(row.last_name);
+                $('#view_contact').text(row.contact);
+                $('#view_email_id').text(row.email_id);
+                $('#view_gender').text(row.gender);
+                $('#view_birth_date').text(row.birth_date);
+                $('#view_blood_group').text(row.blood_group);
+                $('#view_pan_number').text(row.pan_number);
+                $('#view_aadhar_number').text(row.aadhar_number);
+                $('#view_total_experience').text(row.total_experience);
+                $('#view_designation').text(row.designation);
+                $('#view_employee_type').text(row.employee_type);
+                $('#view_joining_date').text(row.joining_date);
+                $('#view_city').text(row.city);
+                $('#view_Country').text(row.Country);
+                $('#view_current_address').text(row.current_address);
+                $('#view_permanent_address').text(row.permanent_address);
+        // ... (populate other fields similarly)
+        $('#view_modal').modal('show');
+    }
+};
 </script>
 </html>
 
