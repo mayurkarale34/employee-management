@@ -13,13 +13,11 @@ def retrive_tb_leave():
 
         request_data = {}
         request_data['search'] = request.args.get('search')
+        request_data['status'] = request.args.get('status')
         request_data['limit'] = request.args.get('limit', type=int)
         request_data['offset'] = request.args.get('offset', type=int)
-        request_data['sort'] = request.args.get('sort', 'created_at')
-        request_data['order'] = request.args.get('order', 'desc')
 
-
-        result_leaves = get_all_leave_info(request_data, connection)
+        result_leaves = get_all_leave_info(request_data, app._engine.connect())
         if result_leaves['status']:
             response['status'] = True
             response['message'] = 'Leave details retrived successfully.'

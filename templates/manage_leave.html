@@ -33,6 +33,16 @@
             }
           
         }
+
+        
+function queryParams(params) {
+    if (params.search == undefined || params.search == '') {
+        params.search = '';
+    }
+    params.status = $('#leave_status').val();
+    // Add pagination parameters
+    return params;
+}
        
       </script>
       
@@ -48,8 +58,8 @@
         <div class="tab-content">
             <div class="tab-pan fade in active" id="leave_tab">
                 <div id="toolbar">
-                    <select id="leave_filter" class="form-control">
-                        <option value="">All</option>
+                    <select id="leave_status" name="leave_status" class="form-control">
+                        <option value="All" selected>All</option>
                         <option value="Approved">Approved</option>
                         <option value="pending">Pending</option>
                     </select>               
@@ -224,24 +234,7 @@
     $('#apply_leave').click(function (e) {
         $('#leaveform').submit();
     });
-    // Assuming you use jQuery for AJAX
-    $.ajax({
-    url: '/retrive_tb_leave',
-    method: 'GET',
-    data: {
-        sort: 'created_at',  // Column to sort by
-        order: 'desc'  // Sort order (asc or desc)
-    },
-    dataType: 'json',  // Specify the expected data type
-    success: function(response) {
-        // Handle the response
-        console.log(response);
-    },
-    error: function(error) {
-        // Handle errors
-        console.error(error);
-    }
-});
+   
 // Initialize datetimepicker
 $('#from_date').datetimepicker({
     minView: 2,
@@ -264,14 +257,6 @@ $('#apply_leave_button').click(function (e) {
     // Show the modal
     $('#edit_modal').modal('show');
 });
-
-function queryParams(params) {
-    if (params.search == undefined || params.search == '') {
-        params.search = '';
-    }
-    // Add pagination parameters
-        return params;
-}
 
 $('select').select2({
 	width : '100%',
@@ -358,7 +343,7 @@ $("#employee_id").select2({
 		},
 	 }
 	});
-    $(document).on('change', '#leave_filter', function () {
+    $(document).on('change', '#leave_status', function () {
     // Retrieve the selected leave status filter value
     var selectedStatus = $(this).val().toLowerCase();
     console.log(selectedStatus )

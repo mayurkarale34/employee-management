@@ -9,18 +9,19 @@ def get_all_leave_info(data, connection):
     }
     try:
         if data['search'] == '':
-            count_duery = text(f"SELECT count(1) as total FROM tb_leave;")
+            count_duery = text(f"SELECT count(1) as total FROM tb_leave where status = if('{data['status']}' = 'All', status, '{data['status']}');")
             result_count = connection.execute(count_duery)
             response['total'] = result_count.fetchone()[0]
 
-            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id) ORDER BY {request_data['sort']} {request_data['order']} limit {data['offset']}, {data['limit']};")
+            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id) where status = if('{data['status']}' = 'All', status, '{data['status']}') ORDER BY id desc limit {data['offset']}, {data['limit']};")
+            print(query)
             result = connection.execute(query)
         else:
-            count_duery = text(f"SELECT count(1) as total FROM tb_leave tbl where tbl.employee_id like '%{data['search']}%';")
+            count_duery = text(f"SELECT count(1) as total FROM tb_leave tbl where  status = if('{data['status']}' = 'All', status, '{data['status']}') and tbl.employee_id like '%{data['search']}%';")
             result_count = connection.execute(count_duery)
             response['total'] = result_count.fetchone()[0]
 
-            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id)  where tbl.employee_id like '%{data['search']}%' ORDER BY {request_data['sort']} {request_data['order']} limit {data['offset']}, {data['limit']};")
+            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id) where status = if('{data['status']}' = 'All', status, '{data['status']}') and tbl.employee_id like '%{data['search']}%'  ORDER BY id desc limit {data['offset']}, {data['limit']};")
             result = connection.execute(query)
             
         if result.rowcount:
