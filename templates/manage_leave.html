@@ -351,6 +351,32 @@ $("#employee_id").select2({
     $('#table_user_master').bootstrapTable('filterBy', { status: selectedStatus });
 });
 
+$('#from_date').change(function(e){
+    let from_date = $('#from_date').val();
+    let to_date = $('#to_date').val();
+    if(from_date != '' && to_date != ''){
+        let days = getDaysBetweenDate(from_date, to_date)
+        if((days+1)<=0){
+            $('#from_date').val('');
+            alert("From Date should not be greater than To Date")
+        }
+    }
+    
+})
+
+$('#to_date').change(function(e){
+    let from_date = $('#from_date').val();
+    let to_date = $('#to_date').val();
+    if(from_date != '' && to_date != ''){
+        let days = getDaysBetweenDate(from_date, to_date)
+        if((days+1)<=0){
+            $('#to_date').val('');
+            alert("To Date should be greater than From Date")
+        }
+    }
+    
+})
+
 
 </script>
 
