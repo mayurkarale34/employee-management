@@ -26,7 +26,7 @@
     <script>
         function statusFormatter(value, row) {
             if(row.status =='pending'){
-                return '<button class="btn btn-danger btn-sm" onclick="approve_leave(' + row.id + ')">Approve</button>';
+                return '<button class="btn btn-success btn-sm" onclick="approve_leave(' + row.id + ')">Approve</button>';
             }
             else{
                 return '<button class="btn btn-success btn-sm" disabled>Approve</button>';
@@ -47,8 +47,14 @@
         </ul>
         <div class="tab-content">
             <div class="tab-pan fade in active" id="leave_tab">
-                <table id="table_user_master" class="table custom-bordered-table"
-                   
+                <div id="toolbar">
+                    <select id="leave_filter" class="form-control">
+                        <option value="">All</option>
+                        <option value="Approved">Approved</option>
+                        <option value="pending">Pending</option>
+                    </select>               
+                </div>
+                <table id="table_user_master" class="table custom-bordered-table"  
                 data-toggle="table"
                 data-url="/retrive_tb_leave"
                 data-search="true"
@@ -59,8 +65,7 @@
                 data-pagination="true"
                 data-side-pagination="server"
                 data-page-size="5"
-                data-page-list="[5,10,20]"
-                    >
+                data-page-list="[5,10,20]">
                     <thead>
                         <tr>
                             <th data-field="id" class="text-center">ID</th>
@@ -72,7 +77,7 @@
                             <th data-field="to_shift" class="text-center">To Shift</th>
                             <th data-field="no_of_days" class="text-center">Total Days</th>
                             <th data-field="leave_reason" class="text-center">Leave Reason</th>
-                            <th data-field="status" class="text-center">Status</th>
+                            <th data-field="status" class="text-center" >Status</th>
                             <th data-field="applied_by" class="text-center">Applied By</th>
                             <th data-field="applied_on" class="text-center">Applied On</th>
                             <th data-field="approved_by" class="text-center" data-visible="false">Approved By</th>
@@ -219,14 +224,24 @@
     $('#apply_leave').click(function (e) {
         $('#leaveform').submit();
     });
-
-    $('#date_filter').datetimepicker({
-    minView: 2,
-    format: 'dd-MM-yyyy',
-    autoclose: true
+    // Assuming you use jQuery for AJAX
+    $.ajax({
+    url: '/retrive_tb_leave',
+    method: 'GET',
+    data: {
+        sort: 'created_at',  // Column to sort by
+        order: 'desc'  // Sort order (asc or desc)
+    },
+    dataType: 'json',  // Specify the expected data type
+    success: function(response) {
+        // Handle the response
+        console.log(response);
+    },
+    error: function(error) {
+        // Handle errors
+        console.error(error);
+    }
 });
-$('#date_filter').datetimepicker('setDate', new Date());
-
 // Initialize datetimepicker
 $('#from_date').datetimepicker({
     minView: 2,
@@ -255,13 +270,8 @@ function queryParams(params) {
         params.search = '';
     }
     // Add pagination parameters
-    return params;
+        return params;
 }
-
-
-$('#date_filter').change(function (e){
-    $('#table_user_master').bootstrapTable('refresh');
-})
 
 $('select').select2({
 	width : '100%',
@@ -348,6 +358,14 @@ $("#employee_id").select2({
 		},
 	 }
 	});
+    $(document).on('change', '#leave_filter', function () {
+    // Retrieve the selected leave status filter value
+    var selectedStatus = $(this).val().toLowerCase();
+    console.log(selectedStatus )
+    // Use Bootstrap Table's filter method to filter the table by status
+    $('#table_user_master').bootstrapTable('filterBy', { status: selectedStatus });
+});
+
 
 </script>
 

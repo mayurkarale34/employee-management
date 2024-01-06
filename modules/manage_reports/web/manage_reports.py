@@ -64,12 +64,12 @@ def download_all_attendance():
                 attendance[employee_id] = dict_format
 
                 attendance[employee_id]['present_days'] = 1  # Increment present days
-                attendance[employee_id]['absent_days'] = total_days_in_month-1  
+                attendance[employee_id]['absent_days'] = total_days_in_month-1
+                attendance[employee_id]['leave_days'] = 0
                 attendance[employee_id][day_key] = 'P'
 
          # Fetch leave data for the selected month and date range
         leave_data = generate_all_leave_data(selected_month, selected_year)
-        print(leave_data)
 
         # Incorporate leave data into the attendance dictionary
         for leave_entry in leave_data:
@@ -83,6 +83,8 @@ def download_all_attendance():
                 leave_day_key = 'Day_'+str(leave_day)
 
                 if employee_id in attendance:
+                    attendance[employee_id]['leave_days'] += 1 
+                    attendance[employee_id]['absent_days'] = attendance[employee_id]['absent_days']-1
                     attendance[employee_id][leave_day_key] = 'L'
         
         # Convert the dictionary to a list
