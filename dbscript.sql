@@ -94,3 +94,6 @@ CREATE TABLE `tb_attendance` (
 
 ALTER TABLE `tb_leave` 
 CHANGE COLUMN `applied_on` `applied_on` TIME NULL DEFAULT NULL ;
+
+ALTER TABLE `tb_attendance` 
+ADD COLUMN `working_hours` TIME NULL AFTER `status`;
