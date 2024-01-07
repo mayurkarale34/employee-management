@@ -54,8 +54,9 @@ def add_attendance():
     try:
         data = request.form.to_dict()
         data['attendance_date'] = datetime.strptime(data['clock_in_date_time'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d')
-        data['clock_in_date_time'] = datetime.strptime(data['clock_in_date_time'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
-
+        data['clock_time'] = datetime.strptime(data['clock_in_date_time'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
+        data['action'] = 'CLOCK_IN'
+        
         add_attendance_response = add_attendance_info(data, connection)
         
         if not add_attendance_response['status']:

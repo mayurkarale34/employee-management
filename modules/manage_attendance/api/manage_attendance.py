@@ -6,9 +6,10 @@ def api_add_attendance():
     connection =  app._engine.connect() 
     transaction = connection.begin()
     try:
-        data = request.form.to_dict()
-        data['attendance_date'] = datetime.strptime(data['clock_in_date_time'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d')
-        data['clock_in_date_time'] = datetime.strptime(data['clock_in_date_time'], '%d-%m-%Y %H:%M:%S').strftime('%Y-%m-%d %H:%M:%S')
+        data = dict(request.get_json())
+        print(data)
+        data['clock_time']=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        data['attendance_date'] = datetime.now().strftime('%Y-%m-%d')
 
         add_attendance_response = add_attendance_info(data, connection)
         
@@ -19,13 +20,13 @@ def api_add_attendance():
             return jsonify(response)
         
         response['status'] = True
-        response['message'] = "Attendance Marked Successfully."
+        response['message'] = add_attendance_response['message']
         transaction.commit()
         connection.close()
 
         return jsonify(response)
     except Exception as e:
-        print("Error while adding user, Please contact administrator. : "+ str(e))
+        print("Error while Clock In, Please contact administrator. : "+ str(e))
         transaction.rollback()
         connection.close()
         return jsonify(response)          
