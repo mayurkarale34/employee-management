@@ -84,40 +84,31 @@ def apply_leave():
     response = {"status" : False, "message" : ""}
     connection =  app._engine.connect() 
     transaction = connection.begin() 
-    """import pdb
-    pdb.set_trace()"""
     try:
-        data = dict(request.form)
-        employees = retrive_employee ()
-        applied_by=employees[0]['name']
-        applied_on=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-        from_date = datetime.strptime(data['from_date'], '%d-%m-%Y')
-        to_date = datetime.strptime(data['to_date'], '%d-%m-%Y')
-        if to_date < from_date:
-            response['message'] = "To date should be greater than or equal to from date."
-            flash(response['message'], 'error')
-            return redirect('/manage_leave')
+        data = dict(request.get_json())
 
-        else:  
-            for single_date in daterange(from_date, to_date):
-             existing_data = connection.execute(text(f"SELECT * FROM tb_leave WHERE employee_id = '{data['employee_id']}' AND '{single_date}' BETWEEN from_date AND to_date") ).fetchone()
-             if existing_data:
-                # Duplicate entry found
-                transaction.rollback()
-                connection.close()
-                response['message'] = "Leave entry already exists for this employee on the given date."
-                flash("Leave entry already exists for this employee on the given date.", "error")
-                return redirect('/manage_leave' )
-            
-            connection.execute(text(f"INSERT INTO tb_leave(`employee_id`,`from_date`,`from_shift`,`to_date`,`to_shift`,`no_of_days`,`leave_reason`,`status`,`applied_by`,`applied_on`) VALUES ('{data['employee_id']}', '{from_date}','{data['from_shift']}','{to_date}','{data['to_shift']}','{data['no_of_days']}','{data['leave_reason']}','pending','{applied_by}','{applied_on}');"))
-            transaction.commit()
+        data['applied_on']=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+        data['from_date'] = datetime.strptime(data['from_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
+        data['to_date'] = datetime.strptime(data['to_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
+
+        application_response = apply_for_leave_info(data, connection)
+        if not application_response['status']:
+            transaction.rollback()
             connection.close()
-
-            response['status'] = True
-            response['message'] = "You have successfully apply leave!"
-            flash(response['message'], 'success')
-            return redirect('/manage_leave' )
+            response['message'] = application_response['message']
+            return jsonify(response)
+        
+        transaction.commit()
+        connection.close()
+        response['status'] = True
+        response['message'] = "Leave Applied Successfully."
+        return jsonify(response)
+    
     except Exception as e:
-        print("Error while adding user, Please contact administrator. : "+ str(e))
-        flash("Error while adding user. Please contact the administrator.", 'error')
+        transaction.rollback()
+        connection.close()
+        message = "Error while adding user, Please contact administrator. : "+ str(e)
+        print(message)
+        response['message'] = message
         return jsonify(response)   
+    
