@@ -3,93 +3,227 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Employee Attendance Report</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+    <title>Attendance System</title>
     <style>
         body {
-            text-align: center; /* Center the content horizontally */
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
         }
 
-        h2, h3, table {
-            margin: 20px auto; /* Center the content vertically */
+        #mobileScreen {
+            background-color: #fff;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
         }
 
-        table {
-            border-collapse: collapse;
-            width: 80%; /* Adjust the width as needed */
+        label {
+            display: block;
+            margin-bottom: 5px;
         }
 
-        th, td {
-            border: 1px solid #dddddd;
-            text-align: left;
-            padding: 8px;
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
         }
 
-        th {
-            background-color: #f2f2f2;
-        }
 
-        .clock-in-button {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 20px; /* Equal padding for width and height to create a circle */
-            font-size: 16px;
-            border-radius: 50%; /* Create a circular button */
-            background-color: #3498db; /* Button background color */
-            color: #fff; /* Text color */
+        #clockInBtn {
+            background-color: #4caf50;
+            color: #fff;
+            border: none;
             cursor: pointer;
-            transition: background-color 0.3s ease;
-            border: none; /* Remove default button border */
-            outline: none; /* Remove button outline */
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 20px;
+            padding-bottom: 100px;
+            padding-left: 50px;
+            padding-right: 90px;
+            padding-top: 50px;
+            margin-left: 25%;
         }
 
-        .clock-in-button:hover {
-            background-color: #2980b9; /* Change color on hover */
+        #clockOutBtn {
+            background-color: #da3d3d;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            line-height: 50px;
+            font-size: 20px;
+            padding-bottom: 100px;
+            padding-left: 50px;
+            padding-right: 90px;
+            padding-top: 50px;
+            margin-left: 25%;
         }
 
-        #clockInTime {
-            margin-top: 10px;
-        }
     </style>
+
+    
 </head>
 <body>
 
-    <h2>Employee Attendance Report</h2>
+    <div id="mobileScreen">
+        <h3>Date: <span>08 January 2024</span> </h3>
+        <label for="inTime">Employee: </label>
+        <input type="text" id="employee_id" name="employee_id">
 
-    <!-- Display the static employee name centered -->
-    <h3>Employee Name: John Doe</h3>
+        <button id="clockInBtn" class="clockIn">Clock_In</button>
+        <button id="clockOutBtn" class="clockIn">Clock_Out</button>
 
-    <!-- Clock in button -->
-    <button class="clock-in-button" onclick="clockIn()">Clock In</button>
+        <label for="inTime">In Time:</label>
+        <input type="text" id="inTime" name="inTime" readonly>
 
-    <!-- Display the clock-in time -->
-    <div id="clockInTime"></div>
+        <label for="outTime">Out Time:</label>
+        <input type="text" id="outTime" name="outTime" readonly>
 
-    <!-- Display the attendance report centered -->
-    <div id="reportContainer"></div>
+        <label for="workingHours">Working Hours:</label>
+        <input type="text" id="workingHours" name="workingHours" readonly>
+
+    </div>
 
     <script>
-        function generateReport() {
-            // Assuming you have the data, generate the report HTML
-            
-            // Display the report centered
-            document.getElementById('reportContainer').innerHTML = reportHTML;
+
+        $('#clockOutBtn').hide();
+        $('#clockInBtn').click(function(e){
+            clock_in();
+            get_attendance();
+            $('#clockOutBtn').show();
+            $('#clockInBtn').hide();
+        })
+
+        $('#clockOutBtn').click(function(e){
+            clock_out();
+            get_attendance();
+            $("#clockOutBtn").prop("disabled", true);
+        })
+
+        
+        
+        function get_attendance(){
+            const apiUrl = 'http://127.0.0.1:5000/api/v1/get-daily-attendance';
+            const requestData = {
+                "employee_id" : $('#employee_id').val()
+            };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data);
+                    if(data.clock_in !=''){
+                        $('#inTime').val(data.clock_in);
+                        $('#workingHours').val('');
+                        $('#clockOutBtn').show();
+                        $('#clockInBtn').hide();
+
+                    }
+                    else{
+                        $('#clockInBtn').show();
+                        $('#clockOutBtn').hide();
+                        $('#inTime').val('');
+                        $('#outTime').val('');
+                        $('#workingHours').val('');
+
+                    }
+                    if(data.clock_out !=''){
+                        $('#outTime').val(data.clock_in);
+                        $('#workingHours').val(data.working_hours);
+                        $('#clockInBtn').hide();
+                        $('#clockOutBtn').show();
+                        // $("#clockOutBtn").prop("disabled", true);
+                        
+                    }
+
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
         }
 
-        function clockIn() {
-            // Get the current time
-            const currentTime = new Date();
-            const hours = currentTime.getHours();
-            const minutes = currentTime.getMinutes();
+        $('#employee_id').change(function(e){
+            get_attendance();
+        });
 
-            // Format the time
-            const formattedTime = `${hours}:${minutes < 10 ? '0' : ''}${minutes}`;
+        function clock_in(){
+            const apiUrl = 'http://127.0.0.1:5000/api/v2/add-attendance';
 
-            // Display the clock-in time
-            document.getElementById('clockInTime').innerHTML = `Clock In Time: ${formattedTime}`;
+            const requestData = {
+                "action" : "CLOCK_IN",
+                "employee_id" : $('#employee_id').val(),
+                "attendance_id" : 10
+            };
 
-            // Call the function to generate the report
-            generateReport();
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         }
+
+        function clock_out(){
+            const apiUrl = 'http://127.0.0.1:5000/api/v2/add-attendance';
+
+            const requestData = {
+                "action" : "CLOCK_OUT",
+                "employee_id" : $('#employee_id').val(),
+                "attendance_id" : 12
+            };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data);
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+
+
+        
+        // $('#clockOutBtn').click(function(e){
+        //     $('#clockInBtn').hide();
+           
+        // })
+
+
+
     </script>
 
 </body>
