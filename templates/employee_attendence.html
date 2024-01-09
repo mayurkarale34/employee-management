@@ -135,10 +135,11 @@
                         $('#inTime').val(data.clock_in);
                         $('#Id').val(data.id);
                         $('#workingHours').val('');
-                        $('#clockOutBtn').show();
-                        $('#clockInBtn').hide();
+                        $('#clockOutBtn').hide();
+                        $('#clockInBtn').show();
                     }
                     else{
+                        alert('hello')
                         $('#clockInBtn').show();
                         $('#clockOutBtn').hide();
                         $('#inTime').val('');
@@ -146,7 +147,7 @@
                         $('#workingHours').val('');
 
                     }
-                    if(data.clock_out !=''){
+                    if(data.clock_out != '' || data.clock_out != null){
                         $('#outTime').val(data.clock_out);
                         $('#workingHours').val(data.working_hours);
                         $('#clockInBtn').hide();
@@ -172,7 +173,7 @@
             const requestData = {
                 "action" : "CLOCK_IN",
                 "employee_id" : $('#employee_id').val(),
-                "attendance_id" : 10
+                "attendance_id" : $('#Id').val()
             };
 
             fetch(apiUrl, {
@@ -199,6 +200,7 @@
                 "employee_id" : $('#employee_id').val(),
                 "attendance_id" : $('#Id').val()
             };
+            console.log(requestData)
 
             fetch(apiUrl, {
                 method: 'POST',
