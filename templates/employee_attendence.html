@@ -93,6 +93,8 @@
         <label for="workingHours">Working Hours:</label>
         <input type="text" id="workingHours" name="workingHours" readonly>
 
+        <input type="text" id="Id" name="Id" readonly hidden>
+
     </div>
 
     <script>
@@ -131,10 +133,10 @@
                     console.log('API Response:', data);
                     if(data.clock_in !=''){
                         $('#inTime').val(data.clock_in);
+                        $('#Id').val(data.id);
                         $('#workingHours').val('');
                         $('#clockOutBtn').show();
                         $('#clockInBtn').hide();
-
                     }
                     else{
                         $('#clockInBtn').show();
@@ -145,7 +147,7 @@
 
                     }
                     if(data.clock_out !=''){
-                        $('#outTime').val(data.clock_in);
+                        $('#outTime').val(data.clock_out);
                         $('#workingHours').val(data.working_hours);
                         $('#clockInBtn').hide();
                         $('#clockOutBtn').show();
@@ -195,7 +197,7 @@
             const requestData = {
                 "action" : "CLOCK_OUT",
                 "employee_id" : $('#employee_id').val(),
-                "attendance_id" : 12
+                "attendance_id" : $('#Id').val()
             };
 
             fetch(apiUrl, {
