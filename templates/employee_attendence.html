@@ -102,14 +102,12 @@
         $('#clockOutBtn').hide();
         $('#clockInBtn').click(function(e){
             clock_in();
-            get_attendance();
             $('#clockOutBtn').show();
             $('#clockInBtn').hide();
         })
 
         $('#clockOutBtn').click(function(e){
             clock_out();
-            get_attendance();
             $("#clockOutBtn").prop("disabled", true);
         })
 
@@ -135,8 +133,8 @@
                         $('#inTime').val(data.clock_in);
                         $('#Id').val(data.id);
                         $('#workingHours').val('');
-                        $('#clockOutBtn').show();
-                        $('#clockInBtn').hide();
+                        $('#clockOutBtn').hide();
+                        $('#clockInBtn').show();
                     }
                     else{
                         $('#clockInBtn').show();
@@ -146,7 +144,7 @@
                         $('#workingHours').val('');
 
                     }
-                    if(data.clock_out !=''){
+                    if(data.clock_out != ''){
                         $('#outTime').val(data.clock_out);
                         $('#workingHours').val(data.working_hours);
                         $('#clockInBtn').hide();
@@ -172,7 +170,7 @@
             const requestData = {
                 "action" : "CLOCK_IN",
                 "employee_id" : $('#employee_id').val(),
-                "attendance_id" : 10
+                "attendance_id" : $('#Id').val()
             };
 
             fetch(apiUrl, {
@@ -184,6 +182,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    get_attendance();
                     console.log('API Response:', data);
                 })
                 .catch(error => {
@@ -199,6 +198,7 @@
                 "employee_id" : $('#employee_id').val(),
                 "attendance_id" : $('#Id').val()
             };
+            console.log(requestData)
 
             fetch(apiUrl, {
                 method: 'POST',
@@ -209,6 +209,7 @@
             })
                 .then(response => response.json())
                 .then(data => {
+                    get_attendance();
                     console.log('API Response:', data);
                 })
                 .catch(error => {
