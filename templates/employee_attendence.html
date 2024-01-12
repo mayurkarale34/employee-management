@@ -28,7 +28,7 @@
             margin-bottom: 5px;
         }
 
-        input, button {
+        input, button, select{
             width: 100%;
             padding: 10px;
             margin-bottom: 15px;
@@ -37,6 +37,30 @@
 
 
         #clockInBtn {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 20px; /* Equal padding for width and height to create a circle */
+            font-size: 18px;
+            border-radius: 50%; /* Create a circular button */
+            background-color: #3498db; /* Button background color */
+            color: #fff; /* Text color */
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            border: none; /* Remove default button border */
+            outline: none; /* Remove button outline */
+            line-height: 50px;
+            padding-bottom: 100px;
+            padding-left: 50px;
+            padding-right: 90px;
+            padding-top: 50px;
+            width: 50px;
+            height: 50px;
+            margin-left: 25%;
+        }
+
+
+      /*  #clockInBtn {
+            display: inline-block;
             background-color: #4caf50;
             color: #fff;
             border: none;
@@ -51,7 +75,12 @@
             padding-right: 90px;
             padding-top: 50px;
             margin-left: 25%;
+        }        */
+
+        #clockInBtn:hover {
+            background-color: #2980b9; /* Change color on hover */
         }
+
 
         #clockOutBtn {
             background-color: #da3d3d;
@@ -70,6 +99,9 @@
             margin-left: 25%;
         }
 
+        #employeeSelect {
+    margin-bottom: 15px; /* Add margin for separation */
+}
     </style>
 
     
@@ -79,7 +111,12 @@
     <div id="mobileScreen">
         <h3>Date: <span>08 January 2024</span> </h3>
         <label for="inTime">Employee: </label>
-        <input type="text" id="employee_id" name="employee_id">
+        <select id="employeeSelect">
+            <!-- Add options dynamically using JavaScript or manually -->
+            <option value="employee1">Employee 1</option>
+            <option value="employee2">Employee 2</option>
+            <!-- Add more options as needed -->
+        </select>
 
         <button id="clockInBtn" class="clockIn">Clock_In</button>
         <button id="clockOutBtn" class="clockIn">Clock_Out</button>
@@ -226,6 +263,9 @@
         // })
 
 
+        $('#employeeSelect').change(function(e){
+            get_attendance();
+        });
 
     </script>
 
