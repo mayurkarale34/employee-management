@@ -85,8 +85,8 @@ def apply_leave():
     connection =  app._engine.connect() 
     transaction = connection.begin() 
     try:
-        data = dict(request.get_json())
-
+        data = dict(request.form)
+        data['applied_by'] = session.get('logged_user_name', 'Default')
         data['applied_on']=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         data['from_date'] = datetime.strptime(data['from_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
         data['to_date'] = datetime.strptime(data['to_date'], '%d-%m-%Y').strftime('%Y-%m-%d')

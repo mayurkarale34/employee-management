@@ -71,6 +71,10 @@ def add_attendance_info(data, connection):
                 response['message'] = 'Attendance details not found, please try again'
                 return response
             clock_in = datetime.strptime(clock_in, '%d-%m-%Y %H:%M:%S')
+            if (clock_out - clock_in) < timedelta(minutes=30):
+                response['status'] = False
+                response['message'] = 'Clock Out not allowed within the first half hour of Clock In.'
+                return response
 
             working_hours = datetime_difference(clock_in, clock_out)
 

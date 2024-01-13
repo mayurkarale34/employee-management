@@ -7,7 +7,6 @@ def api_add_attendance():
     transaction = connection.begin()
     try:
         data = dict(request.get_json())
-        print(data)
         data['clock_time']=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         data['attendance_date'] = datetime.now().strftime('%Y-%m-%d')
 
