@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/global.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/static/css/select2-bootstrap.css">
+    <link rel="stylesheet" href="/static/css/select2.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrapValidator.min.css">
+    <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
+
+    <script src="/static/js/jquery-2.1.3.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <script src="/static/js/tableExport.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/daterangepicker.min.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/js/select2.min.js"></script>
+    <script src="/static/js/bootstrapValidator.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        input, button, select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            display: inline-block;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: #fff;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .tabs {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .tab {
+            width: 48%;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            background-color: #ddd;
+        }
+
+        .tab.active {
+            background-color: #4CAF50;
+            color: #fff;
+        }
+
+        #output {
+            margin-top: 15px;
+        }
+        .leave-box {
+    background-color: #f9f9f9;
+    border-radius: 8px;
+}
+    </style>
+    <title>Apply Leave</title>
+</head>
+<body>
+
+<div class="container">
+  <div class="form-group" style="display: flex; flex-direction: column; align-items: flex-start;">
+    <label for="employee_i">Employee Name :</label>
+        <div style="display: flex; width: 100%;">
+            <select id="employee_i" name="employee_i" class="form-control" style="width: 50%;" required>
+            </select>
+            <div style="width: 20%;"></div> <!-- 20% gap -->
+            <button class="btn btn-primary" style="width: 30%;" id="apply_leave_button">Apply</button>
+        </div>
+   </div>
+    <div class="tabs">
+        <button id="leaves-tab" class="tab active">Leaves</button>
+        <button id="logs-tab" class="tab active">Logs</button>
+    </div>
+
+    <div id="tab-content">
+        <div id="leaves-content">
+            <!-- Content for Leaves tab -->
+            
+        </div>
+        <div id="logs-content">
+            <!-- Content for Logs tab -->
+        </div>
+    </div>
+
+
+</div>
+<div class="modal" id="edit_modal">
+  <div class="modal-dialog" role="document">
+      <div class="modal-content">
+          <div class="modal-header">
+              <h1>Add Attendance</h1>
+          </div>
+          <div class="modal-body">
+              <form id="leaveform" action="http://127.0.0.1:5000/apply_leave" method="POST" >
+                  <div class="form-group">
+                      <label for="employee_id">Employee Name</label>
+                          <select id="employee_id" name="employee_id" class="form-control" required>
+                              
+                          </select>
+                  </div>
+                  
+                  <div class="form-group">
+                      <label for="from_date">From Date</label>
+                      <input type="text" id="from_date" name="from_date" class="form-control" placeholder="select date" style="background-color:#ffffff"/>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="from_shift">Form Shift</label>
+                      <select id="from_shift" name="from_shift" class="form-control" style="background-color:#ffffff">
+                          <option value="First Half" selected>First Half</option>
+                          <option value="Second Half">Second Half</option>
+                      </select>
+                  </div>
+                  <div class="form-group">
+                      <label for="to_date">To Date</label>
+                      <input type="text" id="to_date" name="to_date" class="form-control" placeholder="select date"  style="background-color:#ffffff"/>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="to_shift">To Shift</label>
+                      <select id="to_shift" name="to_shift" class="form-control" style="background-color:#ffffff">
+                          <option value="First Half">First Half</option>
+                          <option value="Second Half" selected>Second Half</option>
+                      </select>
+                  </div>
+
+                  <div class="form-group">
+                      <label for="no_of_days">Total Days</label>
+                      <input type="text" id="no_of_days" name="no_of_days" class="form-control" placeholder="select days" readonly />
+                  </div>
+
+                  <div class="form-group">
+                      <label for="leave_reason">Leave Reason</label>
+                      <input type="text" id="leave_reason" name="leave_reason" class="form-control" placeholder="give reason" style="background-color:#ffffff"/>
+                  </div>
+                      
+              </form>
+          </div>
+          <div class="modal-footer">
+              <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+              <button type="submit" id="apply_leave" class="btn btn-success">apply leave</button>
+          </div>
+      </div>
+  </div>
+</div>
+<script>
+    $('#leaves-tab').click(function (e) {
+        $('#leaves-tab').addClass('active');
+        $('#logs-tab').removeClass('active');
+        $('#leaves-content').show();
+        $('#leaves-content').empty();
+
+        // Add content for Casual Leave and Sick Leave
+        const casualLeaveText = '<p>Casual Leave: 5 days remaining</p>';
+        const sickLeaveText = '<p>Sick Leave: 3 days remaining</p>';
+        $('#leaves-content').append(casualLeaveText).append(sickLeaveText);
+        $('#logs-content').hide();
+        
+    });
+
+    $('#logs-tab').click(function (e) {
+        $('#logs-tab').addClass('active');
+        $('#leaves-tab').removeClass('active');
+        $('#leaves-content').hide();
+        $('#logs-content').show();
+        getEmployeeLeaveData();
+        // Add logic for logs content if needed
+    });
+
+    // Initial load to show the Leaves tab
+    $('#log-tab').trigger('click');       
+
+  $('#apply_leave').click(function (e) {
+        Apply()
+        $('#leaveform').submit();
+    });
+  $('#from_date').datetimepicker({
+    minView: 2,
+    format: 'dd-mm-yyyy',
+    autoclose: true
+});
+
+$('#to_date').datetimepicker({
+    minView: 2,
+    format: 'dd-mm-yyyy',
+    autoclose: true
+});
+$('#approved_on').datetimepicker({
+    minView: 2,
+    format: 'dd-mm-yyyy',
+    autoclose: true
+});
+
+$('#apply_leave_button').click(function (e) {
+    // Show the modal
+    $('#edit_modal').modal('show');
+});
+
+$('select').select2({
+	width : '100%',
+	theme : 'bootstrap'
+})
+
+$('#from_date, #to_date, #from_shift, #to_shift').change(function (e){
+    // $('#from_date').closest('form').bootstrapValidator('revalidateField', $('#from_date').prop('name'))
+    // $('#to_date').closest('form').bootstrapValidator('revalidateField', $('#to_date').prop('name'))
+    calculateDays();
+});
+
+function calculateDays() {
+    let from_date = $('#from_date').val();
+    let from_shift = $('#from_shift').val();
+    let to_date = $('#to_date').val();
+    let to_shift = $('#to_shift').val();
+   
+    if(from_date != '' && to_date != ''){
+        let no_of_days = get_date_difference(from_date, to_date) + 1;
+        
+        if(from_shift == 'Second Half'){
+            no_of_days -= 0.5;
+        }
+
+        if(to_shift == 'First Half'){
+            no_of_days -= 0.5;
+        }
+
+        $('#no_of_days').val(no_of_days);
+    }
+    else{
+        $('#no_of_days').val('');
+    }
+  
+    
+}
+$('#from_date').change(function(e){
+    let from_date = $('#from_date').val();
+    let to_date = $('#to_date').val();
+    if(from_date != '' && to_date != ''){
+        let days = getDaysBetweenDate(from_date, to_date)
+        if((days+1)<=0){
+            $('#from_date').val('');
+            alert("From Date should not be greater than To Date")
+        }
+    }
+    
+})
+
+$('#to_date').change(function(e){
+    let from_date = $('#from_date').val();
+    let to_date = $('#to_date').val();
+    if(from_date != '' && to_date != ''){
+        let days = getDaysBetweenDate(from_date, to_date)
+        if((days+1)<=0){
+            $('#to_date').val('');
+            alert("To Date should be greater than From Date")
+        }
+    }
+    
+})
+function configureSelect2(id) {
+    $("#" + id).select2({
+        theme: "bootstrap",
+        width: "100%",
+        minimumInputLength: 1,
+        ajax: {
+            url: "http://127.0.0.1:5000/get_employees",
+            type: "GET",
+            dataType: 'json',
+            data: function (params) {
+                var query = {
+                    search: params.term,
+                    page_no: params.page || 0,
+                    page_size: params.page || 20,
+                }
+
+                // Query parameters will be ?search=[term]&page_no=[page_no]&page_size=[page_size]
+                return query;
+            },
+            processResults: function (response, params) {
+                return {
+                    results: response.data,
+                    pagination: {
+                        more: (params.page * 20) < response.total
+                    }
+                };
+            },
+        }
+    });
+}
+
+// Call the function for two different IDs
+configureSelect2("employee_id");
+configureSelect2("employee_i");
+
+function Apply(){
+            const apiUrl = 'http://127.0.0.1:5000/api/v1/apply-for-leave';
+    
+            const requestData = {
+                "employee_id" : $('#employee_id').val(),
+                "from_date" : $('#from_date').val(),
+                "from_shift" : $('#from_Shift').val(),
+                "to_date" : $('#to_date').val(),
+                "to_shift" : $('#to_Shift').val(),
+                "no_of_days" : $('#no_of_days').val(),
+                "leave_reason": $('#leave_reason').val()
+                
+            };
+
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(requestData),
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log('API Response:', data);
+                })
+                .catch(error => {
+
+                    console.error('Error:', error);
+                });
+        }
+
+function getEmployeeLeaveData() {
+    const employeeId = document.getElementById('employee_i').value;
+
+        // Ensure the employeeId is not empty
+        if (!employeeId) {
+            alert('Employee ID is required');
+            return;
+        }
+
+        // Construct the API URL with the employeeId using URLSearchParams
+        const apiUrl = new URL('http://127.0.0.1:5000/api/v1/employee-leave-data');
+        apiUrl.searchParams.append('employeeId', employeeId);
+
+        fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                displayLeaveData(data.rows);
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
+
+function displayLeaveData(leaveData) {
+    const leaveDataContainer = document.getElementById('logs-content');
+    leaveDataContainer.innerHTML = '';
+
+    if (leaveData.length > 0) {
+        leaveData.forEach(entry => {
+            const leaveBox = document.createElement('div');
+            leaveBox.classList.add('leave-box');
+
+             // Specify the order of properties to display
+            const propertiesToShow = ['from_date', 'from_shift', 'to_date', 'to_shift', 'leave_reason', 'status', 'no_of_days'];
+
+            // Create a paragraph for each property
+            propertiesToShow.forEach(property => {
+                const paragraph = document.createElement('p');
+                paragraph.textContent = `${property}: ${entry[property]}`;
+                leaveBox.appendChild(paragraph);
+            });
+
+            // Add some styling to the leave box
+            leaveBox.style.border = '1px solid #ccc';
+            leaveBox.style.padding = '10px';
+            leaveBox.style.marginBottom = '10px';
+
+            leaveDataContainer.appendChild(leaveBox);
+        });
+    } else {
+        leaveDataContainer.textContent = 'No leave data available for the specified employee.';
+    }
+}
+
+
+// function getLeaveNames() {
+//     // Assuming you have an API endpoint to retrieve leave names
+//     const apiUrl = 'http://your-api-endpoint/get_leave_names';
+
+//     fetch(apiUrl)
+//         .then(response => response.json())
+//         .then(data => {
+//             // Assuming data is an array of leave names, adjust accordingly
+//             const leaveNames = data.map(item => item.name);
+            
+//             // Display leave names (modify this part based on how you want to display them)
+//             alert('Leave Names: ' + leaveNames.join(', '));
+//         })
+//         .catch(error => {
+//             console.error('Error:', error);
+//         });
+// }
+
+</script>
+
+</body>
+</html>
