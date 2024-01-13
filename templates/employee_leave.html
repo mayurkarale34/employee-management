@@ -181,6 +181,12 @@
         $('#leaves-tab').addClass('active');
         $('#logs-tab').removeClass('active');
         $('#leaves-content').show();
+        $('#leaves-content').empty();
+
+        // Add content for Casual Leave and Sick Leave
+        const casualLeaveText = '<p>Casual Leave: 5 days remaining</p>';
+        const sickLeaveText = '<p>Sick Leave: 3 days remaining</p>';
+        $('#leaves-content').append(casualLeaveText).append(sickLeaveText);
         $('#logs-content').hide();
         
     });
