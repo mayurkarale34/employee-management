@@ -22,7 +22,7 @@
     <script src="/static/js/select2.min.js"></script>
     <script src="/static/js/bootstrapValidator.min.js"></script>
     
-    <title>Manage Attendance</title>
+    <title>Manage Leave</title>
     <script>
         function statusFormatter(value, row) {
             if(row.status =='pending'){
@@ -376,6 +376,27 @@ $('#to_date').change(function(e){
     }
     
 })
+// $('#apply_leave').click(function(e){
+//         apply_leave();
+//     })
+// function apply_leave(){
+//             $.ajax({
+//                 type: "POST",
+//                 url: "/apply_leave",
+//                 data: $('#leaveform').serialize(),
+//                 success: function (response) {
+//                         if(response.status){
+//                             alert(response.message)
+//                             $('#table_user_master').bootstrapTable('refresh');
+//                             $('#edit_modal').modal('hide');
+//                         }
+//                         else{
+//                             alert(response.message)
+//                         }
+                        
+//                 }
+//             });
+//         }
 
 
 </script>
