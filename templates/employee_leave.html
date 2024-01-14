@@ -124,7 +124,7 @@
               <h1>Add Attendance</h1>
           </div>
           <div class="modal-body">
-              <form id="leaveform" action="http://127.0.0.1:5000/apply_leave" method="POST" >
+              <form id="leaveform"  >
                   <div class="form-group">
                       <label for="employee_id">Employee Name</label>
                           <select id="employee_id" name="employee_id" class="form-control" required>
@@ -205,7 +205,7 @@
 
   $('#apply_leave').click(function (e) {
         Apply()
-        $('#leaveform').submit();
+        
     });
   $('#from_date').datetimepicker({
     minView: 2,
@@ -331,9 +331,9 @@ function Apply(){
             const requestData = {
                 "employee_id" : $('#employee_id').val(),
                 "from_date" : $('#from_date').val(),
-                "from_shift" : $('#from_Shift').val(),
+                "from_shift" : $('#from_shift').val(),
                 "to_date" : $('#to_date').val(),
-                "to_shift" : $('#to_Shift').val(),
+                "to_shift" : $('#to_shift').val(),
                 "no_of_days" : $('#no_of_days').val(),
                 "leave_reason": $('#leave_reason').val()
                 
@@ -349,12 +349,23 @@ function Apply(){
                 .then(response => response.json())
                 .then(data => {
                     console.log('API Response:', data);
-                })
-                .catch(error => {
-
-                    console.error('Error:', error);
-                });
-        }
+                    console.log('Full Response:', data); // Log the full response for debugging
+            if (data.status === true) {
+                // Leave applied successfully
+                alert('Leave applied successfully.');
+                location.reload();
+                // You can add additional logic here to update the UI or perform other actions.
+            } else {
+                // Failed to apply leave
+                alert(`Failed to apply leave. Reason: ${data.message}`);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            // Handle the error, e.g., by displaying a generic error message to the user.
+            alert('An error occurred while processing your request.');
+        });
+}
 
 function getEmployeeLeaveData() {
     const employeeId = document.getElementById('employee_i').value;
