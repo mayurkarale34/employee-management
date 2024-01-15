@@ -97,3 +97,16 @@ CHANGE COLUMN `applied_on` `applied_on` TIME NULL DEFAULT NULL ;
 
 ALTER TABLE `tb_attendance` 
 ADD COLUMN `working_hours` TIME NULL AFTER `status`;
+
+CREATE TABLE `employee`.`tb_overall_leave_master` (
+  `sr_no` INT NOT NULL AUTO_INCREMENT,
+  `employee_id` VARCHAR(45) NULL,
+  `employee_name` VARCHAR(45) NULL,
+  `casual_leave` VARCHAR(45) NULL,
+  `earn_leave` VARCHAR(45) NULL,
+  `comp_offs` VARCHAR(45) NULL,
+  `sick_leave` VARCHAR(45) NULL,
+  PRIMARY KEY (`sr_no`));
+
+ALTER TABLE `employee`.`tb_leave` 
+ADD COLUMN `leave_type` VARCHAR(45) NULL AFTER `applied_on`;
