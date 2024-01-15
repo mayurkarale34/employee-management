@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/static/css/global.css">
+    <!-- Bootstrap Table CSS -->
+    <link rel="stylesheet" href="/static/css/bootstrap-table.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-editable.css">
+    <link rel="stylesheet" href="/static/css/bootstrap-table.min.css">
+    <link rel="stylesheet" href="/static/css/select2-bootstrap.css">
+    <link rel="stylesheet" href="/static/css/select2.min.css">
+    <link rel="stylesheet" href="/static/css/bootstrapValidator.min.css">
+    <link rel= "stylesheet" media="all" href= "{{ url_for('static',filename='css/bootstrap-datetimepicker.min.css') }}">
+    <!-- jQuery -->
+    <script src="/static/js/jquery-2.1.3.min.js"></script>
+    <!-- Bootstrap JS -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+    <!-- Bootstrap Table JS -->
+    <script src="/static/js/tableExport.js"></script>
+    <script type="text/javascript" src="/static/js/bootstrap_table.js"></script>
+    <script src="/static/js/common.js"></script>
+    <script src="/static/js/daterangepicker.min.js"></script>
+    <script src="/static/js/bootstrap-table.min.js"></script>
+    <script src="/static/js/bootstrap-table-editable.min.js"></script>
+    <script src="/static/js/bootstrap-table-editable.js"></script>
+    <script src="/static/js/bootstrap-datetimepicker.min.js"></script>
+    <script src="/static/js/select2.min.js"></script>
+    <script src="/static/js/bootstrapValidator.min.js"></script>
+    
+
+  
+
+    <title>Manage Overall Leave Master</title>
+    <script>
+        function queryParams(params) {
+    if (params.search == undefined || params.search == '') {
+        params.search = '';
+    }
+    return params;
+}
+
+    </script>
+</head>
+<body>
+    {% include 'header1.html' %}
+    <div class="container-5">
+                <table id="table_overall_leave_master" class="table custom-bordered-table"  
+                data-toggle="table"
+                data-url="/retrive_tb_overall_leave_master"
+                data-search="true"
+                data-toolbar="#toolbar"
+                data-show-export="true"
+                data-show-columns="true"
+                data-query-params="queryParams"
+                data-pagination="true"
+                data-side-pagination="server"
+                data-page-size="5"
+                data-page-list="[5,10,20]">
+                    <thead>
+                        <tr>
+                            <th data-field="sr_no" class="text-center">Sr No</th>
+                            <th data-field="employee_id" class="text-center" >Employee ID</th>
+                            <th data-field="employee_name" class="text-center">Employee Name</th>
+                            <th data-field="casual_leave" class="text-center" data-editable="true" >Casual Leaves</th>
+                            <th data-field="earn_leave" class="text-center" data-editable="true" >Earn Leaves</th>
+                            <th data-field="comp_offs" class="text-center" data-editable="true" >Comp-Off's</th>
+                            <th data-field="sick_leave" class="text-center" data-editable="true" >Sick Leaves</th>
+                        </tr>      
+                    </thead>
+                </table>
+    </div>
+
+    {% include 'footer1.html' %}
+<script>
+    $(function () {
+        $('#table_overall_leave_master').bootstrapTable({
+            editable: true
+        });
+    });
+</script>
+</body>
+</html>

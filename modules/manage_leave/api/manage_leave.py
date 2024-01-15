@@ -46,4 +46,18 @@ def get_employee_leave_data():
     # Filter leave data for the specified employee ID
 
     return jsonify(employee_leave_entries)    
+
+@app.route('/api/v1/employee-leave-type-data', methods=['GET'])
+def get_employee_leave_type_data():
+    # Get the employee ID from the query parameters
+    employee_id = request.args.get('employeeId')
+    
+    if not employee_id:
+        return jsonify({'status': False, 'message': 'Employee ID is required'})
+
+    employee_leave_type_entries = api_get_leave_type_info(employee_id)
+    # Filter leave data for the specified employee ID
+
+    return jsonify(employee_leave_type_entries)    
+    
     

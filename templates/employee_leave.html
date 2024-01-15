@@ -163,6 +163,17 @@
                   </div>
 
                   <div class="form-group">
+                    <label for="leave_type">Leave Type</label>
+                    <select id="leave_type" name="leave_type" class="form-control" style="background-color:#ffffff" required>
+                        <option value="">Please Select Leave Type</option>
+                        <option value="casual_leave">Casual Leave</option>
+                        <option value="earn_leave" >Earn leave</option>
+                        <option value="comp_offs" >Comp Off's</option>
+                        <option value="sick_leave" >Sick Leave</option>
+                    </select>
+                </div>
+
+                  <div class="form-group">
                       <label for="leave_reason">Leave Reason</label>
                       <input type="text" id="leave_reason" name="leave_reason" class="form-control" placeholder="give reason" style="background-color:#ffffff"/>
                   </div>
@@ -177,17 +188,68 @@
   </div>
 </div>
 <script>
+// Function to generate and leave data
+function generateLeavedata(leaveData) {
+  var targetDiv = document.getElementById('logs-content');
+
+  // Clear existing content
+  targetDiv.innerHTML = '';
+
+  // Check if leaveData is not empty
+  if (leaveData.length > 0) {
+    // Iterate through leaveData and generate HTML dynamically
+    leaveData.forEach(function (leaveEntry, index) {
+        var leaveHTML = '<div class="leave-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">';
+leaveHTML += `<h1><span style="margin-right: 16px;">From Date : ${leaveEntry.from_date}</span>From Shift   _: ${leaveEntry.from_shift}</h1>`;
+leaveHTML += `<h1><span style="margin-right: 16px;">To Date_  _ : ${leaveEntry.to_date}</span>To Shift_ - _: ${leaveEntry.to_shift}</h1>`;
+leaveHTML += `<h1><span style="margin-right: 80px;">No of Days : ${leaveEntry.no_of_days}</span>Leave Type: ${leaveEntry.leave_type}</h1>`;
+leaveHTML += `<h1><span >Leave Reason: ${leaveEntry.leave_reason}</span></h1>`;
+// Add more fields as needed
+leaveHTML += '</div>';
+      // Append the generated HTML to the targetDiv
+      targetDiv.innerHTML += leaveHTML;
+    });
+  } else {
+    // Display a message if leaveData is empty
+    targetDiv.innerHTML = '<p>No leave data available for the specified employee.</p>';
+  }
+}
+
+// Function to generate and leave type
+function generateLeavetype(leavetype) {
+  var targetDiv = document.getElementById('leaves-content');
+
+  // Clear existing content
+  targetDiv.innerHTML = '';
+
+  // Check if leaveData is not empty
+  if (leavetype.length > 0) {
+    // Iterate through leaveData and generate HTML dynamically
+    var leaveEntry = leavetype[0]; 
+        var leaveHTML = '<div class="leave-box" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 10px;">';
+leaveHTML += `<h1><span style="margin-right: 16px;">Casual Leave : ${leaveEntry.casual_leave}</span></h1>`;
+leaveHTML += `<h1><span style="margin-right: 16px;">Comp Off's: ${leaveEntry.earn_leave}</span></h1>`;
+leaveHTML += `<h1><span style="margin-right: 80px;">Earn Leave : ${leaveEntry.comp_offs}</span></h1>`;
+leaveHTML += `<h1><span >Sick Leave: ${leaveEntry.sick_leave}</span></h1>`;
+// Add more fields as needed
+leaveHTML += '</div>';
+
+      targetDiv.innerHTML += leaveHTML;
+
+  } else {
+    // Display a message if leaveData is empty
+    targetDiv.innerHTML = '<p>No leave type available for the specified employee.</p>';
+  }
+}
+
     $('#leaves-tab').click(function (e) {
         $('#leaves-tab').addClass('active');
         $('#logs-tab').removeClass('active');
         $('#leaves-content').show();
         $('#leaves-content').empty();
-
-        // Add content for Casual Leave and Sick Leave
-        const casualLeaveText = '<p>Casual Leave: 5 days remaining</p>';
-        const sickLeaveText = '<p>Sick Leave: 3 days remaining</p>';
-        $('#leaves-content').append(casualLeaveText).append(sickLeaveText);
         $('#logs-content').hide();
+        getEmployeeLeaveType();
+
         
     });
 
@@ -335,6 +397,7 @@ function Apply(){
                 "to_date" : $('#to_date').val(),
                 "to_shift" : $('#to_shift').val(),
                 "no_of_days" : $('#no_of_days').val(),
+                "leave_type" : $('#leave_type').val(),
                 "leave_reason": $('#leave_reason').val()
                 
             };
@@ -384,7 +447,7 @@ function getEmployeeLeaveData() {
         .then(response => response.json())
         .then(data => {
             if (data.status) {
-                displayLeaveData(data.rows);
+                generateLeavedata(data.rows); ;
             } else {
                 alert(data.message);
             }
@@ -394,55 +457,63 @@ function getEmployeeLeaveData() {
         });
 }
 
-function displayLeaveData(leaveData) {
-    const leaveDataContainer = document.getElementById('logs-content');
-    leaveDataContainer.innerHTML = '';
+// function displayLeaveData(leaveData) {
+//     const leaveDataContainer = document.getElementById('logs-content');
+//     leaveDataContainer.innerHTML = '';
 
-    if (leaveData.length > 0) {
-        leaveData.forEach(entry => {
-            const leaveBox = document.createElement('div');
-            leaveBox.classList.add('leave-box');
+//     if (leaveData.length > 0) {
+//         leaveData.forEach(entry => {
+//             const leaveBox = document.createElement('div');
+//             leaveBox.classList.add('leave-box');
 
-             // Specify the order of properties to display
-            const propertiesToShow = ['from_date', 'from_shift', 'to_date', 'to_shift', 'leave_reason', 'status', 'no_of_days'];
+//              // Specify the order of properties to display
+//             const propertiesToShow = ['from_date', 'from_shift', 'to_date', 'to_shift', 'leave_reason', 'status', 'no_of_days'];
 
-            // Create a paragraph for each property
-            propertiesToShow.forEach(property => {
-                const paragraph = document.createElement('p');
-                paragraph.textContent = `${property}: ${entry[property]}`;
-                leaveBox.appendChild(paragraph);
-            });
+//             // Create a paragraph for each property
+//             propertiesToShow.forEach(property => {
+//                 const paragraph = document.createElement('p');
+//                 paragraph.textContent = `${property}: ${entry[property]}`;
+//                 leaveBox.appendChild(paragraph);
+//             });
 
-            // Add some styling to the leave box
-            leaveBox.style.border = '1px solid #ccc';
-            leaveBox.style.padding = '10px';
-            leaveBox.style.marginBottom = '10px';
+//             // Add some styling to the leave box
+//             leaveBox.style.border = '1px solid #ccc';
+//             leaveBox.style.padding = '10px';
+//             leaveBox.style.marginBottom = '10px';
 
-            leaveDataContainer.appendChild(leaveBox);
-        });
-    } else {
-        leaveDataContainer.textContent = 'No leave data available for the specified employee.';
-    }
-}
-
-
-// function getLeaveNames() {
-//     // Assuming you have an API endpoint to retrieve leave names
-//     const apiUrl = 'http://your-api-endpoint/get_leave_names';
-
-//     fetch(apiUrl)
-//         .then(response => response.json())
-//         .then(data => {
-//             // Assuming data is an array of leave names, adjust accordingly
-//             const leaveNames = data.map(item => item.name);
-            
-//             // Display leave names (modify this part based on how you want to display them)
-//             alert('Leave Names: ' + leaveNames.join(', '));
-//         })
-//         .catch(error => {
-//             console.error('Error:', error);
+//             leaveDataContainer.appendChild(leaveBox);
 //         });
+//     } else {
+//         leaveDataContainer.textContent = 'No leave data available for the specified employee.';
+//     }
 // }
+
+
+function getEmployeeLeaveType() {
+    const employeeId = document.getElementById('employee_i').value;
+
+// Ensure the employeeId is not empty
+    if (!employeeId) {
+        alert('Employee ID is required');
+        return;
+    }
+
+    const apiUrl = new URL('http://127.0.0.1:5000/api/v1/employee-leave-type-data');
+        apiUrl.searchParams.append('employeeId', employeeId);
+
+        fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            if (data.status) {
+                generateLeavetype(data.rows); ;
+            } else {
+                alert(data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+}
 
 </script>
 
