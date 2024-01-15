@@ -145,5 +145,48 @@ def get_leave_counts(employee_id):
         print(exception)
         response['message'] = exception
         return response
+    
+
+@runtime_logger
+def deduct_leave_balances(employee_id, leave_type, no_of_days, connection):
+    try:
+        # Assuming you have a table named 'overall_leave_master'
+        # Adjust the query based on your actual table structure
+        check_balance_query = text(f"SELECT casual_leave, sick_leave, earn_leave, comp_offs FROM tb_overall_leave_master WHERE employee_id = '{employee_id}'")
+        result = connection.execute(check_balance_query)
+        leave_balances = result.fetchone()
+        no_of_days = int(no_of_days)
+        if leave_balances:
+            # Check the requested leave type and deduct the balance accordingly
+            if leave_type == 'casual_leave':
+                remaining_leave = int(leave_balances[0])
+            elif leave_type == 'sick_leave':
+                remaining_leave = int(leave_balances[1])
+            elif leave_type == 'earn_leave':
+                remaining_leave = int(leave_balances[2])
+            elif leave_type == 'comp_offs':
+                remaining_leave = int(leave_balances[3])
+            else:
+                return {'status': False, 'message': 'Invalid leave type.'}
+
+            if remaining_leave == 0: 
+                return {'status': False, 'message': 'You have no remaining leave.'}
+
+            new_balance = remaining_leave - no_of_days
+            update_balance_query = text(f"UPDATE tb_overall_leave_master SET {leave_type} = :new_balance WHERE employee_id = :employee_id")
+
+            # Update the leave balance in the database
+            connection.execute(update_balance_query, {'employee_id': employee_id, 'new_balance': new_balance})
+              # Commit the transaction
+
+            return {'status': True, 'message': 'Leave balance deducted successfully.'}
+        else:
+              # Rollback the transaction
+            return {'status': False, 'message': 'Employee not found or leave balances not available.'}
+
+    except Exception as e:
+        connection.rollback()  # Rollback the transaction in case of an exception
+        return {'status': False, 'message': f'Error deducting leave balance: {str(e)}'}
+
 
     

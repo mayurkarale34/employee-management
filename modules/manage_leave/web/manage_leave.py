@@ -1,4 +1,15 @@
 
+
+@app.route('/manage_leave')
+@login_required
+@runtime_logger
+def manage_leave(): 
+    try:
+        employees = retrive_employee ()
+        return render_template('manage_leave.html', employees=employees)
+    except Exception as e:
+        print("exception while rendering index page : "+ str(e))
+
 # Retrive all leave records
 @app.route('/retrive_tb_leave', methods=["GET"])
 @login_required
@@ -67,16 +78,6 @@ def approve_leave():
         response['message'] = "Error while approving the leave, Please contact to Admin"
         return jsonify(response)
 
-@app.route('/manage_leave')
-@login_required
-@runtime_logger
-def manage_leave(): 
-    try:
-        employees = retrive_employee ()
-        return render_template('manage_leave.html', employees=employees)
-    except Exception as e:
-        print("exception while rendering index page : "+ str(e))
-
 @app.route('/apply_leave', methods=["GET", "POST"])
 @login_required
 @runtime_logger
@@ -90,12 +91,18 @@ def apply_leave():
         data['applied_on']=datetime.now().strftime('%Y-%m-%d %H:%M:%S')
         data['from_date'] = datetime.strptime(data['from_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
         data['to_date'] = datetime.strptime(data['to_date'], '%d-%m-%Y').strftime('%Y-%m-%d')
-
+        
         application_response = apply_for_leave_info(data, connection)
         if not application_response['status']:
             transaction.rollback()
             connection.close()
             response['message'] = application_response['message']
+            return jsonify(response)
+        
+        leave_deduction_response = deduct_leave_balances(data['employee_id'], data['leave_type'], data['no_of_days'],connection)
+        if not leave_deduction_response['status']:
+            connection.close()
+            response['message'] = leave_deduction_response['message']
             return jsonify(response)
         
         transaction.commit()

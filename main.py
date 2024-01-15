@@ -114,9 +114,26 @@ def integrate():
 
         # ========================================================================
 
+        # create Manage Overall Leave Master combine file
+        fin = open("modules/manage_overall_leave_master/web/manage_overall_leave_master.py", "r")
+        web_manage_overall_leave_master = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_overall_leave_master/api/manage_overall_leave_master.py", "r")
+        api_manage_overall_leave_master = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_overall_leave_master/common/manage_overall_leave_master.py", "r")
+        common_manage_overall_leave_master = fin.read()
+        fin.close()
+        
+        manage_overall_leave_master = web_manage_overall_leave_master + api_manage_overall_leave_master+ common_manage_overall_leave_master
+
+        # ========================================================================
+
         # Create combine file of content of all the python files
         # Note: app_run should be at last
-        combine_file = app_init + web_file + web_login +  common_file + manage_leave + manage_employee + manage_resources + manage_attendance + manage_reports + app_run
+        combine_file = app_init + web_file + web_login +  common_file + manage_leave + manage_employee + manage_resources + manage_attendance + manage_reports + manage_overall_leave_master +app_run
 
         # Created new app file to run the app
         fout = open("employee.py", 'w')

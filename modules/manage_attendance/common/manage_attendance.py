@@ -46,15 +46,24 @@ def add_attendance_info(data, connection):
        "message" : ""
    }
     try:
-        print(data)
+        employee_id = data['employee_id']
+        attendance_date = data['attendance_date']
+        leave_query = text(f"SELECT count(1) as leave_count FROM tb_leave WHERE employee_id = '{employee_id}'AND '{attendance_date}' BETWEEN from_date AND to_date ")
+        result_leave = connection.execute(leave_query).fetchone()
+        leave_count = result_leave[0] if result_leave else 0
+
+        if leave_count > 0:
+            response['message'] = "Leave is already applied for this date. Cannot mark attendance."
+            return response
+        
         if data['action'] == 'CLOCK_IN':
-            existing_data = connection.execute(text(f"SELECT count(1) as total FROM tb_attendance WHERE employee_id = '{data['employee_id']}' AND attendance_date = '{data['attendance_date']}'")).fetchone()[0]
+            existing_data = connection.execute(text(f"SELECT count(1) as total FROM tb_attendance WHERE employee_id = '{employee_id}' AND attendance_date = '{attendance_date}'")).fetchone()[0]
 
             if existing_data > 0:
                 response['message'] = "Attendance entry already exists for this employee on the given date."
                 return response
                 
-            connection.execute(text(f"INSERT INTO tb_attendance(`employee_id`,`attendance_date`, `clock_in`, `status`) VALUES ('{data['employee_id']}', '{data['attendance_date']}', '{data['clock_time']}', 'Present');"))
+            connection.execute(text(f"INSERT INTO tb_attendance(`employee_id`,`attendance_date`, `clock_in`, `status`) VALUES ('{employee_id}', '{attendance_date}', '{data['clock_time']}', 'Present');"))
 
             response['status'] = True
             response['message'] = "Clock In Successful."
