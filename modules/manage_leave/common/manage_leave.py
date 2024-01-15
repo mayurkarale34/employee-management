@@ -13,7 +13,7 @@ def get_all_leave_info(data, connection):
             result_count = connection.execute(count_duery)
             response['total'] = result_count.fetchone()[0]
 
-            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id) where status = if('{data['status']}' = 'All', status, '{data['status']}') ORDER BY id desc limit {data['offset']}, {data['limit']};")
+            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.leave_type, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id) where status = if('{data['status']}' = 'All', status, '{data['status']}') ORDER BY id desc limit {data['offset']}, {data['limit']};")
 
             result = connection.execute(query)
         else:
@@ -21,7 +21,7 @@ def get_all_leave_info(data, connection):
             result_count = connection.execute(count_duery)
             response['total'] = result_count.fetchone()[0]
 
-            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id) where status = if('{data['status']}' = 'All', status, '{data['status']}') and tbl.employee_id like '%{data['search']}%'  ORDER BY id desc limit {data['offset']}, {data['limit']};")
+            query = text(f"SELECT tbl.id, tbl.employee_id, concat(tbme.first_name, ' ', tbme.last_name) as employee_name, tbl.from_date, tbl.from_shift, tbl.to_date, tbl.to_shift, tbl.no_of_days, tbl.leave_type,tbl.status, tbl.approved_by, tbl.approved_on, tbl.applied_by, tbl.applied_on, tbl.leave_reason FROM tb_leave tbl left join tb_manage_employee tbme on(tbl.employee_id = tbme.employee_id) where status = if('{data['status']}' = 'All', status, '{data['status']}') and tbl.employee_id like '%{data['search']}%'  ORDER BY id desc limit {data['offset']}, {data['limit']};")
             result = connection.execute(query)
             
         if result.rowcount:
@@ -80,7 +80,7 @@ def apply_for_leave_info(data, connection):
             response['message'] = "Leave already applied, Please check and try again"
             return response
             
-        connection.execute(text(f"INSERT INTO tb_leave(`employee_id`,`from_date`,`from_shift`,`to_date`,`to_shift`,`no_of_days`,`leave_reason`,`status`,`applied_by`,`applied_on`) VALUES ('{data['employee_id']}', '{data['from_date']}','{data['from_shift']}','{data['to_date']}','{data['to_shift']}','{data['no_of_days']}','{data['leave_reason']}','pending','{data['applied_by']}','{data['applied_on']}');"))
+        connection.execute(text(f"INSERT INTO tb_leave(`employee_id`,`from_date`,`from_shift`,`to_date`,`to_shift`,`no_of_days`,`leave_type`,`leave_reason`,`status`,`applied_by`,`applied_on`) VALUES ('{data['employee_id']}', '{data['from_date']}','{data['from_shift']}','{data['to_date']}','{data['to_shift']}','{data['no_of_days']}','{data['leave_type']}','{data['leave_reason']}','pending','{data['applied_by']}','{data['applied_on']}');"))
 
         response['status'] = True
         response['message'] = "Leave Applied Successfully."
@@ -99,7 +99,7 @@ def api_get_leave_info(employee_id):
     }
     connection = app._engine.connect()
     try:
-        query = text(f"SELECT from_date, from_shift, to_date, to_shift, no_of_days, status, leave_reason FROM tb_leave where employee_id = '{employee_id}'")
+        query = text(f"SELECT from_date, from_shift, to_date, to_shift, no_of_days, leave_type, status, leave_reason FROM tb_leave where employee_id = '{employee_id}'")
         result = connection.execute(query)   
         for row in result:
             columns = result.keys()
@@ -118,26 +118,23 @@ def api_get_leave_info(employee_id):
         return response    
 
 @runtime_logger
-def get_leave_counts(employee_id):
+def api_get_leave_type_info(employee_id):
     response = {
         "status": False,
         "message": "",
-        "leave_counts": {"casual_leave": 0, "sick_leave": 0}
+        "rows":[]
     }
     connection = app._engine.connect()
     try:
-        query = text(f"SELECT leave_type, COUNT(*) as count FROM tb_leave WHERE employee_id = '{employee_id}' GROUP BY leave_type")
+        query = text(f"SELECT casual_leave, earn_leave, comp_offs, sick_leave from tb_overall_leave_master where employee_id = '{employee_id}'")
         result = connection.execute(query)
 
         for row in result:
-            leave_type, count = row
-            if leave_type.lower() == 'casual':
-                response['leave_counts']['casual_leave'] = count
-            elif leave_type.lower() == 'sick':
-                response['leave_counts']['sick_leave'] = count
-
+            columns = result.keys()
+            row_dict = dict(zip(columns, row))
+            response['rows'].append(row_dict)
         response['status'] = True
-        response['message'] = "Leave counts retrieved successfully"
+        response['message'] = "leave type data retrived successfully"
         return response
 
     except Exception as e:
