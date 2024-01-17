@@ -110,3 +110,4 @@ CREATE TABLE tb_overall_leave_master (
 
 ALTER TABLE tb_leave 
 ADD COLUMN leave_type VARCHAR(45) NULL AFTER applied_on;
+
