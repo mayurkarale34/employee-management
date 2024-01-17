@@ -181,7 +181,7 @@
           data : $('#login_form').serialize(),
           success: function(response){
               if(response.status){
-                window.location.href = '/manage_resources';
+                window.location.href = '/manage_home';
               }
               else{
                 alert(response.message);
