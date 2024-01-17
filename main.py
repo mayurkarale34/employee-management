@@ -131,9 +131,26 @@ def integrate():
 
         # ========================================================================
 
+         # create Manage Overall Leave Master combine file
+        fin = open("modules/manage_home/web/manage_home.py", "r")
+        web_manage_home = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_home/api/manage_home.py", "r")
+        api_manage_home = fin.read()
+        fin.close()
+
+        fin = open("modules/manage_home/common/manage_home.py", "r")
+        common_manage_home = fin.read()
+        fin.close()
+        
+        manage_home = web_manage_home + api_manage_home+ common_manage_home
+
+        # ========================================================================
+
         # Create combine file of content of all the python files
         # Note: app_run should be at last
-        combine_file = app_init + web_file + web_login +  common_file + manage_leave + manage_employee + manage_resources + manage_attendance + manage_reports + manage_overall_leave_master +app_run
+        combine_file = app_init + web_file + web_login +  common_file + manage_leave + manage_employee + manage_resources + manage_attendance + manage_reports + manage_overall_leave_master+ manage_home + app_run
 
         # Created new app file to run the app
         fout = open("employee.py", 'w')

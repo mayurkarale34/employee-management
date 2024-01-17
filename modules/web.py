@@ -38,23 +38,6 @@ def clear_cache():
     cache.clear()
     return 'Cache cleared'
 
-@app.route('/home')
-def home():
-    try:
-        var1 = "Welcome to the Python Flask"
-        return render_template('manage_resources.html', var = var1)
-    except Exception as e:
-        print("exception while rendering index page : "+ str(e))
-
-@app.route('/manage_resources', methods=['GET'])
-@login_required
-@runtime_logger
-def manage_resources():
-    try:
-        return render_template('manage_resources1.html')
-    except Exception as e:
-        print("exception while login : "+ str(e))
-        return render_template('login.html')
 
 @app.route('/manage_metadata')
 @login_required

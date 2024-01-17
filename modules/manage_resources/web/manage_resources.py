@@ -64,40 +64,5 @@ def update_user():
         return redirect('/resource')             
     
 
-@app.route('/database_data', methods=['GET', 'POST'])
-def database_data():
-    response = {
-        "status": False,
-        "message": "",
-        "total": 0,
-        "total_present": 0,
-        "total_absent": 0,
-        "total_leave": 0
-    }
-    
-    connection =  app._engine.connect()
-    transaction = connection.begin()
-    try:
-        data = request.get_json()
-        date = data.get('date')
-        if not date:
-            response["message"] = "Date not provided in the request."
-            return jsonify(response)
-        total_all = total_employee(connection)
-        total_l = total_leave(date,connection)
-        total_p = total_present(date, connection)
-        response["total"] = total_all
-        response["total_present"] = total_p
-        response["total_absent"] = response["total"] - response["total_present"]
-        response['total_leave'] = total_l
-        response["status"] = True
-        transaction.commit()
-        connection.close()
-        return jsonify(response)
-    
-    except Exception as e:
-        transaction.rollback()
-        connection.close()
-        response["message"] = f"Error while retrieving total count: {str(e)}"
-        return jsonify(response)
+
 
