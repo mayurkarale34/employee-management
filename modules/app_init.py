@@ -11,6 +11,10 @@ import random
 import string
 from datetime import datetime, timedelta
 import pandas as pd
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+from io import BytesIO
+
 
 from cryptography.fernet import Fernet
 
