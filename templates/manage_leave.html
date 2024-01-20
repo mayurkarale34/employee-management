@@ -171,19 +171,6 @@ function queryParams(params) {
         </div>
     </div>
 
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-        <script>
-            $(document).ready(function() {
-                {% for message in messages %}
-                    // Use a library or custom code to show a notification for each message
-                    // For simplicity, I'm using an alert here
-                    alert('{{ message }}');
-                {% endfor %}
-            });
-        </script>
-    {% endif %}
-{% endwith %}
 <script>
 
     // $('#leaveform').bootstrapValidator({
@@ -243,10 +230,6 @@ function queryParams(params) {
         $('#statusForm').submit()});
 
 
-    $('#apply_leave').click(function (e) {
-        $('#leaveform').submit();
-    });
-   
 // Initialize datetimepicker
 $('#from_date').datetimepicker({
     minView: 2,
@@ -388,27 +371,27 @@ $('#to_date').change(function(e){
     }
     
 })
-// $('#apply_leave').click(function(e){
-//         apply_leave();
-//     })
-// function apply_leave(){
-//             $.ajax({
-//                 type: "POST",
-//                 url: "/apply_leave",
-//                 data: $('#leaveform').serialize(),
-//                 success: function (response) {
-//                         if(response.status){
-//                             alert(response.message)
-//                             $('#table_user_master').bootstrapTable('refresh');
-//                             $('#edit_modal').modal('hide');
-//                         }
-//                         else{
-//                             alert(response.message)
-//                         }
+$('#apply_leave').click(function(e){
+        apply_leave();
+    })
+function apply_leave(){
+            $.ajax({
+                type: "POST",
+                url: "/apply_leave",
+                data: $('#leaveform').serialize(),
+                success: function (response) {
+                        if(response.status){
+                            alert(response.message)
+                            $('#table_user_master').bootstrapTable('refresh');
+                            $('#edit_modal').modal('hide');
+                        }
+                        else{
+                            alert(response.message)
+                        }
                         
-//                 }
-//             });
-//         }
+                }
+            });
+        }
 
 
 </script>
