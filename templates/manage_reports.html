@@ -68,6 +68,8 @@
 
         <!-- Div 2 (Add more divs as needed) -->
         <div class="report-div">
+            <div class="report-heading">Human Resource</div>
+            <a href="#report_modal1" data-toggle="modal" class="report-link">Monthly Attendance Report</a>
             <!-- Another report content here -->
         </div>
 
@@ -94,16 +96,77 @@
             </div>
         </div>
     </div>
+    <div class="modal" id="report_modal1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1><b>Monthly Report</b></h1>
+                </div>
+                <div class="modal-body">
+                    <form id="report_form1" action="/attendance_download" method="POST">
+                        <div class="form-group">
+                            <label for="employee_id">Employee Name</label>
+                                <select id="employee_id" name="employee_id" class="form-control" required>
+                                    
+                                </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="month_year">Choose Month and Year :</label>
+                            <input type="text" id="month_year" name="month_year" placeholder= " Select Month and Year" class="form-control" style="background-color:#ffffff"/>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-warning" data-dismiss="modal">Close</button>
+                            <button type="submit" id="button_download" class="btn btn-success">Download</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 
     {% include 'footer1.html' %}
     <script>
-    $(function () {
-    
+$(document).ready(function () {
+
     $('#year_month').datetimepicker({
         minView: 3,
         format: 'yyyy-mm',
         autoclose: true
     });
+    
+    $('#month_year').datetimepicker({
+        minView: 3,
+        format: 'yyyy-mm',
+        autoclose: true
+    });
+    $("#employee_id").select2({
+		theme: "bootstrap",
+		width: "100%",
+		minimumInputLength: 1,
+		ajax: {
+			url: "/get_employees",
+		 type: "get",
+		 dataType: 'json',
+		 data: function (params) {
+			var query = {
+				search: params.term,
+				page_no: params.page || 0,
+				page_size: params.page || 20,
+			}
+
+			// Query parameters will be ?search=[term]&page_no=[page_no]&page_size=[page_size]
+			return query;
+		 },
+		 processResults: function (response, params) {
+		 return {
+				results: response.data,
+				 pagination: {
+						more: (params.page * 20) < response.total
+				}
+		 };
+		},
+	 }
+	});
 
 });
     </script>

@@ -103,3 +103,94 @@ def download_all_attendance():
         print(f"Error handling download_all_attendance route: {e}")
         flash("Error generating attendance sheet. Please try again.", "error")
         return redirect('/manage_reports')
+
+@app.route('/attendance_download', methods=['POST'])
+def attendance_download():
+    response = {
+        "status": False,
+        "message": "",
+        "row": []
+    }
+
+    connection = app._engine.connect()
+    transaction = connection.begin()
+    try:
+        employee_id = request.form.get('employee_id')
+        month_year_str = request.form.get('month_year')
+
+        month_year_date = datetime.strptime(month_year_str, '%Y-%m')
+        selected_month = int(month_year_date.strftime('%m'))
+        selected_year = int(month_year_date.strftime('%Y'))
+        _, last_day = calendar.monthrange(selected_year, selected_month)
+
+        # Calculate the total days in a month
+        total_days_in_month = last_day
+        target_days = list(range(1, last_day + 1))
+
+        # Get the name of the selected month
+        month_name = calendar.month_name[selected_month]
+
+        # Initialize attendance dictionary
+        attendance = [{'days':'' ,'clock_in' : '','clock_out':'' ,'status': '', 'working_hours' : ''}]
+
+        # Generate attendance_data (replace this with your actual data retrieval logic)
+        attendance_data =  get_atteandance_data(employee_id, selected_month, selected_year, connection)
+        leave_data =  get_leave_data(employee_id, selected_month, selected_year, connection)
+        total_present = 0
+        total_absent = 0
+        total_leave = 0
+        employee_name = attendance_data[0]["employee_name"]
+        for target_day in target_days:
+            leave_entry = next((entry for entry in leave_data if datetime.strptime(entry['from_date'], '%Y-%m-%d').day <= int(target_day) <= datetime.strptime(entry['to_date'], '%Y-%m-%d').day), None)
+
+            if leave_entry:
+                # Append the leave data to the attendance list
+                total_leave += 1
+                attendance.append({
+                    'days': target_day,
+                    'clock_in': '-',
+                    'clock_out': '-',
+                    'status': 'Leave',
+                    'working_hours': '-'
+                })
+            else:
+                # If the day is not a leave day, check attendance data
+                day_data = next((entry for entry in attendance_data if datetime.strptime(entry['day'], '%Y-%m-%d').day == int(target_day)), None)
+                if day_data:
+                    # Append the data to the attendance list for a normal working day
+                    total_present += 1
+                    attendance.append({
+                        'days': target_day,
+                        'clock_in': day_data['clock_in'],
+                        'clock_out': day_data['clock_out'],
+                        'status': 'Present',
+                        'working_hours': day_data['working_hours']
+                    })
+                else:
+                    total_absent +=1
+                    # If the day is not in attendance_data and not a leave day, append empty data with status 'Absent'
+                    attendance.append({
+                        'days': target_day,
+                        'clock_in': '-',
+                        'clock_out': '-',
+                        'status': 'Absent',
+                        'working_hours': '-'
+                    })
+
+        
+        total_days = total_days_in_month
+        
+        pdf_buffer = create_attendance_pdf(attendance, employee_name,month_name, selected_year, total_absent,
+                                           total_days, total_present,total_leave)
+
+        # Set up the response for downloading the PDF
+        response = Response(pdf_buffer, content_type='application/pdf')
+        response.headers['Content-Disposition'] = 'attachment; filename=attendance_report.pdf'
+        transaction.rollback()
+        connection.close()
+        return response
+
+    except Exception as e:
+        print("Error while downloading attendance: ", e)
+        return str(e)
+
