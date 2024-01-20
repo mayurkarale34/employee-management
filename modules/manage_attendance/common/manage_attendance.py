@@ -116,3 +116,45 @@ def datetime_difference(start_datetime, end_datetime):
     minutes, seconds = divmod(remainder, 60)
 
     return str(hours) + ':' + str(minutes) + ':' + str(seconds)
+
+@runtime_logger
+def auto_add_attendance():
+    print('hello')
+    response = {"status" : False, "message" : ""}
+    connection =  app._engine.connect() 
+    transaction = connection.begin()
+    try:
+        employee_query = text("select employee_id from tb_manage_employee")
+        employee_result = connection.execute(employee_query)
+        
+        for row in employee_result:
+            data = {}       
+            data['employee_id'] = row[0]
+            
+            data['clock_time'] = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+            data['attendance_date'] = datetime.now().strftime('%Y-%m-%d')
+
+            data['action'] = 'CLOCK_IN'
+            
+            add_attendance_response = add_attendance_info(data, connection)
+            
+            if not add_attendance_response['status']:
+                response['message'] = add_attendance_response['message']
+                transaction.rollback()
+                connection.close()
+                return response
+            else:
+                print(f"Attendance added for EMP ID : {data['employee_id']}")
+        
+        response['status'] = True
+        response['message'] = "Attendance Marked Successfully."
+        transaction.commit()
+        connection.close()
+
+        return response
+    except Exception as e:
+        print(str(e))
+        transaction.rollback()
+        connection.close()
+        return response         

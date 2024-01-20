@@ -22,6 +22,8 @@ from config import ENCRYPTION_KEY
 
 from functools import wraps
 
+from apscheduler.schedulers.background import BackgroundScheduler
+
 def init_engine(app):
     app._engine = create_engine('mysql://' + DATABASE_USERNAME + ':' + DATABASE_PASSWORD + '@' + DATABASE_HOSTNAME + '/' + DATABASE_NAME + '?charset=utf8', echo = False, pool_size = 50, max_overflow = 16, pool_recycle = 300)
 
@@ -31,3 +33,10 @@ app.secret_key = '123456'
 cache = Cache(app, config={'CACHE_TYPE': 'simple'})
 app.debug = True
 init_engine(app)
+
+
+def init_add_attedance():
+    # Schedule method call
+    scheduler_add_attendance = BackgroundScheduler(daemon = True)
+    scheduler_add_attendance.add_job(func = auto_add_attendance, trigger = 'cron', day = '*', hour ='*', minute =37, second =00)
+    scheduler_add_attendance.start()
